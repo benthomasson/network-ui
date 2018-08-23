@@ -9,7 +9,6 @@ python-slugify = "==1.2.5"
 pillow = "==5.2.0"
 "argon2-cffi" = "==18.3.0"
 redis = ">=2.10.5"
-django = "==2.0.8"
 django-environ = "==0.4.5"
 django-model-utils = "==3.1.2"
 django-allauth = "==0.36.0"
@@ -32,6 +31,9 @@ django-coverage-plugin = "==1.5.0"
 pytest-django = "==3.4.2"
 "jinja2-cli" = "*"
 pyyaml = "*"
+channels = "*"
+channels-redis = "*"
+Django = "==2.0.8"
 
 [dev-packages]
 
