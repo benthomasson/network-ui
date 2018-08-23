@@ -1,0 +1,5 @@
+[run]
+include = network_ui/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
