@@ -1,0 +1,159 @@
+<div class="Networking-shell">
+    <div class="Networking-top">
+        <div class="Networking-header">
+            <div class="Networking-headerTitle">{{vm.panelTitle}}</div>
+            <div class="Netowrking-headerActions">
+                <div class="Networking-headerActionItem">
+                    <button ng-click="vm.close()" type="button" class="close">
+                        <i class="fa fa-times-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="Networking-toolbar">
+            <div class="Networking-toolbarLeftSide">
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('Record')">RECORD</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('Export')">EXPORT</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('Layout')">LAYOUT</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('ExportYaml')">EXPORT YAML</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('DownloadTrace')">DOWNLOAD TRACE</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('DownloadRecording')">DOWNLOAD RECORDING</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('UploadTest')">UPLOAD TEST</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('RunTests')">RUN TESTS</button>
+                <button class="Networking-toolbarButton" ng-click="vm.redirectButtonHandler('CompileVariables')">COMPILE VARIABLES</button>
+            </div>
+            <div class="Networking-toolbarRightSide">
+                <div class="Networking-searchBarContainer">
+                    <select id="networking-search"
+                        ng-model="device"
+                        ng-options="device.label group by device.type | capitalize for device in devices | orderBy:'label' "
+                        style="width:100%">
+                            <option></option>
+                    </select>
+                </div>
+                <div class="Networking-keyContainer">
+                    <button ng-click="vm.key()" type="button" class="Networking-toolbarIcon" ng-class="{'Networking-toolbarIcon--selected' : vm.keyPanelExpanded}">
+                        <i class="fa fa-key"></i>
+                    </button>
+                    <div class="Networking-keyDropDownPanel" ng-if="vm.keyPanelExpanded">
+                        <div class="Networking-dropdownPanelTitle">
+                            KEY
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">e</div>
+                            <div class="Networking-keySymbolLabel">NEW SITE</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">a</div>
+                            <div class="Networking-keySymbolLabel">NEW RACK</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">g</div>
+                            <div class="Networking-keySymbolLabel">NEW GROUP</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">r</div>
+                            <div class="Networking-keySymbolLabel">NEW ROUTER</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">s</div>
+                            <div class="Networking-keySymbolLabel">NEW SWITCH</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">h</div>
+                            <div class="Networking-keySymbolLabel">NEW HOST</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">l</div>
+                            <div class="Networking-keySymbolLabel">NEW LINK</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">m</div>
+                            <div class="Networking-keySymbolLabel">NEW STREAM</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">d</div>
+                            <div class="Networking-keySymbolLabel">DEBUG MODE</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">p</div>
+                            <div class="Networking-keySymbolLabel">HIDE CURSOR</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">b</div>
+                            <div class="Networking-keySymbolLabel">HIDE BUTTONS</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">i</div>
+                            <div class="Networking-keySymbolLabel">HIDE INTERFACES</div>
+                        </div>
+                        <div class="Networking-keyPanelOption">
+                            <div class="Networking-keySymbol">0</div>
+                            <div class="Networking-keySymbolLabel">RESET ZOOM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Networking-jumpToContainer">
+                    <button ng-click="vm.jumpTo()" type="button" class="Networking-toolbarIcon" ng-class="{'Networking-toolbarIcon--selected' : vm.jumpToPanelExpanded}">
+                        <i class="fa fa-dot-circle-o"></i>
+                    </button>
+                    <div class="Networking-jumpToDropDownPanel" ng-if="vm.jumpToPanelExpanded">
+                        <div class="Networking-dropdownPanelTitle">
+                            JUMP TO
+                        </div>
+                        <div class="Networking-jumpToPanelOption" ng-click="vm.jumpTo('site')">
+                            SITE
+                        </div>
+                        <div class="Networking-jumpToPanelOption" ng-click="vm.jumpTo('rack')">
+                            RACK
+                        </div>
+                        <div class="Networking-jumpToPanelOption" ng-click="vm.jumpTo('inventory')">
+                            INVENTORY
+                        </div>
+                        <div class="Networking-jumpToPanelOption" ng-click="vm.jumpTo('process')">
+                            PROCESS
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="Networking-toolbar Networking-breadCrumbBar">
+            <ol class="Networking-breadCrumbBarItem">
+                <li class="BreadCrumb-item Networking-breadCrumbText" ng-repeat="group in vm.breadcrumb_groups | limitTo:(vm.breadcrumb_groups.length-1)">
+                    <span>{{group.name}}</span>
+                </li>
+                <li class="BreadCrumb-item Networking-breadCrumbText" ng-repeat="group in vm.breadcrumb_groups | limitTo:-1" class="active">
+                    <span>{{group.name}}</span>
+                </li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+<div class="Networking-detailPanel" ng-show="vm.rightPanelIsExpanded">
+    <awx-net-details-panel item="item"></awx-net-details-panel>
+</div>
+<div class="Networking-canvasPanel">
+    <awx-network-ui></awx-network-ui>
+</div>
+<div class="Networking-zoomPanel" ng-class="{'Networking-zoomPanel--expanded' : vm.rightPanelIsExpanded}">
+    <awx-net-zoom-widget></awx-net-zoom-widget>
+</div>
+<div id="alert-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-hide="disableButtons" data-target="#alert-modal" data-dismiss="modal" class="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+                <h3 id="alertHeader" ng-bind="alertHeader"></h3>
+            </div>
+            <div class="modal-body">
+                <div id="alert-modal-msg" class="alert" ng-bind-html="alertBody"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" ng-hide="disableButtons" data-target="#form-modal" data-dismiss="modal" id="alert_ok_btn" class="btn btn-default" translate>OK</a>
+            </div>
+        </div>
+        <!-- modal-content -->
+    </div>
+    <!-- modal-dialog -->
+</div>

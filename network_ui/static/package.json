@@ -1,0 +1,41 @@
+{
+  "name": "network_ui",
+  "version": "1.0.0",
+  "description": "Ansible Tower Networking UI",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben Thomasson",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "~1.6.2",
+    "angular-mousewheel": "~1.0.5",
+    "angular-ui-router": "",
+    "angular-xeditable": "~0.8.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "browserify": "",
+    "hamsterjs": "~1.1.2",
+    "html-loader": "^0.5.5",
+    "inherits": "",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "jshint": "",
+    "less": "^2.7.2",
+    "mathjs": "^5.1.1",
+    "ngtemplate-loader": "^2.0.1",
+    "nunjucks": "^3.1.2",
+    "reconnectingwebsocket": "^1.0.0",
+    "require": "",
+    "hard-source-webpack-plugin": "^0.4.15",
+    "titlecase": "^1.1.2",
+    "webpack": "~3.11.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-google": "^0.7.1",
+    "webpack-cli": "^2.1.2"
+  }
+}

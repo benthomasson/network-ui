@@ -1,0 +1,83 @@
+
+
+
+                    <g ng-if="item.moving">
+                    <line ng-attr-x1="{{-50 - 100}}"
+                           ng-attr-y1="0"
+                           ng-attr-x2="{{50 + 100}}"
+                           ng-attr-y2="0"
+                           class="NetworkUI--construction"></line>
+                     <line ng-attr-x1="0"
+                           ng-attr-y1="{{-50 - 100}}"
+                           ng-attr-x2="0"
+                           ng-attr-y2="{{50 + 100}}"
+                           class="NetworkUI--construction"></line>
+                    </g>
+
+                    <g ng-if="!debug.hidden">
+                        <line ng-attr-x1="{{-50 - 10}}"
+                               ng-attr-y1="0"
+                               ng-attr-x2="{{50 + 10}}"
+                               ng-attr-y2="0"
+                               class="NetworkUI--debug"></line>
+                         <line ng-attr-x1="0"
+                               ng-attr-y1="{{-50 - 10}}"
+                               ng-attr-x2="0"
+                               ng-attr-y2="{{50 + 10}}"
+                               class="NetworkUI--debug"></line>
+                         <rect ng-attr-x="{{-50}}"
+                               ng-attr-y="{{-50}}"
+                               ng-attr-width="{{50 * 2}}"
+                               ng-attr-height="{{50 * 2}}"
+                               class="NetworkUI--debug"></rect>
+                    </g>
+                    <g class="NetworkUI__fsm">
+                    <circle
+                        cx="0"
+                        cy="0"
+                        ng-attr-r="{{50 + 2}}"
+                        ng-attr-class="{{item.selected || item.remote_selected ? item.selected && item.remote_selected ? 'NetworkUI__fsm--selected-conflict' : item.selected ? 'NetworkUI__fsm--selected' : 'NetworkUI__fsm--remote-selected' : 'NetworkUI--hidden'}}">
+                    </circle>
+                    <circle
+                        cx="0"
+                        cy="0"
+                        ng-attr-r="{{50}}">
+                    </circle>
+                    <circle
+                        class = "NetworkUI__fsm-transition"
+                        cx="0"
+                        cy="0"
+                        ng-attr-r="{{30}}">
+                    </circle>
+                    <circle
+                        class = "NetworkUI__fsm-state"
+                        cx="0"
+                        cy="-30"
+                        ng-attr-r="{{15}}">
+                    </circle>
+                    <circle
+                        class = "NetworkUI__fsm-state"
+                        transform="rotate(120)"
+                        cx="0"
+                        cy="-30"
+                        ng-attr-r="{{15}}">
+                    </circle>
+                    <circle
+                        class = "NetworkUI__fsm-state"
+                        transform="rotate(240)"
+                        cx="0"
+                        cy="-30"
+                        ng-attr-r="{{15}}">
+                    </circle>
+                    <path transform="rotate(75) translate(0, -34.5) scale(0.5) rotate(7)" d="M0,0 L0,18 L18,9 z" class="NetworkUI__fsm-arrow"/>
+                    <path transform="rotate(195) translate(0, -34.5) scale(0.5) rotate(7)" d="M0,0 L0,18 L18,9 z" class="NetworkUI__fsm-arrow"/>
+                    <path transform="rotate(315) translate(0, -34.5) scale(0.5) rotate(7)" d="M0,0 L0,18 L18,9 z" class="NetworkUI__fsm-arrow"/>
+                    </g>
+                    <g ng-show="item.icon || current_scale > 0.5">
+                    <text ng-attr-class="{{item.selected && ! item.edit_label ? 'NetworkUI__fsm-text--selected' : 'NetworkUI--hidden'}}"
+                          filter="url(#selected)"
+                          text-anchor="middle"
+						  x="0"
+						  y="0"> {{item.name}} </text>
+                    <text class="NetworkUI__fsm-text" text-anchor="middle" x="0" y="0">{{item.name}}{{item.edit_label?'_':''}}</text>
+                    </g>
