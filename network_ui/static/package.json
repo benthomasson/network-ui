@@ -28,7 +28,7 @@
     "nunjucks": "^3.1.2",
     "reconnectingwebsocket": "^1.0.0",
     "require": "",
-    "hard-source-webpack-plugin": "^0.4.15",
+    "hard-source-webpack-plugin": "^0.6.2",
     "titlecase": "^1.1.2",
     "webpack": "~3.11.0",
     "yamljs": "^0.3.0"
