@@ -5,7 +5,7 @@ function Channel(from_controller, to_controller, tracer) {
     this.tracer = tracer;
     this.from_controller = from_controller;
     this.to_controller = to_controller;
-    this.trace = true;
+    this.trace = false;
 }
 exports.Channel = Channel;
 
@@ -21,7 +21,7 @@ Channel.prototype.send = function(msg_type, message) {
 function NullChannel(from_controller, tracer) {
     this.tracer = tracer;
     this.from_controller = from_controller;
-    this.trace = true;
+    this.trace = false;
 }
 
 NullChannel.prototype.send = function(msg_type) {
@@ -38,7 +38,7 @@ function FSMController (scope, name, initial_state, tracer) {
     this.state = initial_state;
     this.delegate_channel = new NullChannel(this, tracer);
     this.tracer = tracer;
-    this.trace = true;
+    this.trace = false;
     this.handling_message_type = 'start';
     this.state.start(this);
     this.handling_message_type = null;

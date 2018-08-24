@@ -49,7 +49,7 @@ var NetworkUIController = function($scope,
   $scope.http = $http;
 
   $scope.api_token = '';
-  $scope.disconnected = true;
+  $scope.disconnected = false;
 
   $scope.topology_id = 0;
   // Create a web socket to connect to the backend server
@@ -66,9 +66,11 @@ var NetworkUIController = function($scope,
 
   $scope.initial_messages = [];
   if (!$scope.disconnected) {
-      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/network_ui/topology?inventory_id=" + $scope.inventory_id,
+      console.log("connecting " + protocol + "://" + window.location.host + "/ws/network_ui");
+      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/ws/network_ui",
                                                          null,
-                                                         {debug: false, reconnectInterval: 300});
+                                                         {debug: true, reconnectInterval: 300});
+      console.log("connected " + protocol + "://" + window.location.host + "/ws/network_ui");
   } else {
       $scope.control_socket = {
           on_message: util.noop
