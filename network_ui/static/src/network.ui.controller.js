@@ -1,5 +1,5 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
-var fake_data = require('./fake_data.js');
+//var fake_data = require('./fake_data.js');
 var angular = require('angular');
 var fsm = require('./fsm.js');
 var null_fsm = require('./null.fsm.js');
@@ -2138,7 +2138,7 @@ var NetworkUIController = function($scope,
         $scope.animations = [];
     };
 
-    fake_data.load_fake_data($scope);
+    //fake_data.load_fake_data($scope);
 };
 
 exports.NetworkUIController = NetworkUIController;
