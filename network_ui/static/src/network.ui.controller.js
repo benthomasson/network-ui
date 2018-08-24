@@ -31,9 +31,9 @@ var NetworkUIController = function($scope,
                                    $document,
                                    $location,
                                    $window,
-                                   $http,
-                                   $q,
-                                   $state
+                                   $http
+                                   //$q,
+                                   //$state
                                    //ProcessErrors,
                                    //ConfigService,
                                    //rbacUiControlService,
@@ -54,7 +54,7 @@ var NetworkUIController = function($scope,
   $scope.topology_id = 0;
   // Create a web socket to connect to the backend server
 
-  $scope.inventory_id = $state.params.inventory_id;
+  $scope.inventory_id = 0;
 
   var protocol = null;
 
@@ -66,8 +66,8 @@ var NetworkUIController = function($scope,
 
   $scope.initial_messages = [];
   if (!$scope.disconnected) {
-      console.log("connecting " + protocol + "://" + window.location.host + "/ws/network_ui");
-      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/ws/network_ui",
+      console.log("connecting " + protocol + "://" + window.location.host + "/ws/network_ui?topology_id=" + $scope.topology_id);
+      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/ws/network_ui?topology_id=" + $scope.topology_id,
                                                          null,
                                                          {debug: true, reconnectInterval: 300});
       console.log("connected " + protocol + "://" + window.location.host + "/ws/network_ui");
@@ -281,57 +281,6 @@ var NetworkUIController = function($scope,
 
   //Inventory Toolbox Setup
   $scope.inventory_toolbox = new models.ToolBox(0, 'Inventory', 'device', 0, toolboxTopMargin, 200, toolboxHeight);
-  if (!$scope.disconnected) {
-      $http.get('/api/v2/inventories/' + $scope.inventory_id + '/hosts/')
-           .then(function(response) {
-               var devices_by_name = {};
-               var i = 0;
-               for (i = 0; i < $scope.devices.length; i++) {
-                   devices_by_name[$scope.devices[i].name] = $scope.devices[i];
-               }
-               let hosts = response.data.results;
-               for(i = 0; i<hosts.length; i++) {
-                   try {
-                       var device_type = null;
-                       var device_name = null;
-                       var device = null;
-                       let host = hosts[i];
-                       if (host.variables !== "") {
-                           host.data = jsyaml.safeLoad(host.variables);
-                       } else {
-                           host.data = {};
-                       }
-                       if (host.data.awx === undefined) {
-                           device_type = 'unknown';
-                           device_name = host.name;
-                       } else {
-                           if (host.data.awx.type === undefined) {
-                               device_type = 'unknown';
-                           } else {
-                               device_type = host.data.awx.type;
-                           }
-                           if (host.data.awx.name === undefined) {
-                               device_name = host.name;
-                           } else {
-                               device_name = host.data.awx.name;
-                           }
-                       }
-                       if (devices_by_name[device_name] === undefined) {
-                           device = new models.Device(0, device_name, 0, 0, device_type, host.id);
-                           device.icon = true;
-                           device.variables = JSON.stringify(host.data);
-                           $scope.inventory_toolbox.items.push(device);
-                       }
-                   } catch (error) {
-                       console.log(error);
-                   }
-               }
-           })
-           .catch(({data, status}) => {
-               console.log([data, status]);
-               //ProcessErrors($scope, data, status, null, { hdr: 'Error!', msg: 'Failed to get host data: ' + status });
-           });
-  }
   $scope.inventory_toolbox.spacing = 150;
   $scope.inventory_toolbox.enabled = true;
   $scope.inventory_toolbox.title_coordinates = {x: 60, y: toolboxTitleMargin};
@@ -1121,36 +1070,7 @@ var NetworkUIController = function($scope,
         $scope.first_channel.send("EnableTest", new messages.EnableTest());
     };
 
-    $scope.onCompileVariablesButton = function () {
-
-
-        function noop (response) {
-            console.log(response);
-        }
-
-        function error_handler (response) {
-
-            console.log(response);
-        }
-
-        var i = 0;
-        var variables = null;
-        for(i = 0; i < $scope.devices.length; i++) {
-            variables = $scope.devices[i].compile_variables();
-            if ($scope.devices[i].host_id !== 0) {
-                $http.put('/api/v2/hosts/' + $scope.devices[i].host_id + '/variable_data/', JSON.stringify(variables)).then(noop).catch(error_handler);
-            }
-        }
-
-        for(i = 0; i < $scope.groups.length; i++) {
-            variables = $scope.groups[i].compile_variables();
-            if ($scope.groups[i].group_id !== 0) {
-                $http.put('/api/v2/groups/' + $scope.groups[i].group_id + '/variable_data/', JSON.stringify(variables)).then(noop).catch(error_handler);
-            }
-
-        }
-    };
-
+    $scope.onCompileVariablesButton = function () {};
 
     $scope.buttons = [
       // new models.Button("DEPLOY", button_offset + 10, 48, 70, 30, $scope.onDeployButton, $scope),
@@ -1282,28 +1202,7 @@ var NetworkUIController = function($scope,
         return [];
     };
 
-    $scope.create_group_association = function (group, devices) {
-        if ($scope.template_building || group.template) {
-            return;
-        }
-
-        console.log(['create_group_association', group, devices]);
-
-        function noop (response) {
-            console.log(response);
-        }
-
-        function error_handler (response) {
-            console.log(response);
-        }
-
-        var i = 0;
-        for (i = 0; i < devices.length; i ++) {
-            if (!devices[i].template) {
-                $http.post('/api/v2/groups/' + group.group_id + '/hosts/', JSON.stringify({name: devices[i].name})).then(noop).catch(error_handler);
-            }
-        }
-    };
+    $scope.create_group_association = function () {};
 
     $scope.delete_group_association = function (group, devices) {
         if ($scope.template_building || group.template) {
@@ -1656,6 +1555,10 @@ var NetworkUIController = function($scope,
         $scope.send_initial_messages();
     };
 
+    $scope.onTopologyId = function(data) {
+        $scope.topology_id = data;
+    };
+
     $scope.onTopology = function(data) {
         $scope.topology_id = data.topology_id;
         $scope.panX = data.panX;
@@ -1982,25 +1885,6 @@ var NetworkUIController = function($scope,
       for (i = 0; i < $scope.devices.length; i++) {
           hosts_by_id[$scope.devices[i].host_id] = $scope.devices[i];
       }
-
-      $http.get('/api/v2/inventories/' + $scope.inventory_id + '/hosts/')
-           .then(function(response) {
-               let hosts = response.data.results;
-               for(var i = 0; i<hosts.length; i++){
-                   try {
-                       let host = hosts[i];
-                       if (hosts_by_id[host.id] !== undefined) {
-                           hosts_by_id[host.id].variables = util.parse_variables(host.variables);
-                       }
-                   } catch (error) {
-                       console.log(error);
-                   }
-               }
-           })
-           .catch(({data, status}) => {
-               console.log([data, status]);
-               //ProcessErrors($scope, data, status, null, { hdr: 'Error!', msg: 'Failed to get host data: ' + status });
-           });
 
     };
 
