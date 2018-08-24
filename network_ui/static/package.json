@@ -31,7 +31,10 @@
     "hard-source-webpack-plugin": "^0.6.2",
     "titlecase": "^1.1.2",
     "webpack": "~3.11.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "sshpk": "1.13.2",
+    "uglify-js": "^2.6.0",
+    "hoek": "^4.2.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
