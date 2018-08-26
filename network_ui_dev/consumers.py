@@ -1,11 +1,19 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
-from pprint import pprint, pformat
+from pprint import pformat
 import logging
 import json
 import urllib.parse
+from django.utils.dateparse import parse_datetime
 from .models import Client, Topology, MessageType, TopologyHistory, Device
+from .models import Interface, Link
+from .models import Group as DeviceGroup
+from .models import GroupDevice as GroupDeviceMap
+from .models import FSMTrace, TopologySnapshot
+from .models import EventTrace, Coverage, TestResult
+from .models import Result, TestCase, CodeUnderTest
+from .models import Process, Stream, Toolbox, ToolboxItem
 
 from .utils import transform_dict
 
@@ -25,6 +33,13 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
     async def connect(self, event=None):
         await self.accept()
         self.message_types = await self.get_message_types()
+        self.ignore_message_types = ['DeviceSelected',
+                                     'DeviceUnSelected',
+                                     'LinkSelected',
+                                     'LinkUnSelected',
+                                     'StartRecording',
+                                     'StopRecording',
+                                     'CoverageRequest']
         self.client_id = 0
         self.topology_id = 0
         await self.create_client()
@@ -71,10 +86,10 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         # print("recieved: " + str(text_data))
-        pprint(json.loads(text_data))
+        # pprint(json.loads(text_data))
         data = json.loads(text_data)
         if isinstance(data[1], list):
-            print("no sender")
+            logger.error("no sender")
             return
         if isinstance(data[1], dict) and self.client_id != data[1].get('sender'):
             logger.error("client_id mismatch expected: %s actual %s", self.client_id, data[1].get('sender'))
@@ -83,11 +98,14 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         message_type = data[0]
         message_value = data[1]
 
-        print(message_type)
-        print(message_value)
+        # print(message_type)
+        # print(message_value)
 
         if message_type not in self.message_types:
             logger.warning("Unsupported message %s: no message type", message_type)
+            return
+
+        if message_type in self.ignore_message_types:
             return
 
         TopologyHistory(topology_id=self.topology_id,
@@ -98,12 +116,10 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
 
         handler = self.get_handler(message_type)
 
-        print(str(handler))
-        logger.debug(str(handler))
-
         if handler is not None:
             try:
                 await handler(message_value, self.topology_id, self.client_id)
+                logger.info(message_type)
             except NetworkUIException as e:
                 # Group("client-%s" % client_id).send({"text": json.dumps(["Error", str(e)])})
                 raise
@@ -119,6 +135,22 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
     def get_handler(self, message_type):
         return getattr(self, "on{0}".format(message_type), None)
 
+    async def onMultipleMessage(self, message_value, topology_id, client_id):
+        for message in message_value['messages']:
+            message_type = message['msg_type']
+            if message_type not in self.message_types:
+                logger.warning("Unsupported message %s: no message type", message_type)
+                return
+
+            if message_type in self.ignore_message_types:
+                return
+            handler = self.get_handler(message_type)
+            if handler is not None:
+                await handler(message, topology_id, client_id)
+                logger.info(message_type)
+            else:
+                logger.warning("Unsupported message %s", message)
+
     @database_sync_to_async
     def onDeviceCreate(self, device, topology_id, client_id):
         device = transform_dict(dict(x='x',
@@ -128,7 +160,7 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
                                      id='id',
                                      host_id='host_id'), device)
         logger.info("Device %s", device)
-        print("Device %s" % device)
+        # print("Device %s" % device)
         d, _ = Device.objects.get_or_create(topology_id=topology_id, id=device['id'], defaults=device)
         d.x = device['x']
         d.y = device['y']
@@ -138,3 +170,235 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         (Topology.objects
                  .filter(topology_id=topology_id, device_id_seq__lt=device['id'])
                  .update(device_id_seq=device['id']))
+
+    @database_sync_to_async
+    def onDeviceInventoryUpdate(self, device, topology_id, client_id):
+        Device.objects.filter(topology_id=topology_id, id=device['id']).update(host_id=device['host_id'])
+
+    @database_sync_to_async
+    def onDeviceDestroy(self, device, topology_id, client_id):
+        Device.objects.filter(topology_id=topology_id, id=device['id']).delete()
+
+    @database_sync_to_async
+    def onDeviceMove(self, device, topology_id, client_id):
+        Device.objects.filter(topology_id=topology_id, id=device['id']).update(x=device['x'], y=device['y'])
+
+    @database_sync_to_async
+    def onDeviceLabelEdit(self, device, topology_id, client_id):
+        Device.objects.filter(topology_id=topology_id, id=device['id']).update(name=device['name'])
+
+    @database_sync_to_async
+    def onInterfaceCreate(self, interface, topology_id, client_id):
+        Interface.objects.get_or_create(device_id=Device.objects.get(id=interface['device_id'],
+                                                                     topology_id=topology_id).pk,
+                                        id=interface['id'],
+                                        defaults=dict(name=interface['name']))
+        (Device.objects
+               .filter(id=interface['device_id'],
+                       topology_id=topology_id,
+                       interface_id_seq__lt=interface['id'])
+               .update(interface_id_seq=interface['id']))
+
+    @database_sync_to_async
+    def onInterfaceLabelEdit(self, interface, topology_id, client_id):
+        (Interface.objects
+                  .filter(device__topology_id=topology_id,
+                          id=interface['id'],
+                          device__id=interface['device_id'])
+                  .update(name=interface['name']))
+
+    @database_sync_to_async
+    def onLinkCreate(self, link, topology_id, client_id):
+        device_map = dict(Device.objects
+                                .filter(topology_id=topology_id, id__in=[link['from_device_id'], link['to_device_id']])
+                                .values_list('id', 'pk'))
+        Link.objects.get_or_create(id=link['id'],
+                                   name=link['name'],
+                                   from_device_id=device_map[link['from_device_id']],
+                                   to_device_id=device_map[link['to_device_id']],
+                                   from_interface_id=Interface.objects.get(device_id=device_map[link['from_device_id']],
+                                                                           id=link['from_interface_id']).pk,
+                                   to_interface_id=Interface.objects.get(device_id=device_map[link['to_device_id']],
+                                                                         id=link['to_interface_id']).pk)
+        (Topology.objects
+                 .filter(topology_id=topology_id, link_id_seq__lt=link['id'])
+                 .update(link_id_seq=link['id']))
+
+    @database_sync_to_async
+    def onLinkLabelEdit(self, link, topology_id, client_id):
+        Link.objects.filter(from_device__topology_id=topology_id, id=link['id']).update(name=link['name'])
+
+    @database_sync_to_async
+    def onLinkDestroy(self, link, topology_id, client_id):
+        device_map = dict(Device.objects
+                                .filter(topology_id=topology_id, id__in=[link['from_device_id'], link['to_device_id']])
+                                .values_list('id', 'pk'))
+        Link.objects.filter(id=link['id'],
+                            from_device_id=device_map[link['from_device_id']],
+                            to_device_id=device_map[link['to_device_id']],
+                            from_interface_id=Interface.objects.get(device_id=device_map[link['from_device_id']],
+                                                                    id=link['from_interface_id']).pk,
+                            to_interface_id=Interface.objects.get(device_id=device_map[link['to_device_id']],
+                                                                  id=link['to_interface_id']).pk).delete()
+
+    @database_sync_to_async
+    def onGroupCreate(self, group, topology_id, client_id):
+        logger.info("GroupCreate %s %s %s", group['id'], group['name'], group['type'])
+        group = transform_dict(dict(x1='x1',
+                                    y1='y1',
+                                    x2='x2',
+                                    y2='y2',
+                                    name='name',
+                                    id='id',
+                                    type='group_type',
+                                    group_id='inventory_group_id'), group)
+        d, _ = DeviceGroup.objects.get_or_create(topology_id=topology_id, id=group['id'], defaults=group)
+        d.x1 = group['x1']
+        d.y1 = group['y1']
+        d.x2 = group['x2']
+        d.y2 = group['y2']
+        d.group_type = group['group_type']
+        d.save()
+        (Topology.objects
+                 .filter(topology_id=topology_id, group_id_seq__lt=group['id'])
+                 .update(group_id_seq=group['id']))
+
+    @database_sync_to_async
+    def onGroupInventoryUpdate(self, group, topology_id, client_id):
+        DeviceGroup.objects.filter(topology_id=topology_id, id=group['id']).update(inventory_group_id=group['group_id'])
+
+    @database_sync_to_async
+    def onGroupDestroy(self, group, topology_id, client_id):
+        DeviceGroup.objects.filter(topology_id=topology_id, id=group['id']).delete()
+
+    @database_sync_to_async
+    def onGroupLabelEdit(self, group, topology_id, client_id):
+        DeviceGroup.objects.filter(topology_id=topology_id, id=group['id']).update(name=group['name'])
+
+    @database_sync_to_async
+    def onGroupMove(self, group, topology_id, client_id):
+        DeviceGroup.objects.filter(topology_id=topology_id, id=group['id']).update(x1=group['x1'],
+                                                                                   y1=group['y1'],
+                                                                                   x2=group['x2'],
+                                                                                   y2=group['y2'])
+
+    @database_sync_to_async
+    def onGroupMembership(self, group_membership, topology_id, client_id):
+        members = set(group_membership['members'])
+        group = DeviceGroup.objects.get(topology_id=topology_id, id=group_membership['id'])
+        existing = set(GroupDeviceMap.objects.filter(group=group).values_list('device__id', flat=True))
+        new = members - existing
+        removed = existing - members
+
+        GroupDeviceMap.objects.filter(group__group_id=group.group_id,
+                                      device__id__in=list(removed)).delete()
+
+        device_map = dict(Device.objects
+                                .filter(topology_id=topology_id,
+                                        id__in=list(new))
+                                .values_list('id', 'device_id'))
+        new_entries = []
+        for i in new:
+            new_entries.append(GroupDeviceMap(group=group,
+                                              device_id=device_map[i]))
+        if new_entries:
+            GroupDeviceMap.objects.bulk_create(new_entries)
+
+    @database_sync_to_async
+    def onProcessCreate(self, process, topology_id, client_id):
+        Process.objects.get_or_create(device_id=Device.objects.get(id=process['device_id'],
+                                                                   topology_id=topology_id).pk,
+                                      id=process['id'],
+                                      defaults=dict(name=process['name'], process_type=process['type']))
+        (Device.objects
+               .filter(id=process['device_id'],
+                       topology_id=topology_id,
+                       interface_id_seq__lt=process['id'])
+               .update(interface_id_seq=process['id']))
+
+    @database_sync_to_async
+    def onStreamCreate(self, stream, topology_id, client_id):
+        device_map = dict(Device.objects
+                                .filter(topology_id=topology_id, id__in=[stream['from_id'], stream['to_id']])
+                                .values_list('id', 'pk'))
+        logger.info("onStreamCreate %s", stream)
+        Stream.objects.get_or_create(id=stream['id'],
+                                     label='',
+                                     from_device_id=device_map[stream['from_id']],
+                                     to_device_id=device_map[stream['to_id']])
+        (Topology.objects
+                 .filter(topology_id=topology_id, stream_id_seq__lt=stream['id'])
+                 .update(stream_id_seq=stream['id']))
+
+    @database_sync_to_async
+    def onCopySite(self, site, topology_id, client_id):
+        site_toolbox, _ = Toolbox.objects.get_or_create(name="Site")
+        ToolboxItem(toolbox=site_toolbox, data=json.dumps(site['site'])).save()
+
+    @database_sync_to_async
+    def onFSMTrace(self, message_value, diagram_id, client_id):
+        FSMTrace(trace_session_id=message_value['trace_id'],
+                 fsm_name=message_value['fsm_name'],
+                 from_state=message_value['from_state'],
+                 to_state=message_value['to_state'],
+                 order=message_value['order'],
+                 client_id=client_id,
+                 message_type=message_value['recv_message_type'] or "none").save()
+
+    @database_sync_to_async
+    def onSnapshot(self, snapshot, topology_id, client_id):
+        TopologySnapshot(trace_session_id=snapshot['trace_id'],
+                         snapshot_data=json.dumps(snapshot),
+                         order=snapshot['order'],
+                         client_id=client_id,
+                         topology_id=topology_id).save()
+
+    @database_sync_to_async
+    def write_event(self, event, topology_id, client_id):
+        if event.get('save', True):
+            EventTrace(trace_session_id=event['trace_id'],
+                       event_data=json.dumps(event),
+                       message_id=event['message_id'],
+                       client_id=client_id).save()
+
+    onViewPort = write_event
+    onMouseEvent = write_event
+    onTouchEvent = write_event
+    onMouseWheelEvent = write_event
+    onKeyEvent = write_event
+
+    @database_sync_to_async
+    def onCoverage(self, coverage, topology_id, client_id):
+        Coverage(test_result_id=TestResult.objects.get(id=coverage['result_id'], client_id=client_id).pk,
+                 coverage_data=json.dumps(coverage['coverage'])).save()
+
+    @database_sync_to_async
+    def onTestResult(self, test_result, topology_id, client_id):
+        xyz, _, rest = test_result['code_under_test'].partition('-')
+        commits_since, _, commit_hash = rest.partition('-')
+        commit_hash = commit_hash.strip('g')
+
+        # print(xyz)
+        # print(commits_since)
+        # print(commit_hash)
+
+        x, y, z = [int(i) for i in xyz.split('.')]
+
+        # print(x, y, z)
+
+        code_under_test, _ = CodeUnderTest.objects.get_or_create(version_x=x,
+                                                                 version_y=y,
+                                                                 version_z=z,
+                                                                 commits_since=int(commits_since),
+                                                                 commit_hash=commit_hash)
+
+        # print (code_under_test)
+
+        tr = TestResult(id=test_result['id'],
+                        result_id=Result.objects.get(name=test_result['result']).pk,
+                        test_case_id=TestCase.objects.get(name=test_result['name']).pk,
+                        code_under_test_id=code_under_test.pk,
+                        client_id=client_id,
+                        time=parse_datetime(test_result['date']))
+        tr.save()
+        # print (tr.pk)

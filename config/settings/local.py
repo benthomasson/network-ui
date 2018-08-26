@@ -85,7 +85,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG'
+            'level': 'WARNING'
         },
         'network_ui_dev': {
             'handlers': ['console'],
