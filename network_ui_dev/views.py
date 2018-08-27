@@ -4,6 +4,7 @@ from django import forms
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 import yaml
+import subprocess
 
 import json
 
@@ -136,3 +137,7 @@ def download_coverage(request, pk):
     response = HttpResponse(coverage.coverage_data,
                             content_type="application/json")
     return response
+
+def version(request):
+    version = subprocess.check_output('git describe --long', shell=True).strip()
+    return JsonResponse(dict(version=version.decode('UTF-8')))

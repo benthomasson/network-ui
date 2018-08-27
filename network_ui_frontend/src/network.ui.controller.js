@@ -1072,7 +1072,7 @@ var NetworkUIController = function($scope,
 
     $scope.onCompileVariablesButton = function () {};
 
-    var button_offset = 0;
+    var button_offset = 200;
 
     $scope.buttons = [
       new models.Button("DEPLOY", button_offset + 10, 48, 70, 30, $scope.onDeployButton, $scope),
@@ -1570,7 +1570,7 @@ var NetworkUIController = function($scope,
         $scope.link_id_seq = util.natural_numbers(data.link_id_seq);
         $scope.group_id_seq = util.natural_numbers(data.group_id_seq);
         $scope.device_id_seq = util.natural_numbers(data.device_id_seq);
-        $location.search({topology_id: data.topology_id, inventory_id: $scope.inventory_id})
+        $location.search({topology_id: data.topology_id, inventory_id: $scope.inventory_id});
     };
 
     $scope.onDeviceSelected = function(data) {
@@ -2042,6 +2042,16 @@ var NetworkUIController = function($scope,
     //    .then(function(config){
     //        $scope.version = config.version;
     //    });
+    $http.get("/network_ui/version")
+        .then(function(response) {
+            console.log(response.data);
+            console.log(response.data.version);
+            $scope.version = response.data.version;
+        })
+        .catch(({data, status}) => {
+             console.log([data, status]);
+             //ProcessErrors($scope, data, status, null, { hdr: 'Error!', msg: 'Failed to get host data: ' + status });
+        });
 
     $scope.reset_coverage = function() {
         var i = null;

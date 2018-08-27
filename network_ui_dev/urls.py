@@ -12,4 +12,5 @@ urlpatterns = [
     path(r'download_recording', views.download_recording),
     path(r'topology.json', views.json_topology_data),
     path(r'topology.yaml', views.yaml_topology_data),
+    path(r'version', views.version),
 ]

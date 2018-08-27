@@ -34,7 +34,7 @@ simple-server: lint build lessc
 	python -m SimpleHTTPServer 8080
 
 
-deploy: main lessc
+deploy: lint main lessc
 	rsync -av assets ../network_ui/static/
 	rsync -av css ../network_ui/static/
 	rsync -av js ../network_ui/static/
