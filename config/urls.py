@@ -21,6 +21,10 @@ urlpatterns = [
     ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path(
+        "network_ui/",
+        include("network_ui_dev.urls", namespace="network_ui"),
+    )
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
