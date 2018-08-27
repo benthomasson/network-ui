@@ -51,10 +51,10 @@ var NetworkUIController = function($scope,
   $scope.api_token = '';
   $scope.disconnected = false;
 
-  $scope.topology_id = 0;
+  $scope.topology_id = $location.search().topology_id || 0;
   // Create a web socket to connect to the backend server
 
-  $scope.inventory_id = 0;
+  $scope.inventory_id = $location.search().inventory_id || 1;
 
   var protocol = null;
 
@@ -67,7 +67,7 @@ var NetworkUIController = function($scope,
   $scope.initial_messages = [];
   if (!$scope.disconnected) {
       console.log("connecting " + protocol + "://" + window.location.host + "/ws/network_ui?topology_id=" + $scope.topology_id);
-      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/ws/network_ui?topology_id=" + $scope.topology_id,
+      $scope.control_socket = new ReconnectingWebSocket(protocol + "://" + window.location.host + "/ws/network_ui?topology_id=" + $scope.topology_id + '&inventory_id=' + $scope.inventory_id,
                                                          null,
                                                          {debug: true, reconnectInterval: 300});
       console.log("connected " + protocol + "://" + window.location.host + "/ws/network_ui");
@@ -1568,6 +1568,7 @@ var NetworkUIController = function($scope,
         $scope.link_id_seq = util.natural_numbers(data.link_id_seq);
         $scope.group_id_seq = util.natural_numbers(data.group_id_seq);
         $scope.device_id_seq = util.natural_numbers(data.device_id_seq);
+        $location.search({topology_id: data.topology_id, inventory_id: $scope.inventory_id})
     };
 
     $scope.onDeviceSelected = function(data) {

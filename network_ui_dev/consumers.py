@@ -1,10 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
-from pprint import pformat
+from pprint import pformat, pprint
 import logging
 import json
 import urllib.parse
+from django.db.models import Q
+from collections import defaultdict
 from django.utils.dateparse import parse_datetime
 from .models import Client, Topology, MessageType, TopologyHistory, Device
 from .models import Interface, Link
@@ -19,10 +21,42 @@ from .utils import transform_dict
 
 logger = logging.getLogger("network_ui_dev.consumers")
 
+HISTORY_MESSAGE_IGNORE_TYPES = ['DeviceSelected',
+                                'DeviceUnSelected',
+                                'LinkSelected',
+                                'LinkUnSelected',
+                                'Undo',
+                                'Redo',
+                                'MouseEvent',
+                                'MouseWheelEvent',
+                                'KeyEvent']
+
 
 class NetworkUIException(Exception):
 
     pass
+
+
+def parse_topology_id(data):
+    topology_id = data.get(b'topology_id', ['null'])
+    try:
+        topology_id = int(topology_id[0])
+    except ValueError as e:
+        topology_id = None
+    if not topology_id:
+        topology_id = None
+    return topology_id
+
+
+def parse_inventory_id(data):
+    inventory_id = data.get(b'inventory_id', ['null'])
+    try:
+        inventory_id = int(inventory_id[0])
+    except ValueError:
+        inventory_id = None
+    if not inventory_id:
+        inventory_id = None
+    return inventory_id
 
 
 class NetworkUIConsumer(AsyncWebsocketConsumer):
@@ -47,10 +81,35 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         await self.get_or_create_topology()
         topology_data = await self.get_or_create_topology()
         await self.send(text_data=json.dumps(['Topology', topology_data]))
-        print('connect client_id {0} topology_id {1}'.format(self.client_id, self.topology_id))
-        # print("connect: " + str(event))
-        # pprint(self.scope)
-        # print(urllib.parse.parse_qs(self.scope['query_string']))
+        snapshot = await self.send_snapshot()
+        await self.send_json(["Snapshot", snapshot])
+        history = await self.send_history()
+        await self.send_json(["History", history])
+        await self.send_toolboxes()
+        await self.send_tests()
+
+    @database_sync_to_async
+    def get_toolboxes(self):
+        return (ToolboxItem.objects
+                           .filter(toolbox__name__in=['Process',
+                                                      'Device',
+                                                      'Rack',
+                                                      'Site'])
+                           .values('toolbox__name', 'data'))
+
+    async def send_toolboxes(self):
+        for toolbox_item in await self.get_toolboxes():
+            item = dict(toolbox_name=toolbox_item['toolbox__name'],
+                        data=toolbox_item['data'])
+            await self.send_json(["ToolboxItem", item])
+
+    @database_sync_to_async
+    def get_tests(self):
+        return TestCase.objects.all().values_list('name', 'test_case_data')
+
+    async def send_tests(self):
+        for name, test_case_data in await self.get_tests():
+            self.send_json(["TestCase", [name, json.loads(test_case_data)]])
 
     @database_sync_to_async
     def get_message_types(self):
@@ -65,7 +124,9 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_or_create_topology(self):
         qs = urllib.parse.parse_qs(self.scope['query_string'])
-        self.topology_id = qs.get('topology_id', 0)
+        print("qs: " + str(urllib.parse.parse_qs(self.scope['query_string'])))
+        self.topology_id = parse_topology_id(qs)
+        print('self.topology_id: ' + repr(self.topology_id))
         if self.topology_id:
             self.topology = Topology.objects.get(topology_id=self.topology_id)
         else:
@@ -131,6 +192,80 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
                 raise
         else:
             logger.warning("Unsupported message %s: no handler", message_type)
+
+    @database_sync_to_async
+    def send_snapshot(self):
+        interfaces = defaultdict(list)
+        processes = defaultdict(list)
+
+        for i in (Interface.objects
+                  .filter(device__topology_id=self.topology_id)
+                  .values()):
+            interfaces[i['device_id']].append(i)
+        for i in (Process.objects
+                  .filter(device__topology_id=self.topology_id)
+                  .values()):
+            processes[i['device_id']].append(i)
+        devices = list(Device.objects
+                             .filter(topology_id=self.topology_id).values())
+        for device in devices:
+            device['interfaces'] = interfaces[device['device_id']]
+            device['processes'] = processes[device['device_id']]
+
+        links = [dict(id=x['id'],
+                      name=x['name'],
+                      from_device_id=x['from_device__id'],
+                      to_device_id=x['to_device__id'],
+                      from_interface_id=x['from_interface__id'],
+                      to_interface_id=x['to_interface__id'])
+                 for x in list(Link.objects
+                                   .filter(Q(from_device__topology_id=self.topology_id) |
+                                           Q(to_device__topology_id=self.topology_id))
+                                   .values('id',
+                                           'name',
+                                           'from_device__id',
+                                           'to_device__id',
+                                           'from_interface__id',
+                                           'to_interface__id'))]
+        groups = list(DeviceGroup.objects
+                                 .filter(topology_id=self.topology_id).values())
+        group_map = {g['id']: g for g in groups}
+        for group_id, device_id in (GroupDeviceMap.objects
+                                                  .filter(group__topology_id=self.topology_id)
+                                                  .values_list('group__id',
+                                                               'device__id')):
+            if 'members' not in group_map[group_id]:
+                group_map[group_id]['members'] = [device_id]
+            else:
+                group_map[group_id]['members'].append(device_id)
+
+        streams = [dict(id=x['id'],
+                        label=x['label'],
+                        from_id=x['from_device__id'],
+                        to_id=x['to_device__id'])
+                   for x in list(Stream.objects
+                                       .filter(Q(from_device__topology_id=self.topology_id) |
+                                               Q(to_device__topology_id=self.topology_id)).values('id',
+                                                                                                  'label',
+                                                                                                  'from_device__id',
+                                                                                                  'to_device__id'))]
+
+        snapshot = dict(sender=0,
+                        devices=devices,
+                        links=links,
+                        groups=groups,
+                        streams=streams)
+        # pprint(snapshot)
+        return snapshot
+
+    @database_sync_to_async
+    def send_history(self):
+        return list(TopologyHistory.objects
+                                   .filter(topology_id=self.topology_id)
+                                   .exclude(message_type__name__in=HISTORY_MESSAGE_IGNORE_TYPES)
+                                   .exclude(undone=True)
+                                   .order_by('pk')
+                                   .values_list('message_data', flat=True)[:1000])
 
     def get_handler(self, message_type):
         return getattr(self, "on{0}".format(message_type), None)
