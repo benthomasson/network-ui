@@ -1072,19 +1072,21 @@ var NetworkUIController = function($scope,
 
     $scope.onCompileVariablesButton = function () {};
 
+    var button_offset = 0;
+
     $scope.buttons = [
-      // new models.Button("DEPLOY", button_offset + 10, 48, 70, 30, $scope.onDeployButton, $scope),
-      // new models.Button("DESTROY", button_offset + 90, 48, 80, 30, $scope.onDestroyButton, $scope),
-      // new models.Button("RECORD", button_offset + 180, 48, 80, 30, $scope.onRecordButton, $scope),
-      // new models.Button("EXPORT", button_offset + 270, 48, 70, 30, $scope.onExportButton, $scope),
-      // new models.Button("DISCOVER", button_offset + 350, 48, 80, 30, $scope.onDiscoverButton, $scope),
-      // new models.Button("LAYOUT", button_offset + 440, 48, 70, 30, $scope.onLayoutButton, $scope),
-      // new models.Button("CONFIGURE", button_offset + 520, 48, 90, 30, $scope.onConfigureButton, $scope),
-      // new models.Button("EXPORT YAML", button_offset + 620, 48, 120, 30, $scope.onExportYamlButton, $scope),
-      // new models.Button("DOWNLOAD TRACE", button_offset + 750, 48, 150, 30, $scope.onDownloadTraceButton, $scope),
-      // new models.Button("DOWNLOAD RECORDING", button_offset + 910, 48, 170, 30, $scope.onDownloadRecordingButton, $scope),
-      // new models.Button("UPLOAD TEST", button_offset + 10, 88, 100, 30, $scope.onUploadTestButton, $scope),
-      // new models.Button("RUN TESTS", button_offset + 120, 88, 100, 30, $scope.onRunTestsButton, $scope),
+      new models.Button("DEPLOY", button_offset + 10, 48, 70, 30, $scope.onDeployButton, $scope),
+      new models.Button("DESTROY", button_offset + 90, 48, 80, 30, $scope.onDestroyButton, $scope),
+      new models.Button("RECORD", button_offset + 180, 48, 80, 30, $scope.onRecordButton, $scope),
+      new models.Button("EXPORT", button_offset + 270, 48, 70, 30, $scope.onExportButton, $scope),
+      new models.Button("DISCOVER", button_offset + 350, 48, 80, 30, $scope.onDiscoverButton, $scope),
+      new models.Button("LAYOUT", button_offset + 440, 48, 70, 30, $scope.onLayoutButton, $scope),
+      new models.Button("CONFIGURE", button_offset + 520, 48, 90, 30, $scope.onConfigureButton, $scope),
+      new models.Button("EXPORT YAML", button_offset + 620, 48, 120, 30, $scope.onExportYamlButton, $scope),
+      new models.Button("DOWNLOAD TRACE", button_offset + 750, 48, 150, 30, $scope.onDownloadTraceButton, $scope),
+      new models.Button("DOWNLOAD RECORDING", button_offset + 910, 48, 170, 30, $scope.onDownloadRecordingButton, $scope),
+      new models.Button("UPLOAD TEST", button_offset + 10, 88, 100, 30, $scope.onUploadTestButton, $scope),
+      new models.Button("RUN TESTS", button_offset + 120, 88, 100, 30, $scope.onRunTestsButton, $scope),
     ];
 
     $scope.all_buttons = [];
