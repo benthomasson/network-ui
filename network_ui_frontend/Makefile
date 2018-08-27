@@ -35,6 +35,7 @@ simple-server: lint build lessc
 
 
 deploy: main lessc
+	rsync -av assets ../network_ui/static/
 	rsync -av css ../network_ui/static/
 	rsync -av js ../network_ui/static/
 	rsync -av index.html ../network_ui/static/
