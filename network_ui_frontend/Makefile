@@ -34,5 +34,8 @@ simple-server: lint build lessc
 	python -m SimpleHTTPServer 8080
 
 
-deploy: main
-	rsync -av src/ ../../../../awx/ui/client/src/network_ui/
+deploy: main lessc
+	rsync -av css ../network_ui/static/
+	rsync -av js ../network_ui/static/
+	rsync -av index.html ../network_ui/static/
+
