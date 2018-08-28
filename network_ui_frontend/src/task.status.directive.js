@@ -1,5 +1,7 @@
 
+const templateUrl = require('~network-ui/task.status.partial.svg');
+
 function taskStatus () {
-  return { restrict: 'A', templateUrl: '/static/network_ui/widgets/task_status.html' };
+  return { restrict: 'A', templateUrl};
 }
 exports.taskStatus = taskStatus;

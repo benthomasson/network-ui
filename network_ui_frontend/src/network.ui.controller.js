@@ -149,6 +149,8 @@ var NetworkUIController = function($scope,
   $scope.streams = [];
   $scope.animations = [];
   $scope.sequences = {};
+  $scope.playbooks = [];
+  $scope.playbooks_by_id = {};
   $scope.view_port = {'x': 0,
                       'y': 0,
                       'width': 0,

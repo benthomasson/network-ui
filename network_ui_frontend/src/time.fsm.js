@@ -511,3 +511,50 @@ _Present.prototype.onError = function(controller, msg_type, message) {
 _Present.prototype.onHello = function(controller, msg_type, message) {
     console.log(message);
 };
+
+
+_Present.prototype.onRunner = function(controller, msg_type, message) {
+
+    console.log(message);
+    var new_playbook = null;
+    var playbook = null;
+    var new_play = null;
+    var play = null;
+    var new_task = null;
+    var task = null;
+
+    if (message.event === "playbook_on_start") {
+        new_playbook = new models.Playbook(message.event_data.playbook_uuid,
+                                           message.event_data.playbook);
+        controller.scope.playbooks.push(new_playbook);
+        controller.scope.playbooks_by_id[new_playbook.id] = new_playbook;
+    }
+    if (message.event === "playbook_on_play_start") {
+        playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        new_play = new models.Play(message.event_data.play_uuid,
+                                   message.event_data.play);
+        playbook.plays.push(new_play);
+        playbook.plays_by_id[new_play.id] = new_play;
+    }
+    if (message.event === "playbook_on_task_start") {
+        playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        play = playbook.plays_by_id[message.event_data.play_uuid];
+        new_task = new models.Task(message.event_data.task_uuid,
+                                   message.event_data.task);
+        play.tasks.push(new_task);
+        play.tasks_by_id[new_task.id] = new_task;
+    }
+    if (message.event === "runner_on_ok") {
+        playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        play = playbook.plays_by_id[message.event_data.play_uuid];
+        task = play.tasks_by_id[message.event_data.task_uuid];
+        task.status = true;
+        var i = 0;
+        for(i=0; i < controller.scope.devices.length; i++) {
+            if (controller.scope.devices[i].name === message.event_data.remote_addr) {
+                controller.scope.devices[i].status = true;
+                controller.scope.devices[i].tasks.push(task);
+            }
+        }
+    }
+};

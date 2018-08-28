@@ -18,6 +18,8 @@ var rackIcon = require('./rack.icon.directive.js');
 var group = require('./group.directive.js');
 var site = require('./site.directive.js');
 var siteIcon = require('./site.icon.directive.js');
+var taskStatus = require('./task.status.directive.js');
+var statusLight = require('./status.light.directive.js');
 var chevronRight = require('./chevron.right.directive.js');
 var chevronLeft = require('./chevron.left.directive.js');
 var contextMenu = require('./context.menu.directive.js');
@@ -51,6 +53,8 @@ var networkUI = angular.module('networkUI', [
     .directive('awxNetGroup', group.group)
     .directive('awxNetSite', site.site)
     .directive('awxNetSiteIcon', siteIcon.siteIcon)
+    .directive('awxNetStatusLight', statusLight.statusLight)
+    .directive('awxNetTaskStatus', taskStatus.taskStatus)
     .directive('awxNetRackIcon', rackIcon.rackIcon)
     .directive('awxNetChevronRightIcon', chevronRight.chevronRight)
     .directive('awxNetChevronLeftIcon', chevronLeft.chevronLeft)

@@ -994,3 +994,33 @@ function Animation(id, steps, data, scope, tracer, callback) {
     this.fsm = new fsm.FSMController(this, "animation_fsm", animation_fsm.Start, tracer);
 }
 exports.Animation = Animation;
+
+function Playbook(id, name) {
+    this.id = id;
+    this.name = name;
+    this.log = [];
+    this.plays = [];
+    this.plays_by_id = {};
+    this.working = null;
+    this.status = null;
+}
+exports.Playbook = Playbook;
+
+function Play(id, name) {
+    this.id = id;
+    this.name = name;
+    this.log = [];
+    this.tasks = [];
+    this.tasks_by_id = {};
+    this.working = null;
+    this.status = null;
+}
+exports.Play = Play;
+
+function Task(id, name) {
+    this.id = id;
+    this.name = name;
+    this.working = null;
+    this.status = null;
+}
+exports.Task = Task;

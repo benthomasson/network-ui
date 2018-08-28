@@ -1,12 +1,14 @@
 from channels.consumer import SyncConsumer
+from asgiref.sync import async_to_sync
 
 
-# import ansible_runner
+import ansible_runner
 import tempfile
 import os
 import json
 import yaml
 import logging
+from pprint import pprint
 
 
 logger = logging.getLogger("network_ui_dev.consumers.ansible")
@@ -33,12 +35,39 @@ class AnsibleConsumer(SyncConsumer):
         with open(self.playbook_file, 'w') as f:
             f.write(yaml.safe_dump(playbook, default_flow_style=False))
 
+    def run_playbook(self):
+        self.runner_thread, self.runner = ansible_runner.run_async(private_data_dir=self.temp_dir,
+                                                                   playbook="playbook.yml",
+                                                                   quiet=True,
+                                                                   debug=True,
+                                                                   ignore_logging=True,
+                                                                   cancel_callback=self.cancel_callback,
+                                                                   finished_callback=self.finished_callback,
+                                                                   event_handler=self.runner_process_message)
+
+    def runner_process_message(self, data):
+        pprint(data)
+        async_to_sync(self.channel_layer.group_send)('all',
+                                                     dict(type="reply.message",
+                                                          text=data.get('stdout', '')))
+        async_to_sync(self.channel_layer.group_send)('all',
+                                                     dict(type="runner.message",
+                                                          data=data))
+
+    def cancel_callback(self):
+        return False
+
+    def finished_callback(self, runner):
+        logger.info('called')
+        pprint(runner)
+
     def deploy(self, message):
         print("deploy: " + message['text'])
         self.build_project_directory()
         self.default_inventory = "[all]\nlocalhost ansible_connection=local\n"
         self.build_inventory(self.default_inventory)
         self.build_playbook([dict(hosts='localhost',
-                                 name='default',
-                                 gather_facts=False,
-                                 tasks=[dict(debug=None)])])
+                                  name='default',
+                                  gather_facts=False,
+                                  tasks=[dict(debug=None)])])
+        self.run_playbook()

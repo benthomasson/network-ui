@@ -551,3 +551,7 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
     async def reply_message(self, event):
         pprint(event)
         await self.send_json(['Hello', event['text']])
+
+    async def runner_message(self, message):
+        pprint(message)
+        await self.send_json(['Runner', message['data']])
