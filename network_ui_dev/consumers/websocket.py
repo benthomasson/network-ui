@@ -8,16 +8,16 @@ import urllib.parse
 from django.db.models import Q
 from collections import defaultdict
 from django.utils.dateparse import parse_datetime
-from .models import Client, Topology, MessageType, TopologyHistory, Device
-from .models import Interface, Link
-from .models import Group as DeviceGroup
-from .models import GroupDevice as GroupDeviceMap
-from .models import FSMTrace, TopologySnapshot
-from .models import EventTrace, Coverage, TestResult
-from .models import Result, TestCase, CodeUnderTest
-from .models import Process, Stream, Toolbox, ToolboxItem
+from ..models import Client, Topology, MessageType, TopologyHistory, Device
+from ..models import Interface, Link
+from ..models import Group as DeviceGroup
+from ..models import GroupDevice as GroupDeviceMap
+from ..models import FSMTrace, TopologySnapshot
+from ..models import EventTrace, Coverage, TestResult
+from ..models import Result, TestCase, CodeUnderTest
+from ..models import Process, Stream, Toolbox, ToolboxItem
 
-from .utils import transform_dict
+from ..utils import transform_dict
 
 logger = logging.getLogger("network_ui_dev.consumers")
 
@@ -87,6 +87,11 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         await self.send_json(["History", history])
         await self.send_toolboxes()
         await self.send_tests()
+        self.rooms = []
+        for room in ['all']:
+            self.rooms.append(room)
+            await self.channel_layer.group_add(room, self.channel_name)
+        logger.info('connect done')
 
     @database_sync_to_async
     def get_toolboxes(self):
@@ -144,6 +149,8 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         print('disconnect client {0} topology_id {1}'.format(self.client_id, self.topology_id))
+        for room in self.rooms:
+            await self.channel_layer.group_discard(room, self.channel_name)
 
     async def receive(self, text_data):
         # print("recieved: " + str(text_data))
@@ -537,3 +544,10 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
                         time=parse_datetime(test_result['date']))
         tr.save()
         # print (tr.pk)
+
+    async def onDeploy(self, message, topology_id, client_id):
+        await self.channel_layer.send('ansible', dict(type="deploy", text='doit'))
+
+    async def reply_message(self, event):
+        pprint(event)
+        await self.send_json(['Hello', event['text']])

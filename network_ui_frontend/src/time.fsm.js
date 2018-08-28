@@ -507,3 +507,7 @@ _Present.prototype.onTestCase = function(controller, msg_type, message) {
 _Present.prototype.onError = function(controller, msg_type, message) {
     throw new Error("ServerError: " + message);
 };
+
+_Present.prototype.onHello = function(controller, msg_type, message) {
+    console.log(message);
+};

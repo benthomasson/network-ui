@@ -3,6 +3,7 @@ version: '3'
 volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
+  local_workspace: {}
 
 services:
   django:
@@ -20,6 +21,22 @@ services:
       - ./.envs/.local/.postgres
     ports:
       - "8002:8000"
+    command: /start
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./compose/local/worker/Dockerfile
+    image: network_ui_local_worker
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
+      - local_workspace:/tmp/workspace
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
     command: /start
 
   postgres:

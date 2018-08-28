@@ -15,7 +15,8 @@ RUN apk update \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
   && apk add postgresql-client \
   && apk add git \
-  && apk add linux-headers
+  && apk add linux-headers \
+  && apk add alpine-sdk
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -25,7 +26,7 @@ COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r//' /entrypoint
 RUN chmod +x /entrypoint
 
-COPY ./compose/local/django/start /start
+COPY ./compose/local/worker/start /start
 RUN sed -i 's/\r//' /start
 RUN chmod +x /start
 
