@@ -15,6 +15,7 @@ var link = require('./link.fsm.js');
 var stream_fsm = require('./stream.fsm.js');
 var group = require('./group.fsm.js');
 var buttons = require('./buttons.fsm.js');
+var log_pane = require('./log.pane.fsm.js');
 var time = require('./time.fsm.js');
 var test_fsm = require('./test.fsm.js');
 var util = require('./util.js');
@@ -159,7 +160,7 @@ var NetworkUIController = function($scope,
   $scope.sequences = {};
   $scope.playbooks = [];
   $scope.playbooks_by_id = {};
-  $scope.log_pane = new models.LogPane();
+  $scope.log_pane = new models.LogPane($scope);
   $scope.viewport_update_subscribers.push($scope.log_pane);
   $scope.log_pane.update_size($window);
   $scope.play_status = new models.PlayStatus($scope.log_pane, $scope);
@@ -264,6 +265,8 @@ var NetworkUIController = function($scope,
   $scope.rack_controller = new fsm.FSMController($scope, "rack_fsm", rack_fsm.Disable, $scope);
   $scope.site_controller = new fsm.FSMController($scope, "site_fsm", site_fsm.Disable, $scope);
   $scope.buttons_controller = new fsm.FSMController($scope, "buttons_fsm", buttons.Start, $scope);
+  $scope.log_pane_controller = new fsm.FSMController($scope.log_pane, "log_pane_controller", log_pane.Start, $scope);
+  $scope.log_pane.fsm = $scope.log_pane_controller;
   $scope.time_controller = new fsm.FSMController($scope, "time_fsm", time.Start, $scope);
   $scope.test_controller = new fsm.FSMController($scope, "test_fsm", test_fsm.Start, $scope);
   $scope.app_toolbox_controller = new fsm.FSMController($scope, "toolbox_fsm", toolbox_fsm.Start, $scope);
@@ -389,8 +392,11 @@ var NetworkUIController = function($scope,
   $scope.site_toolbox_controller.delegate_channel = new fsm.Channel($scope.site_toolbox_controller,
                                                             $scope.rack_toolbox_controller,
                                                             $scope);
-  $scope.buttons_controller.delegate_channel = new fsm.Channel($scope.buttons_controller,
+  $scope.log_pane_controller.delegate_channel = new fsm.Channel($scope.log_pane_controller,
                                                                $scope.site_toolbox_controller,
+                                                               $scope);
+  $scope.buttons_controller.delegate_channel = new fsm.Channel($scope.buttons_controller,
+                                                               $scope.log_pane_controller,
                                                                $scope);
   $scope.time_controller.delegate_channel = new fsm.Channel($scope.time_controller,
                                                             $scope.buttons_controller,

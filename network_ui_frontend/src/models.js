@@ -1051,11 +1051,9 @@ function PlayStatus(log_pane, tracer) {
         console.log("clicky");
     };
     this.mouse_over_callback = function () {
-        log_pane.hidden = false;
+        this.log_pane.fsm.handle_message('MouseOver');
     };
-    this.mouse_out_callback = function () {
-        log_pane.hidden = true;
-    };
+    this.mouse_out_callback = util.noop;
     this.is_pressed = false;
     this.mouse_over = false;
     this.fsm = new fsm.FSMController(this, "button_fsm", button.Start, tracer);
@@ -1070,13 +1068,13 @@ PlayStatus.prototype.update_size = function ($window) {
 
 PlayStatus.prototype.is_selected = function (x, y) {
 
-    return (x > this.x - this.width &&
+    return (x > this.x &&
             x < this.x + this.width &&
-            y > this.y - this.height &&
+            y > this.y &&
             y < this.y + this.height);
 };
 
-function LogPane() {
+function LogPane(scope) {
 
     this.x = 0;
     this.y = 0;
@@ -1085,22 +1083,24 @@ function LogPane() {
     this.target = null;
     this.hidden = true;
     this.callback = util.noop;
+    this.log_offset = 0;
+    this.scope = scope;
+    this.fsm = null;
 }
 exports.LogPane = LogPane;
-
 
 LogPane.prototype.update_size = function ($window) {
 
     this.x = 100;
     this.y = 100;
     this.width = $window.innerWidth - 400;
-    this.height = $window.innerHeight - 400;
+    this.height = $window.innerHeight - 200;
 };
 
 LogPane.prototype.is_selected = function (x, y) {
 
-    return (x > this.x - this.width &&
-            x < this.x + this.width &&
-            y > this.y - this.height &&
+    return (x > this.x &&
+            x < this.x + this.width + 200 &&
+            y > this.y &&
             y < this.y + this.height);
 };

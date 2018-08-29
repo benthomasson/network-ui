@@ -26,6 +26,12 @@
               ng-attr-height="{{inventory_toolbox.height}}"
               rx=5></rect>
 		</clipPath>
+		<clipPath id="log-pane-clip-path">
+        <rect ng-attr-x="{{log_pane.x}}"
+              ng-attr-y="{{log_pane.y}}"
+              ng-attr-width="{{log_pane.width}}"
+              ng-attr-height="{{log_pane.height}}"></rect>
+		</clipPath>
 		</defs>
          <g transform="scale(1.0)" id="frame_g">
             <g ng-if="current_mode == 'MultiSite'" transform="translate(-300000, -200000) scale(1000)" awx-net-map></g>

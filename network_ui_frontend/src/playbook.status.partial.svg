@@ -13,4 +13,9 @@
 </g>
 <text dy=".4em" ng-attr-transform="translate(12, {{$index * 24}})">{{item.name}}</text>
 </g>
+<rect ng-attr-x="0"
+      ng-attr-y="0"
+      ng-attr-width="{{play_status.width}}"
+      ng-attr-height="{{play_status.height}}"
+      ng-attr-class="NetworkUI--debug"></rect>
 </g>

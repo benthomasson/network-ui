@@ -1,13 +1,15 @@
 <!-- Copyright (c) 2018 Red Hat, Inc. -->
+<g clip-path="url(#log-pane-clip-path)">
 <g ng-if="!log_pane.hidden">
-<rect ng-attr-x="100"
-      ng-attr-y="100"
-      ng-attr-width="{{graph.width-420}}"
-      ng-attr-height="{{graph.height-200}}"
+<rect ng-attr-x="{{log_pane.x}}"
+      ng-attr-y="{{log_pane.y}}"
+      ng-attr-width="{{log_pane.width}}"
+      ng-attr-height="{{log_pane.height}}"
       ng-attr-class="NetworkUI__log_pane"></rect>
 <g ng-if="log_pane.target !== null" ng-attr-transform="translate(110, 110)">
 <g ng-repeat="line in log_pane.target.log track by $index">
-<text class="NetworkUI__log_pane_text" ng-attr-transform="translate(0, {{$index * 20}})">{{line}}</text>
+<text class="NetworkUI__log_pane_text" ng-attr-transform="translate(0, {{$index * 20 + log_pane.log_offset}})">{{line}}</text>
+</g>
 </g>
 </g>
 </g>

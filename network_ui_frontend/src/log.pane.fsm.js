@@ -6,19 +6,19 @@ function _State () {
 inherits(_State, fsm._State);
 
 
+function _Visible () {
+    this.name = 'Visible';
+}
+inherits(_Visible, _State);
+var Visible = new _Visible();
+exports.Visible = Visible;
+
 function _Hidden () {
     this.name = 'Hidden';
 }
 inherits(_Hidden, _State);
 var Hidden = new _Hidden();
 exports.Hidden = Hidden;
-
-function _Scrolling () {
-    this.name = 'Scrolling';
-}
-inherits(_Scrolling, _State);
-var Scrolling = new _Scrolling();
-exports.Scrolling = Scrolling;
 
 function _Start () {
     this.name = 'Start';
@@ -27,31 +27,61 @@ inherits(_Start, _State);
 var Start = new _Start();
 exports.Start = Start;
 
-function _Visible () {
-    this.name = 'Visible';
+function _Scrolling () {
+    this.name = 'Scrolling';
 }
-inherits(_Visible, _State);
-var Visible = new _Visible();
-exports.Visible = Visible;
+inherits(_Scrolling, _State);
+var Scrolling = new _Scrolling();
+exports.Scrolling = Scrolling;
 
 
 
+_Visible.prototype.start = function (controller) {
 
-_Hidden.prototype.onMouseMove = function (controller) {
+    controller.scope.hidden = false;
+};
+
+_Visible.prototype.onMouseMove = function (controller, msg_type, $event) {
+
+    if (!controller.scope.is_selected(controller.scope.scope.mouseX,
+                                      controller.scope.scope.mouseY)) {
+        controller.changeState(Hidden);
+    }
+
+    controller.delegate_channel.send(msg_type, $event);
+};
+_Visible.prototype.onMouseMove.transitions = ['Hidden'];
+
+_Visible.prototype.onMouseWheel = function (controller, msg_type, $event) {
+
+    if (controller.scope.is_selected(controller.scope.scope.mouseX,
+                                     controller.scope.scope.mouseY)) {
+        console.log($event);
+        var delta = $event[1];
+        if (delta > 0) {
+            controller.scope.log_offset = controller.scope.log_offset - 10;
+        }
+        if (delta < 0) {
+            controller.scope.log_offset = Math.min(controller.scope.log_offset + 10, 0);
+        }
+        controller.changeState(Scrolling);
+    } else {
+        controller.delegate_channel.send(msg_type, $event);
+    }
+};
+_Visible.prototype.onMouseWheel.transitions = ['Scrolling'];
+
+
+_Hidden.prototype.start = function (controller) {
+
+    controller.scope.hidden = true;
+};
+
+_Hidden.prototype.onMouseOver = function (controller) {
 
     controller.changeState(Visible);
-
 };
-_Hidden.prototype.onMouseMove.transitions = ['Visible'];
-
-
-
-_Scrolling.prototype.onMouseWheel = function (controller) {
-
-    controller.changeState(Visible);
-
-};
-_Scrolling.prototype.onMouseWheel.transitions = ['Visible'];
+_Hidden.prototype.onMouseOver.transitions = ['Visible'];
 
 
 
@@ -64,24 +94,9 @@ _Start.prototype.start.transitions = ['Hidden'];
 
 
 
-_Visible.prototype.onMouseDown = function (controller) {
+_Scrolling.prototype.start = function (controller) {
 
-    controller.changeState(Hidden);
-
+    controller.changeState(Visible);
 };
-_Visible.prototype.onMouseDown.transitions = ['Hidden'];
-
-_Visible.prototype.onMouseMove = function (controller) {
-
-    controller.changeState(Hidden);
-
-};
-_Visible.prototype.onMouseMove.transitions = ['Hidden'];
-
-_Visible.prototype.onMouseWheel = function (controller) {
-
-    controller.changeState(Scrolling);
-
-};
-_Visible.prototype.onMouseWheel.transitions = ['Scrolling'];
+_Scrolling.prototype.start.transitions = ['Visible'];
 
