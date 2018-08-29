@@ -13,6 +13,13 @@ inherits(_Ready, _State);
 var Ready = new _Ready();
 exports.Ready = Ready;
 
+function _MouseOver () {
+    this.name = 'MouseOver';
+}
+inherits(_MouseOver, _State);
+var MouseOver = new _MouseOver();
+exports.MouseOver = MouseOver;
+
 function _Start () {
     this.name = 'Start';
 }
@@ -53,8 +60,14 @@ _Ready.prototype.onMouseDown.transitions = ['Pressed'];
 _Ready.prototype.start = function (controller) {
 
     controller.scope.enabled = true;
-
 };
+
+_Ready.prototype.onMouseOver = function (controller) {
+
+    controller.changeState(MouseOver);
+};
+_Ready.prototype.onMouseOver.transitions = ['MouseOver'];
+
 
 _Ready.prototype.onDisable = function (controller) {
 
@@ -65,10 +78,31 @@ _Ready.prototype.onDisable.transitions = ['Disabled'];
 // end ready state
 
 
+_MouseOver.prototype.start = function (controller) {
+    controller.scope.mouse_over = true;
+    controller.scope.mouse_over_callback(controller.scope);
+};
+
+_MouseOver.prototype.onMouseDown = function (controller) {
+
+    controller.changeState(Pressed);
+};
+_MouseOver.prototype.onMouseDown.transitions = ['Pressed'];
+
+_MouseOver.prototype.onMouseOut = function (controller) {
+
+    controller.changeState(Ready);
+};
+_MouseOver.prototype.onMouseOut.transitions = ['MouseOver'];
+
+_MouseOver.prototype.end = function (controller) {
+    controller.scope.mouse_over = false;
+    controller.scope.mouse_out_callback(controller.scope);
+};
+
 _Start.prototype.start = function (controller) {
 
     controller.changeState(Ready);
-
 };
 _Start.prototype.start.transitions = ['Ready'];
 

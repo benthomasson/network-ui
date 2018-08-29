@@ -1,0 +1,38 @@
+diagram_id: 1
+name: diagram
+states:
+- id: 2
+  label: Hidden
+  x: 428
+  y: 548
+- id: 5
+  label: Scrolling
+  x: 1042
+  y: 552
+- id: 1
+  label: Start
+  x: 148
+  y: 552
+- id: 4
+  label: Visible
+  x: 771
+  y: 542
+transitions:
+- from_state: Hidden
+  label: onMouseMove
+  to_state: Visible
+- from_state: Scrolling
+  label: onMouseWheel
+  to_state: Visible
+- from_state: Start
+  label: start
+  to_state: Hidden
+- from_state: Visible
+  label: onMouseDown
+  to_state: Hidden
+- from_state: Visible
+  label: onMouseMove
+  to_state: Hidden
+- from_state: Visible
+  label: onMouseWheel
+  to_state: Scrolling

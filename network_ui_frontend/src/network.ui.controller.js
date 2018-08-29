@@ -118,9 +118,17 @@ var NetworkUIController = function($scope,
   $scope.hide_links = false;
   $scope.hide_interfaces = false;
   $scope.hide_groups = false;
-  $scope.graph = {'width': window.innerWidth,
-                  'right_column': 300,
-                  'height': window.innerHeight};
+  $scope.viewport_update_subscribers = [$scope];
+  $scope.graph = {'width': 0,
+                  'right_column': 0,
+                  'height': 0,
+                  'update_size': function($window) {
+                      $scope.graph.width = $window.innerWidth;
+                      $scope.graph.right_column = $window.innerWidth - 300;
+                      $scope.graph.height = $window.innerHeight;
+                  }};
+  $scope.viewport_update_subscribers.push($scope.graph);
+  $scope.graph.update_size($window);
   $scope.device_id_seq = util.natural_numbers(0);
   $scope.link_id_seq = util.natural_numbers(0);
   $scope.group_id_seq = util.natural_numbers(0);
@@ -151,6 +159,12 @@ var NetworkUIController = function($scope,
   $scope.sequences = {};
   $scope.playbooks = [];
   $scope.playbooks_by_id = {};
+  $scope.log_pane = new models.LogPane();
+  $scope.viewport_update_subscribers.push($scope.log_pane);
+  $scope.log_pane.update_size($window);
+  $scope.play_status = new models.PlayStatus($scope.log_pane, $scope);
+  $scope.viewport_update_subscribers.push($scope.play_status);
+  $scope.play_status.update_size($window);
   $scope.view_port = {'x': 0,
                       'y': 0,
                       'width': 0,
@@ -1095,6 +1109,7 @@ var NetworkUIController = function($scope,
     $scope.all_buttons.extend($scope.context_menu_buttons);
     $scope.all_buttons.extend($scope.action_icons);
     $scope.all_buttons.extend($scope.buttons);
+    $scope.all_buttons.push($scope.play_status);
 
     $scope.onFacts = function(data) {
         var i = 0;
@@ -1952,14 +1967,16 @@ var NetworkUIController = function($scope,
 
     // End web socket
     //
+    //
 
     angular.element($window).bind('resize', function(){
 
-        $scope.graph.width = $window.innerWidth;
-        $scope.graph.right_column = 300;
-        $scope.graph.height = $window.innerHeight;
+        var i = 0;
 
-        $scope.update_size();
+
+        for (i = 0; i < $scope.viewport_update_subscribers.length; i++) {
+            $scope.viewport_update_subscribers[i].update_size($window);
+        }
 
         // manuall $digest required as resize event
         // is outside of angular
@@ -2000,8 +2017,8 @@ var NetworkUIController = function($scope,
         //$('.Networking-detailPanel').css('top', toolboxTopMargin);
     };
 
-    $scope.update_size = function () {
-        $scope.update_toolbox_heights();
+    $scope.update_size = function ($window) {
+        $scope.update_toolbox_heights($window);
     };
 
     $scope.update_offsets = function () {

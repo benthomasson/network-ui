@@ -326,6 +326,8 @@ function ActionIcon(name, x, y, r, callback, enabled, tracer) {
     this.x = x;
     this.y = y;
     this.r = r;
+    this.mouse_over_callback = util.noop;
+    this.mouse_out_callback = util.noop;
     this.callback = callback;
     this.is_pressed = false;
     this.mouse_over = false;
@@ -350,6 +352,8 @@ function Button(name, x, y, width, height, callback, tracer) {
     this.width = width;
     this.height = height;
     this.callback = callback;
+    this.mouse_over_callback = util.noop;
+    this.mouse_out_callback = util.noop;
     this.is_pressed = false;
     this.mouse_over = false;
     this.enabled = true;
@@ -374,6 +378,8 @@ function ToggleButton(name, x, y, width, height, toggle_callback, untoggle_callb
     this.y = y;
     this.width = width;
     this.height = height;
+    this.mouse_over_callback = util.noop;
+    this.mouse_out_callback = util.noop;
     this.callback = this.toggle;
     this.is_pressed = default_toggled;
     this.toggled = default_toggled;
@@ -403,6 +409,8 @@ function ContextMenu(name, x, y, width, height, callback, enabled, buttons, trac
     this.y = y;
     this.width = width;
     this.height = height;
+    this.mouse_over_callback = util.noop;
+    this.mouse_out_callback = util.noop;
     this.callback = callback;
     this.is_pressed = false;
     this.mouse_over = false;
@@ -428,6 +436,8 @@ function ContextMenuButton(name, x, y, width, height, callback, tracer) {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.mouse_over_callback = util.noop;
+    this.mouse_out_callback = util.noop;
     this.callback = callback;
     this.is_pressed = false;
     this.mouse_over = false;
@@ -1005,17 +1015,18 @@ function Playbook(id, name) {
     this.status = null;
 }
 exports.Playbook = Playbook;
+Playbook.prototype.describeArc = util.describeArc;
 
 function Play(id, name) {
     this.id = id;
     this.name = name;
-    this.log = [];
     this.tasks = [];
     this.tasks_by_id = {};
     this.working = null;
     this.status = null;
 }
 exports.Play = Play;
+Play.prototype.describeArc = util.describeArc;
 
 function Task(id, name) {
     this.id = id;
@@ -1024,3 +1035,72 @@ function Task(id, name) {
     this.status = null;
 }
 exports.Task = Task;
+Task.prototype.describeArc = util.describeArc;
+
+function PlayStatus(log_pane, tracer) {
+    this.x = 0;
+    this.y = 0;
+    this.width = 100;
+    this.height = 100;
+    this.target = null;
+    this.hidden = true;
+    this.log_pane = log_pane;
+    this.playbooks = [];
+    this.enabled = true;
+    this.callback = function () {
+        console.log("clicky");
+    };
+    this.mouse_over_callback = function () {
+        log_pane.hidden = false;
+    };
+    this.mouse_out_callback = function () {
+        log_pane.hidden = true;
+    };
+    this.is_pressed = false;
+    this.mouse_over = false;
+    this.fsm = new fsm.FSMController(this, "button_fsm", button.Start, tracer);
+}
+exports.PlayStatus = PlayStatus;
+
+PlayStatus.prototype.update_size = function ($window) {
+
+    this.x = $window.innerWidth - 300;
+    this.y = 100;
+};
+
+PlayStatus.prototype.is_selected = function (x, y) {
+
+    return (x > this.x - this.width &&
+            x < this.x + this.width &&
+            y > this.y - this.height &&
+            y < this.y + this.height);
+};
+
+function LogPane() {
+
+    this.x = 0;
+    this.y = 0;
+    this.width = 100;
+    this.height = 100;
+    this.target = null;
+    this.hidden = true;
+    this.callback = util.noop;
+}
+exports.LogPane = LogPane;
+
+
+LogPane.prototype.update_size = function ($window) {
+
+    this.x = 100;
+    this.y = 100;
+    this.width = $window.innerWidth - 400;
+    this.height = $window.innerHeight - 400;
+};
+
+LogPane.prototype.is_selected = function (x, y) {
+
+    return (x > this.x - this.width &&
+            x < this.x + this.width &&
+            y > this.y - this.height &&
+            y < this.y + this.height);
+};

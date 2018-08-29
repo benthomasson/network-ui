@@ -7,7 +7,7 @@
 <circle ng-attr-cx="{{$index * 12 + 17}}"
         ng-attr-cy="-5"
         r=5
-        ng-attr-class="{{task.status === null ? 'NetworkUI--hidden' : task.status ? 'NetworkUI__status--pass': 'NetworkUI__status--fail'}}"
+        ng-attr-class="{{task.status === null ? 'NetworkUI--hidden' : task.status ? 'NetworkUI__status--pass': 'NetworkUI__status--fail'}}">
 
 </circle>
 </g>

@@ -61,9 +61,10 @@ _Ready.prototype.onMouseMove = function (controller, msg_type, $event) {
         var button = null;
         for (i = 0; i < buttons.length; i++) {
             button = buttons[i];
-            button.mouse_over = false;
             if (button.is_selected(controller.scope.mouseX, controller.scope.mouseY)) {
-                button.mouse_over = true;
+                button.fsm.handle_message('MouseOver', $event);
+            } else {
+                button.fsm.handle_message('MouseOut', $event);
             }
         }
     }

@@ -103,6 +103,8 @@
                 ng-if="context_menus[0].enabled"
                 ng-attr-transform="translate({{context_menus[0].x}}, {{context_menus[0].y}})">
         </g>
+        <g awx-net-log-pane></g>
+        <g awx-net-playbook-status></g>
         <g awx-net-debug></g>
         <g awx-net-test-results></g>
         <g awx-net-cursor></g>

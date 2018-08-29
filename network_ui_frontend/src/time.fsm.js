@@ -512,6 +512,10 @@ _Present.prototype.onHello = function(controller, msg_type, message) {
     console.log(message);
 };
 
+function split_new_lines(s) {
+    return s.split("\n");
+}
+
 
 _Present.prototype.onRunner = function(controller, msg_type, message) {
 
@@ -526,11 +530,14 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
     if (message.event === "playbook_on_start") {
         new_playbook = new models.Playbook(message.event_data.playbook_uuid,
                                            message.event_data.playbook);
+        new_playbook.working = true;
         controller.scope.playbooks.push(new_playbook);
         controller.scope.playbooks_by_id[new_playbook.id] = new_playbook;
+        controller.scope.log_pane.target = new_playbook;
     }
     if (message.event === "playbook_on_play_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        playbook.log.extend(split_new_lines(message.stdout));
         new_play = new models.Play(message.event_data.play_uuid,
                                    message.event_data.play);
         playbook.plays.push(new_play);
@@ -538,6 +545,7 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "playbook_on_task_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        playbook.log.extend(split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
         new_task = new models.Task(message.event_data.task_uuid,
                                    message.event_data.task);
@@ -546,6 +554,7 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "runner_on_ok") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        playbook.log.extend(split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
         task = play.tasks_by_id[message.event_data.task_uuid];
         task.status = true;
@@ -555,6 +564,16 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
                 controller.scope.devices[i].status = true;
                 controller.scope.devices[i].tasks.push(task);
             }
+        }
+    }
+    if (message.event === "playbook_on_stats") {
+        playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        playbook.log.extend(split_new_lines(message.stdout));
+        playbook.working = false;
+        if (Object.keys(message.event_data.failures).length === 0) {
+            playbook.status = true;
+        } else {
+            playbook.status = false;
         }
     }
 };

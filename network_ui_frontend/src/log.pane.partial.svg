@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2018 Red Hat, Inc. -->
+<g ng-if="!log_pane.hidden">
+<rect ng-attr-x="100"
+      ng-attr-y="100"
+      ng-attr-width="{{graph.width-420}}"
+      ng-attr-height="{{graph.height-200}}"
+      ng-attr-class="NetworkUI__log_pane"></rect>
+<g ng-if="log_pane.target !== null" ng-attr-transform="translate(110, 110)">
+<g ng-repeat="line in log_pane.target.log track by $index">
+<text class="NetworkUI__log_pane_text" ng-attr-transform="translate(0, {{$index * 20}})">{{line}}</text>
+</g>
+</g>
+</g>

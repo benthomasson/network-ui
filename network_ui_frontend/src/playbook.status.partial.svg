@@ -1,0 +1,16 @@
+<!-- Copyright (c) 2018 Red Hat, Inc. -->
+<g ng-attr-transform="translate({{play_status.x}}, {{play_status.y}})">
+<g ng-repeat="item in playbooks | limitTo: -7">
+<g ng-if="item.working">
+    <path ng-attr-transform="translate(0, {{$index * 24}}) rotate({{frame/3}})" class="NetworkUI__status-path" ng-attr-d="{{item.describeArc(0, 0, 10, 0, 270)}}"/>
+</g>
+<g ng-if="!item.working">
+<circle ng-attr-cx="0"
+        ng-attr-cy="{{$index * 24}}"
+        r=10
+        ng-attr-class="{{item.status === null ? 'NetworkUI__status' : item.status ? 'NetworkUI__status--pass': 'NetworkUI__status--fail'}}">
+</circle>
+</g>
+<text dy=".4em" ng-attr-transform="translate(12, {{$index * 24}})">{{item.name}}</text>
+</g>
+</g>
