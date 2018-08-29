@@ -1051,7 +1051,9 @@ function PlayStatus(log_pane, tracer) {
         console.log("clicky");
     };
     this.mouse_over_callback = function () {
-        this.log_pane.fsm.handle_message('MouseOver');
+        if (this.playbooks.length > 0) {
+            this.log_pane.fsm.handle_message('MouseOver');
+        }
     };
     this.mouse_out_callback = util.noop;
     this.is_pressed = false;
@@ -1059,6 +1061,11 @@ function PlayStatus(log_pane, tracer) {
     this.fsm = new fsm.FSMController(this, "button_fsm", button.Start, tracer);
 }
 exports.PlayStatus = PlayStatus;
+
+PlayStatus.prototype.update_height = function () {
+
+    this.height = this.playbooks.length * 24;
+};
 
 PlayStatus.prototype.update_size = function ($window) {
 
@@ -1100,7 +1107,7 @@ LogPane.prototype.update_size = function ($window) {
 LogPane.prototype.is_selected = function (x, y) {
 
     return (x > this.x &&
-            x < this.x + this.width + 200 &&
+            x < this.x + this.width + 100 &&
             y > this.y &&
             y < this.y + this.height);
 };

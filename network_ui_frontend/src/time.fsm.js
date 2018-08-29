@@ -534,6 +534,8 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
         controller.scope.playbooks.push(new_playbook);
         controller.scope.playbooks_by_id[new_playbook.id] = new_playbook;
         controller.scope.log_pane.target = new_playbook;
+        controller.scope.play_status.playbooks.push(new_playbook);
+        controller.scope.play_status.update_height();
     }
     if (message.event === "playbook_on_play_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];

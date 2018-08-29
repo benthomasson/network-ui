@@ -56,7 +56,6 @@ _Visible.prototype.onMouseWheel = function (controller, msg_type, $event) {
 
     if (controller.scope.is_selected(controller.scope.scope.mouseX,
                                      controller.scope.scope.mouseY)) {
-        console.log($event);
         var delta = $event[1];
         if (delta < 0) {
             controller.scope.log_offset = Math.max(controller.scope.log_offset - 10, controller.scope.target.log.length * -12);
