@@ -1055,7 +1055,9 @@ function PlayStatus(log_pane, tracer) {
             this.log_pane.fsm.handle_message('MouseOver');
         }
     };
-    this.mouse_out_callback = util.noop;
+    this.mouse_out_callback = function () {
+        this.log_pane.fsm.handle_message('MouseOut');
+    };
     this.is_pressed = false;
     this.mouse_over = false;
     this.fsm = new fsm.FSMController(this, "button_fsm", button.Start, tracer);
@@ -1107,7 +1109,7 @@ LogPane.prototype.update_size = function ($window) {
 LogPane.prototype.is_selected = function (x, y) {
 
     return (x > this.x &&
-            x < this.x + this.width + 100 &&
+            x < this.x + this.width &&
             y > this.y &&
             y < this.y + this.height);
 };
