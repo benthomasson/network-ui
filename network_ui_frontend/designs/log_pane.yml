@@ -5,10 +5,10 @@ states:
   label: Hidden
   x: 428
   y: 548
-- id: 1
-  label: Scrolling
-  x: 1059
-  y: 544
+- id: 5
+  label: Playbook
+  x: 606
+  y: 317
 - id: 2
   label: Start
   x: 148
@@ -20,16 +20,13 @@ states:
 transitions:
 - from_state: Hidden
   label: onMouseOver
-  to_state: Visible
-- from_state: Scrolling
-  label: onMouseWheel
+  to_state: Playbook
+- from_state: Playbook
+  label: onMouseOut
   to_state: Visible
 - from_state: Start
   label: start
   to_state: Hidden
 - from_state: Visible
-  label: onMouseOut
+  label: onMouseMove
   to_state: Hidden
-- from_state: Visible
-  label: onMouseWheel
-  to_state: Scrolling

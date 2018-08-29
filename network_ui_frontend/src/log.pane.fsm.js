@@ -73,7 +73,7 @@ _Hidden.prototype.onMouseOver = function (controller) {
 
     controller.changeState(Playbook);
 };
-_Hidden.prototype.onMouseOver.transitions = ['Visible'];
+_Hidden.prototype.onMouseOver.transitions = ['Playbook'];
 
 
 _Start.prototype.start = function (controller) {
