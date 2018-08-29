@@ -15,7 +15,8 @@ RUN apk update \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
   && apk add postgresql-client \
   && apk add git \
-  && apk add linux-headers
+  && apk add linux-headers \
+  && apk add alpine-sdk
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
