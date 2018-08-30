@@ -44,6 +44,8 @@ services:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: network_ui_production_postgres
+    ports:
+        - "5432:5432"
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
@@ -52,3 +54,5 @@ services:
 
   redis:
     image: redis:3.0
+    ports:
+        - "6379:6379"

@@ -34,6 +34,8 @@ pyyaml = "*"
 channels = "*"
 channels-redis = "*"
 Django = "==2.0.8"
+ansible = "*"
+ansible-runner = "*"
 
 [dev-packages]
 "flake8" = "*"

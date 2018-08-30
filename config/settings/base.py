@@ -239,12 +239,24 @@ SOCIALACCOUNT_ADAPTER = 'network_ui.users.adapters.SocialAccountAdapter'
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+
+from urllib.parse import urlparse
+
+REDIS_URL = env('REDIS_URL')
+o = urlparse(REDIS_URL)
+REDIS_HOST = o.hostname
+REDIS_PORT = int(o.port)
+
+print(REDIS_HOST)
+print(REDIS_PORT)
+
+
 ASGI_APPLICATION = 'config.settings.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('redis', 6379)]
+            'hosts': [(REDIS_HOST, REDIS_PORT)]
         }
     }
 }
