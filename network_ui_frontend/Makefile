@@ -11,7 +11,7 @@ clean:
 install:
 	npm i
 
-main: build install
+main: install build
 
 build:
 	webpack
