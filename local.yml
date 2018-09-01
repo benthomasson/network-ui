@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: network_ui_local_django
+    image: benthomasson/network-ui
     depends_on:
       - redis
       - postgres
