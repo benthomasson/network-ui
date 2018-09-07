@@ -18,6 +18,7 @@ import sys
 import fsm_diff.cli
 import transform_fsm
 import yaml
+import os
 
 from jinja2 import FileSystemLoader, Environment
 
@@ -25,10 +26,11 @@ from subprocess import Popen, PIPE
 
 logger = logging.getLogger('fsm_generate_diffs')
 
-import os
+
 def touch(fname, times=None):
     with open(fname, 'a'):
         os.utime(fname, times)
+
 
 def main(args=None):
     if args is None:
