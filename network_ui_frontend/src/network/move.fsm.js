@@ -3,7 +3,10 @@ var inherits = require('inherits');
 var nunjucks = require('nunjucks');
 var fsm = require('../fsm.js');
 var models = require('./models.js');
+var app_models = require('../application/models.js');
 var messages = require('./messages.js');
+var app_messages = require('../application/messages.js');
+var core_messages = require('../core/messages.js');
 var util = require('../util.js');
 
 function _State () {
@@ -204,11 +207,11 @@ _Ready.prototype.onPasteDevice = function (controller, msg_type, message) {
                                                      intf.name));
     }
     for (i=0; i < message.device.processes.length; i++) {
-        process = new models.Process(message.device.processes[i].id,
+        process = new models.app_Process(message.device.processes[i].id,
                                      message.device.processes[i].name,
                                      message.device.processes[i].type, 0, 0);
         process.device = device;
-        c_messages.push(new messages.ProcessCreate(controller.scope.client_id,
+        c_messages.push(new app_messages.ProcessCreate(controller.scope.client_id,
                                                    process.id,
                                                    process.name,
                                                    process.type,
@@ -219,7 +222,7 @@ _Ready.prototype.onPasteDevice = function (controller, msg_type, message) {
     }
     scope.selected_devices.push(device);
     device.selected = true;
-    scope.send_control_message(new messages.MultipleMessage(controller.scope.client_id, c_messages));
+    scope.send_control_message(new core_messages.MultipleMessage(controller.scope.client_id, c_messages));
     controller.changeState(Selected2);
 };
 _Ready.prototype.onPasteDevice.transitions = ['Selected2'];
@@ -267,7 +270,7 @@ _Selected2.prototype.onCopySelected = function (controller) {
         device_copy = new models.Device(0, devices[i].name, 0, 0, devices[i].type, 0);
         device_copy.icon = true;
         for(j=0; j < devices[i].processes.length; j++) {
-            process_copy = new models.Process(0, devices[i].processes[j].name, devices[i].processes[j].name, 0, 0);
+            process_copy = new app_models.Process(0, devices[i].processes[j].name, devices[i].processes[j].name, 0, 0);
             device_copy.processes.push(process_copy);
         }
         for(j=0; j < devices[i].interfaces.length; j++) {

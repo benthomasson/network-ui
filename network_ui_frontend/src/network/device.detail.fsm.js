@@ -1,7 +1,7 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 var inherits = require('inherits');
 var fsm = require('../fsm.js');
-var models = require('./models.js');
+var app_models = require('../application/models.js');
 var messages = require('./messages.js');
 
 function _State () {
@@ -59,7 +59,7 @@ _Ready.prototype.onPasteProcess = function (controller, msg_type, message) {
         if (device.is_selected(x, y)) {
             console.log(device);
 
-            app = new models.Process(device.process_id_seq(),
+            app = new app_models.Process(device.process_id_seq(),
                                      message.process.name,
                                      message.process.type,
                                      controller.scope.scaledX,

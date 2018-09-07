@@ -3,7 +3,11 @@ var inherits = require('inherits');
 var nunjucks = require('nunjucks');
 var fsm = require('../fsm.js');
 var models = require('./models.js');
+var app_models = require('../application/models.js');
 var messages = require('./messages.js');
+var messages = require('./messages.js');
+var app_messages = require('../application/messages.js');
+var core_messages = require('../core/messages.js');
 
 function _State () {
 }
@@ -189,11 +193,11 @@ _Ready.prototype.onPasteRack = function (controller, msg_type, message) {
                                                          intf.name));
         }
         for (j=0; j < message.group.devices[i].processes.length; j++) {
-            process = new models.Process(message.group.devices[i].processes[j].id,
+            process = new app_models.Process(message.group.devices[i].processes[j].id,
                                          message.group.devices[i].processes[j].name,
                                          message.group.devices[i].processes[j].type, 0, 0);
             process.device = device;
-            c_messages.push(new messages.ProcessCreate(controller.scope.client_id,
+            c_messages.push(new app_messages.ProcessCreate(controller.scope.client_id,
                                                        process.id,
                                                        process.name,
                                                        process.type,
@@ -224,7 +228,7 @@ _Ready.prototype.onPasteRack = function (controller, msg_type, message) {
                                                 link.to_interface.id));
     }
 
-    scope.send_control_message(new messages.MultipleMessage(controller.scope.client_id, c_messages));
+    scope.send_control_message(new core_messages.MultipleMessage(controller.scope.client_id, c_messages));
 
     Promise.all(promises)
            .then(function () {
@@ -298,7 +302,7 @@ _Selected2.prototype.onCopySelected = function (controller) {
             device_copy.icon = true;
             device_copy.interface_map = {};
             for(k=0; k < devices[j].processes.length; k++) {
-                process_copy = new models.Process(0, devices[j].processes[k].name, devices[j].processes[k].name, 0, 0);
+                process_copy = new app_models.Process(0, devices[j].processes[k].name, devices[j].processes[k].name, 0, 0);
                 device_copy.processes.push(process_copy);
             }
             for(k=0; k < devices[j].interfaces.length; k++) {
@@ -566,7 +570,7 @@ _Move.prototype.onMouseMove = function (controller) {
                                                     previous_y));
         }
 
-        controller.scope.send_control_message(new messages.MultipleMessage(controller.scope.client_id, c_messages));
+        controller.scope.send_control_message(new core_messages.MultipleMessage(controller.scope.client_id, c_messages));
     }
     controller.scope.pressedScaledX = controller.scope.scaledX;
     controller.scope.pressedScaledY = controller.scope.scaledY;

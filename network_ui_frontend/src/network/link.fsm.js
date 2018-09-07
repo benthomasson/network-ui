@@ -3,6 +3,7 @@ var inherits = require('inherits');
 var fsm = require('../fsm.js');
 var models = require('./models.js');
 var messages = require('./messages.js');
+var core_messages = require('../core/messages.js');
 
 function _State () {
 }
@@ -99,7 +100,7 @@ _Connecting.prototype.onMouseUp = function (controller) {
         controller.scope.new_link.from_interface = from_device_interface;
         to_device_interface.dot();
         from_device_interface.dot();
-        controller.scope.send_control_message(new messages.MultipleMessage(controller.scope.client_id, [
+        controller.scope.send_control_message(new core_messages.MultipleMessage(controller.scope.client_id, [
             new messages.InterfaceCreate(controller.scope.client_id,
                                          controller.scope.new_link.from_device.id,
                                          from_device_interface.id,
