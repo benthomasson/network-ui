@@ -2,7 +2,7 @@
 /* Copyright (c) 2018 Red Hat, Inc. */
 
 var inherits = require('inherits');
-var fsm = require('./fsm.js');
+var fsm = require('../fsm.js');
 
 
 function _Start () {

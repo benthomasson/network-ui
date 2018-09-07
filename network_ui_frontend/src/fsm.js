@@ -1,5 +1,5 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
-var messages = require('./messages.js');
+var messages = require('./core/messages.js');
 
 function Channel(from_controller, to_controller, tracer) {
     this.tracer = tracer;

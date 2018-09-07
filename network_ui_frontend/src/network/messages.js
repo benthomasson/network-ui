@@ -1,11 +1,5 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 
-
-function serialize(message) {
-    return JSON.stringify([message.constructor.name, message]);
-}
-exports.serialize = serialize;
-
 function DeviceMove(sender, id, x, y, previous_x, previous_y) {
     this.msg_type = "DeviceMove";
     this.sender = sender;
@@ -145,20 +139,6 @@ function LinkUnSelected(sender, id) {
     this.id = id;
 }
 exports.LinkUnSelected = LinkUnSelected;
-
-function Undo(sender, original_message) {
-    this.msg_type = "Undo";
-    this.sender = sender;
-    this.original_message = original_message;
-}
-exports.Undo = Undo;
-
-function Redo(sender, original_message) {
-    this.msg_type = "Redo";
-    this.sender = sender;
-    this.original_message = original_message;
-}
-exports.Redo = Redo;
 
 function Deploy(sender) {
     this.msg_type = "Deploy";
@@ -452,42 +432,3 @@ function Snapshot(sender, devices, links, groups, streams, order, trace_id) {
     this.trace_id = trace_id;
 }
 exports.Snapshot = Snapshot;
-
-function EnableTest() {
-    this.msg_type = "EnableTest";
-}
-exports.EnableTest = EnableTest;
-
-function DisableTest() {
-    this.msg_type = "DisableTest";
-}
-exports.DisableTest = DisableTest;
-
-function StartTest() {
-    this.msg_type = "StartTest";
-}
-exports.StartTest = StartTest;
-
-function TestCompleted() {
-    this.msg_type = "TestCompleted";
-}
-exports.TestCompleted = TestCompleted;
-
-function TestResult(sender, id, name, result, date, code_under_test) {
-    this.msg_type = "TestResult";
-    this.sender = sender;
-    this.id = id;
-    this.name = name;
-    this.result = result;
-    this.date = date;
-    this.code_under_test = code_under_test;
-}
-exports.TestResult = TestResult;
-
-function Coverage(sender, coverage, result_id) {
-    this.msg_type = "Coverage";
-    this.sender = sender;
-    this.coverage = coverage;
-    this.result_id = result_id;
-}
-exports.Coverage = Coverage;

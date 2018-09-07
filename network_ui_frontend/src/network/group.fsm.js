@@ -1,9 +1,10 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 var inherits = require('inherits');
-var fsm = require('./fsm.js');
+var titlecase = require('titlecase');
+
+var fsm = require('../fsm.js');
 var models = require('./models.js');
 var messages = require('./messages.js');
-var titlecase = require('titlecase');
 
 function _State () {
 }

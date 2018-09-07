@@ -1,7 +1,7 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 var inherits = require('inherits');
-var fsm = require('./fsm.js');
-var messages = require('./messages.js');
+var fsm = require('../fsm.js');
+var messages = require('../network/messages.js');
 
 function _State () {
 }

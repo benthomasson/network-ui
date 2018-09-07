@@ -1,9 +1,10 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 var inherits = require('inherits');
-var fsm = require('./fsm.js');
+var fsm = require('../fsm.js');
 var messages = require('./messages.js');
-var util = require('./util.js');
-var models = require('./models.js');
+var util = require('../util.js');
+var test_models = require('../test/models.js');
+var monitor_models = require('../monitor/models.js');
 
 function _State () {
 }
@@ -497,7 +498,7 @@ _Present.prototype.onTestCase = function(controller, msg_type, message) {
             return;
         }
     }
-    controller.scope.tests.push(new models.Test(message[0],
+    controller.scope.tests.push(new test_models.Test(message[0],
                                                 message[1].event_trace,
                                                 [],
                                                 message[1].snapshots[0],
@@ -528,7 +529,7 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
     var task = null;
 
     if (message.event === "playbook_on_start") {
-        new_playbook = new models.Playbook(message.event_data.playbook_uuid,
+        new_playbook = new monitor_models.Playbook(message.event_data.playbook_uuid,
                                            message.event_data.playbook);
         new_playbook.working = true;
         controller.scope.playbooks.push(new_playbook);
@@ -540,7 +541,7 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
     if (message.event === "playbook_on_play_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log.extend(split_new_lines(message.stdout));
-        new_play = new models.Play(message.event_data.play_uuid,
+        new_play = new monitor_models.Play(message.event_data.play_uuid,
                                    message.event_data.play);
         playbook.plays.push(new_play);
         playbook.plays_by_id[new_play.id] = new_play;
@@ -549,7 +550,7 @@ _Present.prototype.onRunner = function(controller, msg_type, message) {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log.extend(split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
-        new_task = new models.Task(message.event_data.task_uuid,
+        new_task = new monitor_models.Task(message.event_data.task_uuid,
                                    message.event_data.task);
         play.tasks.push(new_task);
         play.tasks_by_id[new_task.id] = new_task;

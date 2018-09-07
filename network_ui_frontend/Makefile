@@ -17,7 +17,7 @@ build:
 	webpack
 
 lint:
-	jshint --verbose src/*js
+	jshint --verbose src/**/*.js
 
 lessc:
 	lessc src/style.less css/style.css
