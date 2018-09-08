@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.7"
+  - "3.6.5"
 install:
   - npm -g i jshint
   - pip install flake8
