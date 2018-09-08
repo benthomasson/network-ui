@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.7"
+install:
+  - npm -g i jshint
+  - pip install flake8
+  - npm install --prefix network_ui_frontend
+script:
+  - flake8 .
+  - jshint network_ui_frontend/src/**/*.js
