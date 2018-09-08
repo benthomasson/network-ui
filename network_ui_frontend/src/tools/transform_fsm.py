@@ -28,11 +28,13 @@ def transform_fsm(data):
         state['functions'] = dict()
 
     for transition in data['transitions']:
-        state = state_map.get(transition['from_state'], dict(label=transition['from_state'], functions=dict()))
+        state = state_map.get(transition['from_state'], dict(
+            label=transition['from_state'], functions=dict()))
         state_map[transition['from_state']] = state
         if state not in data['states']:
             data['states'].append(state)
-        function_transitions = state['functions'].get(transition['label'], list())
+        function_transitions = state['functions'].get(
+            transition['label'], list())
         function_transitions.append(dict(to_state=transition['to_state']))
         state['functions'][transition['label']] = function_transitions
 
@@ -40,6 +42,7 @@ def transform_fsm(data):
         state['functions'] = sorted(state['functions'].items())
 
     return data
+
 
 def main(args=None):
     if args is None:
@@ -65,4 +68,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
-

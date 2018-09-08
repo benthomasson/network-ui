@@ -57,7 +57,8 @@ def download_trace(request):
                                             client_id=client_id).order_by('order').values())
         response = HttpResponse(yaml.safe_dump(data, default_flow_style=False),
                                 content_type="application/force-download")
-        response['Content-Disposition'] = 'attachment; filename="trace_{0}_{1}_{2}.yml"'.format(topology_id, client_id, trace_id)
+        response['Content-Disposition'] = ('attachment; filename="trace_{0}_{1}_{2}.yml"'
+                                           .format(topology_id, client_id, trace_id))
         return response
     else:
         return HttpResponse(form.errors)
@@ -91,7 +92,8 @@ def download_recording(request):
                              .values_list('snapshot_data', flat=True)]
         response = HttpResponse(json.dumps(data, sort_keys=True, indent=4),
                                 content_type="application/force-download")
-        response['Content-Disposition'] = 'attachment; filename="trace_{0}_{1}_{2}.yml"'.format(topology_id, client_id, trace_id)
+        response['Content-Disposition'] = ('attachment; filename="trace_{0}_{1}_{2}.yml"'
+                                           .format(topology_id, client_id, trace_id))
         return response
     else:
         return HttpResponse(form.errors)
@@ -107,7 +109,7 @@ def tests(request):
 def create_test(name, data):
     try:
         test_case = TestCase.objects.get(name=name)
-        test_case.test_case_data=json.dumps(data)
+        test_case.test_case_data = json.dumps(data)
         test_case.save()
     except ObjectDoesNotExist:
         TestCase(name=name, test_case_data=json.dumps(data)).save()
@@ -137,6 +139,7 @@ def download_coverage(request, pk):
     response = HttpResponse(coverage.coverage_data,
                             content_type="application/json")
     return response
+
 
 def version(request):
     version = subprocess.check_output('git describe --long', shell=True).strip()

@@ -66,12 +66,10 @@ def main(args=None):
         with open(implementation, "a") as f:
             f.write(template.render(**data))
     else:
-        print (template.render(**data))
-
-
+        print(template.render(**data))
 
     return 0
 
+
 if __name__ == '__main__':
-    import sys
     sys.exit(main(sys.argv[1:]))

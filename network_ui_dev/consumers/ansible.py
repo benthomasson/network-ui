@@ -14,6 +14,7 @@ WORKSPACE = "/tmp/workspace"
 
 logger = logging.getLogger("network_ui_dev.consumers.ansible")
 
+
 def ensure_directory(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)

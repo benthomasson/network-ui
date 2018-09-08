@@ -6,5 +6,5 @@ install:
   - pip install flake8
   - npm install --prefix network_ui_frontend
 script:
-  - flake8 .
+  - flake8 --max-line-length=160 .
   - jshint network_ui_frontend/src/**/*.js

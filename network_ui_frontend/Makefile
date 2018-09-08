@@ -39,4 +39,5 @@ deploy: lint build lessc
 	rsync -av css ../network_ui/static/
 	rsync -av js ../network_ui/static/
 	rsync -av index.html ../network_ui/static/
+	docker-compose -f ../local.yml run --rm django ./manage.py collectstatic --noinput
 

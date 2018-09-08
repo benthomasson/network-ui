@@ -65,7 +65,7 @@ def main(args=None):
                 else:
                     raise Exception("Filters should be in the form of 'key=value'")
 
-        operation = ('get' if parsed_args['get'] else 
+        operation = ('get' if parsed_args['get'] else
                      'list' if parsed_args['list'] else
                      'create' if parsed_args['create'] else
                      'delete' if parsed_args['delete'] else
@@ -80,10 +80,10 @@ def main(args=None):
         elif (parsed_args['link']):
             result = v2_api_client.__dict__[operation + "_link"](**query_filter)
         if isinstance(result, dict) or isinstance(result, list):
-            print json.dumps(result, sort_keys=True, indent=4)
+            print(json.dumps(result, sort_keys=True, indent=4))
 
-    except BaseException, e:
-        print ("Error: {0}".format(e))
+    except BaseException as e:
+        print("Error: {0}".format(e))
         raise
         return 1
     return 0
@@ -91,4 +91,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
-

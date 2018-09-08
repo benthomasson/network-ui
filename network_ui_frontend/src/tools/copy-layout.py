@@ -38,7 +38,8 @@ def main(args=None):
     to_states = {x['label']: x for x in to_fsm.get('states', [])}
 
     to_fsm['name'] = from_fsm.get('name', '')
-    to_fsm['finite_state_machine_id'] = from_fsm.get('finite_state_machine_id', '')
+    to_fsm['finite_state_machine_id'] = from_fsm.get(
+        'finite_state_machine_id', '')
     to_fsm['diagram_id'] = from_fsm.get('diagram_id', '')
 
     for state in from_fsm.get('states', []):
