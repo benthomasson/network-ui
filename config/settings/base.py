@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import environ
+from urllib.parse import urlparse
 
 ROOT_DIR = environ.Path(__file__) - 3  # (network_ui/config/settings/base.py - 3 = network_ui/)
 APPS_DIR = ROOT_DIR.path('network_ui')
@@ -238,9 +239,6 @@ SOCIALACCOUNT_ADAPTER = 'network_ui.users.adapters.SocialAccountAdapter'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-
-
-from urllib.parse import urlparse
 
 REDIS_URL = env('REDIS_URL')
 o = urlparse(REDIS_URL)
