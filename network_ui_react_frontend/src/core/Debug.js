@@ -26,6 +26,7 @@ class Debug extends Component {
           <text x={this.props.x} y={next_i()} style={debugStyle}>Frame #: {this.props.frameNumber} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}># Selected: {this.props.selected_items.length} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>View: {this.props.view.state.name} </text>
+          <text x={this.props.x} y={next_i()} style={debugStyle}>Move: {this.props.move.state.name} </text>
         </g>
       );
     } else {

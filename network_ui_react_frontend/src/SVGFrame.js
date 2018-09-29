@@ -60,6 +60,7 @@ class SVGFrame extends Component {
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
                  group={this.scope.group_controller}
+                 move={this.scope.move_controller}
                  />
           {this.scope.showCursor ?
           <Cursor x={this.scope.cursorPosX}

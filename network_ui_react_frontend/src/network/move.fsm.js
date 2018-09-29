@@ -147,7 +147,6 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
         scope.create_inventory_host(device);
         scope.selected_devices.push(device);
         device.selected = true;
-        scope.$emit('addSearchOption', device);
         controller.changeState(Placing);
     }
 };
