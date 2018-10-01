@@ -1,5 +1,6 @@
 
 var colors = {
+  blue: '#337AB7',
   selected1: '#79b7fd',
   selected2: '#c7e1fe',
   selected: '#a9d2fe',
@@ -11,7 +12,8 @@ var colors = {
   darkWidgetDetail: '#707070',
   transition: '#707070',
   group: '#707070',
-  buttonText: '#707070'
+  buttonText: '#707070',
+  lightBackground: '#ffffff'
 };
 
 export default colors;

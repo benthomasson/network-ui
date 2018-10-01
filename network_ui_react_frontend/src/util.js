@@ -135,3 +135,4 @@ function cross_z_pos(x, y, x1, y1, x2, y2) {
   return math.cross([A, B, 0], [C, D, 0])[2] > 0;
 }
 exports.cross_z_pos = cross_z_pos;
+

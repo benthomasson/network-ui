@@ -6,6 +6,10 @@ import Download from './button/Download'
 import Quadrants from './core/Quadrants'
 import Help from './core/Help'
 import models from './models'
+import Device from './network/Device'
+import Host from './network/Host'
+import Router from './network/Router'
+import Switch from './network/Switch'
 
 
 class SVGFrame extends Component {
@@ -35,6 +39,21 @@ class SVGFrame extends Component {
       backgroundColor: '#ffffff',
       cursor: (this.scope.selecting_state ? 'alias' : 'auto')
     };
+
+    var devices = [];
+    var device = null;
+    for (var i = 0; i < this.scope.devices.length; i++) {
+      device = this.scope.devices[i];
+      if (device.type === "router") {
+        devices.push(<Router {...device} showDebug={this.scope.showDebug}/>);
+      } else if (device.type === "switch") {
+        devices.push(<Switch {...device} showDebug={this.scope.showDebug}/>);
+      } else if (device.type === "host") {
+        devices.push(<Host {...device} showDebug={this.scope.showDebug}/>);
+      } else {
+        devices.push(<Device {...device} showDebug={this.scope.showDebug}/>);
+      }
+    }
     return (
       <div className='SVGFrame'>
         <svg  id='frame' style={frameStyle}
@@ -52,6 +71,7 @@ class SVGFrame extends Component {
           </defs>
           <g transform={'translate(' + this.scope.panX + ',' + this.scope.panY + ') ' +
                          'scale(' + this.scope.current_scale + ')'}>
+          {devices}
           <Quadrants {...this.scope} />
           </g>
           <Debug {...this.scope}
@@ -60,7 +80,6 @@ class SVGFrame extends Component {
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
                  group={this.scope.group_controller}
-                 move={this.scope.move_controller}
                  />
           {this.scope.showCursor ?
           <Cursor x={this.scope.cursorPosX}
