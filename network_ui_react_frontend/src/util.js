@@ -215,3 +215,28 @@ function intersection (x1, y1, x2, y2, x3, y3, x4, y4) {
     }
 }
 exports.intersection = intersection;
+
+function pCase(x, y, x1, y1, x2, y2) {
+  //Code from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+  //Joshua
+  // Find the dot product of two vectors <A, B>, <C, D>
+  // Divide by the length squared of <C, D>
+  // Use scalar project to find param
+  //
+
+  var A = x - x1;
+  var B = y - y1;
+  var C = x2 - x1;
+  var D = y2 - y1;
+
+  var dot = A * C + B * D;
+  var len_sq = C * C + D * D;
+  var param = -1;
+  if (len_sq !== 0) {
+      //in case of 0 length line
+      param = dot / len_sq;
+  }
+
+  return param;
+}
+exports.pCase = pCase;

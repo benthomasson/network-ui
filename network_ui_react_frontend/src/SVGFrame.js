@@ -96,6 +96,10 @@ class SVGFrame extends Component {
               <feFlood floodColor="#b3d8fd"/>
               <feComposite in="SourceGraphic" operator="xor"/>
             </filter>
+            <filter x="0" y="0" width="1" height="1" id="background">
+              <feFlood flood-color="#ffffff"/>
+              <feComposite in="SourceGraphic"/>
+            </filter>
           </defs>
           <g transform={'translate(' + this.scope.panX + ',' + this.scope.panY + ') ' +
                          'scale(' + this.scope.current_scale + ')'}>

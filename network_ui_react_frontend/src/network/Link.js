@@ -69,8 +69,12 @@ class Link extends Component {
       fill: Colors['buttonOutline']
     };
     var interfaceTextStyle = {
+      fill: Colors['buttonText'],
+      fontSize: '8px'
     };
     var linkTextStyle = {
+      fill: Colors['buttonText'],
+      fontSize: '8px'
     };
     return (
       <g>
@@ -150,8 +154,8 @@ class Link extends Component {
                       "rotate(" + -this.slope() + ")" +
                       "translate(0, -5)"}>
           {this.props.selected ?
-          <text style={interfaceTextSelectedStyle}
-                filter="url(#background)"
+          <text style={linkTextStyle}
+                filter="url(#selected)"
                 textAnchor="middle"
                 fontSize="8"
                 x="0"
@@ -170,8 +174,8 @@ class Link extends Component {
                     "translate(" + (-this.props.from_interface.dot_d - 25) + ", 0)" +
                     "rotate(" + -this.slope() + ")"}>
           {this.props.from_interface.selected ?
-          <text style={interfaceTextSelectedStyle}
-                filter="url(#background)"
+          <text style={interfaceTextStyle}
+                filter="url(#selected)"
                 textAnchor="middle"
                 fontSize="8"
                 x="0"
@@ -179,7 +183,7 @@ class Link extends Component {
           : null}
 
           <text style={interfaceTextStyle}
-                filter="url(#background)"
+                filter={this.props.from_interface.selected ? "" : "url(#background)"}
                 textAnchor="middle"
                 x="0" y="0">{this.props.from_interface.name}{this.props.from_interface.edit_label ? '_': ''}</text>
         </g>
@@ -191,14 +195,14 @@ class Link extends Component {
                       "translate(" + (-this.length() + this.props.to_interface.dot_d + 25) + ", 0)" +
                       "rotate(" + -this.slope() + ")"}>
         {this.props.to_interface.selected ?
-          <text style={interfaceTextSelectedStyle}
-              filter="url(#background)"
+          <text style={interfaceTextStyle}
+              filter="url(#selected)"
               textAnchor="middle"
               x="0"
               y="0"> {this.props.to_interface.name}</text>
         : null}
         <text style={interfaceTextStyle}
-              filter="url(#background)"
+              filter={this.props.to_interface.selected ? "" : "url(#background)"}
               textAnchor="middle"
               x="0" y="0">{this.props.to_interface.name}{this.props.to_interface.edit_label?'_':''}</text>
         </g>

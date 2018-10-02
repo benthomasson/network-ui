@@ -33,7 +33,13 @@ var debugRectStyle = {
 var deviceStyle = {
   fill: Colors['lightBackground']
 };
+var deviceSelectedStyle = {
+    fill: Colors['lightBackground'],
+    stroke: Colors['selectedBlue'],
+    strokeWidth: 10
+};
 var deviceTextStyle = {
+  fill: Colors['buttonText'],
 };
 var devicePathStyle = {
   fill: Colors['blue']
@@ -45,6 +51,7 @@ export {textStyle,
         debugRectStyle,
         constructionLineStyle,
         deviceStyle,
+        deviceSelectedStyle,
         devicePathStyle,
         deviceTextStyle
        };

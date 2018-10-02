@@ -4,6 +4,7 @@ import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
         deviceStyle,
+        deviceSelectedStyle,
         devicePathStyle,
         deviceTextStyle
         } from '../style/Styles.js';
@@ -74,7 +75,7 @@ class Host extends Component {
                         rx="20"
                         width="100"
                         height="60"
-                        style={deviceStyle}>
+                        style={this.props.selected ? deviceSelectedStyle : deviceStyle}>
                     </rect>
                     <g transform="scale(2)">
                       <path
@@ -98,13 +99,18 @@ class Host extends Component {
                     </g>
                 </g>
                 <g>
+                    {this.props.selected ?
                     <text style={deviceTextStyle}
-                          filter="url(#background)"
+                          filter="url(#selected)"
                           text-anchor="middle"
                           x="0"
                           y="50"> {this.props.name}
                     </text>
-                    <text style={deviceTextStyle} filter="url(#background)" text-anchor="middle" x="0" y="50">{this.props.name}{this.props.edit_label?'_':''}</text>
+                    : null}
+                    <text style={deviceTextStyle}
+                          filter={this.props.selected ? "" : "url(#background)"}
+                          textAnchor="middle"
+                          x="0" y="50">{this.props.name}{this.props.edit_label?'_':''}</text>
                 </g>
             </g>
         </g>

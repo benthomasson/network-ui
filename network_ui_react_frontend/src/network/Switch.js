@@ -4,6 +4,7 @@ import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
         deviceStyle,
+        deviceSelectedStyle,
         devicePathStyle,
         deviceTextStyle
         } from '../style/Styles.js';
@@ -73,7 +74,7 @@ class Switch extends Component {
                         rx="20"
                         width="100"
                         height="100"
-                        style={deviceStyle}>
+                        style={this.props.selected ? deviceSelectedStyle : deviceStyle}>
                     </rect>
                     <g transform="scale(2)">
                         <path
@@ -91,12 +92,17 @@ class Switch extends Component {
                     </g>
                 </g>
                 <g>
+                    {this.props.selected ?
                     <text style={deviceTextStyle}
-                          filter="url(#background)"
+                          filter="url(#selected)"
                           textAnchor="middle"
                           x="0"
                           y="70"> {this.props.name}</text>
-                    <text class="NetworkUI__switch-text" filter="url(#background)" textAnchor="middle" x="0" y="70">{this.props.name}{this.props.edit_label?'_':''}</text>
+                    : null}
+                    <text style={deviceTextStyle}
+                          filter={this.props.selected ? "" : "url(#background)"}
+                          textAnchor="middle"
+                          x="0" y="70">{this.props.name}{this.props.edit_label?'_':''}</text>
                 </g>
             </g>
         </g>

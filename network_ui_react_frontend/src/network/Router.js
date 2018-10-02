@@ -4,6 +4,7 @@ import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
         deviceStyle,
+        deviceSelectedStyle,
         devicePathStyle,
         deviceTextStyle
         } from '../style/Styles.js';
@@ -72,7 +73,7 @@ class Router extends Component {
                         cx="50"
                         cy="50"
                         r="50"
-                        style={deviceStyle}>
+                        style={this.props.selected ? deviceSelectedStyle : deviceStyle}>
                     </circle>
                     <g transform="scale(2)">
                         <path
@@ -90,12 +91,16 @@ class Router extends Component {
                     </g>
                 </g>
                 <g>
-                    <text style={deviceTextStyle}
-                          filter="url(#background)"
+                    {this.props.selected ?
+                    <text filter="url(#selected)"
                           textAnchor="middle"
                           x="0"
-                          y="70"> this.props.name}</text>
-                    <text style={deviceTextStyle} filter="url(#background)" textAnchor="middle" x="0" y="70">{this.props.name}{this.props.edit_label?'_':''}</text>
+                          y="70"> {this.props.name}</text>
+                    : null}
+                    <text style={deviceTextStyle}
+                          filter={this.props.selected ? "" : "url(#background)"}
+                          textAnchor="middle"
+                          x="0" y="70">{this.props.name}{this.props.edit_label?'_':''}</text>
                 </g>
             </g>
       </g>
