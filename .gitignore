@@ -273,3 +273,5 @@ network_ui/media/
 .env
 .envs/*
 !.envs/.local/
+
+/network_ui/templates/network_ui/index.html

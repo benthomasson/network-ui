@@ -6,20 +6,9 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path(
-        "about/",
-        TemplateView.as_view(template_name="pages/about.html"),
-        name="about",
-    ),
+    path("", TemplateView.as_view(template_name="network_ui/index.html"), name="index"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    path(
-        "users/",
-        include("network_ui.users.urls", namespace="users"),
-    ),
-    path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path(
         "network_ui/",
