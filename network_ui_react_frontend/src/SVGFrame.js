@@ -10,6 +10,7 @@ import Device from './network/Device'
 import Host from './network/Host'
 import Router from './network/Router'
 import Switch from './network/Switch'
+import Link from './network/Link'
 
 
 class SVGFrame extends Component {
@@ -54,6 +55,15 @@ class SVGFrame extends Component {
         devices.push(<Device {...device} showDebug={this.scope.showDebug}/>);
       }
     }
+    var links = [];
+    var link = null;
+    for (i = 0; i < this.scope.links.length; i++) {
+      link = this.scope.links[i];
+      links.push(<Link {...link}
+                       showDebug={this.scope.showDebug}
+                       scaledX={this.scope.scaledX}
+                       scaledY={this.scope.scaledY} />)
+    }
     return (
       <div className='SVGFrame'>
         <svg  id='frame' style={frameStyle}
@@ -71,12 +81,14 @@ class SVGFrame extends Component {
           </defs>
           <g transform={'translate(' + this.scope.panX + ',' + this.scope.panY + ') ' +
                          'scale(' + this.scope.current_scale + ')'}>
+          {links}
           {devices}
           <Quadrants {...this.scope} />
           </g>
           <Debug {...this.scope}
                  x={100}
                  move={this.scope.move_controller}
+                 link={this.scope.link_controller}
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
                  group={this.scope.group_controller}

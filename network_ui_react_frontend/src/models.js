@@ -4,6 +4,7 @@ var hot_keys_fsm = require('./core/hotkeys.fsm.js');
 var time_fsm = require('./core/time.fsm.js');
 var view_fsm = require('./core/view.fsm.js');
 var move_fsm = require('./network/move.fsm.js');
+var link_fsm = require('./network/link.fsm.js');
 var buttons_fsm = require('./button/buttons.fsm.js');
 var core_messages = require('./core/messages.js');
 var button_models = require('./button/models.js');
@@ -109,6 +110,7 @@ function ApplicationScope (svgFrame) {
   this.message_id_seq = util.natural_numbers(0);
   this.group_id_seq = util.natural_numbers(0);
   this.device_id_seq = util.natural_numbers(0);
+  this.link_id_seq = util.natural_numbers(0);
 
   //Create Buttons
   this.buttons_by_name = {
@@ -122,6 +124,7 @@ function ApplicationScope (svgFrame) {
   //Create FSM controllers
   this.hotkeys_controller = new fsm.FSMController(this, 'hot_keys_fsm', hot_keys_fsm.Start, this);
   this.move_controller = new fsm.FSMController(this, 'move_fsm', move_fsm.Start, this);
+  this.link_controller = new fsm.FSMController(this, 'link_fsm', link_fsm.Start, this);
   this.buttons_controller = new fsm.FSMController(this, 'buttons_fsm', buttons_fsm.Start, this);
   this.time_controller = new fsm.FSMController(this, 'time_fsm', time_fsm.Start, this);
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
@@ -132,6 +135,7 @@ function ApplicationScope (svgFrame) {
   this.controllers = [this.view_controller,
                       this.hotkeys_controller,
                       this.move_controller,
+                      this.link_controller,
                       this.buttons_controller,
                       this.time_controller];
 

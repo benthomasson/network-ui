@@ -432,6 +432,8 @@ _Move.prototype.onMouseDown = function (controller) {
 _Move.prototype.onMouseDown.transitions = ['Selected1'];
 
 _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
+
+    /*
     let context_menu = controller.scope.context_menus[0];
     context_menu.enabled = true;
     context_menu.x = $event.x;
@@ -443,6 +445,8 @@ _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
     });
 
     controller.changeState(ContextMenu);
+    */
+    controller.changeState(Selected2);
 };
 _Selected3.prototype.onMouseUp.transitions = ['ContextMenu'];
 
