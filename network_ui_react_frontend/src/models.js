@@ -75,7 +75,8 @@ function ApplicationScope (svgFrame) {
   this.websocket_host = process.env.REACT_APP_WEBSOCKET_HOST ? process.env.REACT_APP_WEBSOCKET_HOST : window.location.host;
   this.first_channel = null;
   this.history = [];
-  this.selecting_state = false;
+  this.selecting_device = false;
+  this.placing_group = false;
   this.browser_history = history.createHashHistory({hashType: "hashbang"});
   console.log(this.browser_history.location);
 

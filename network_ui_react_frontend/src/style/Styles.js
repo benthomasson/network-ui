@@ -31,7 +31,8 @@ var debugRectStyle = {
   strokeWidth: 1
 };
 var deviceStyle = {
-  fill: Colors['lightBackground']
+  fill: Colors['lightBackground'],
+  cursor: 'move'
 };
 var deviceSelectedStyle = {
     fill: Colors['lightBackground'],
@@ -42,7 +43,8 @@ var deviceTextStyle = {
   fill: Colors['buttonText'],
 };
 var devicePathStyle = {
-  fill: Colors['blue']
+  fill: Colors['blue'],
+  cursor: 'move'
 };
 export {textStyle,
         pathStyle,

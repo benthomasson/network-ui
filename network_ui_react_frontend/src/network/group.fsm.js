@@ -537,6 +537,14 @@ _Selected2.prototype.onKeyDown = function (controller, msg_type, $event) {
 _Selected2.prototype.onKeyDown.transitions = ['Ready'];
 
 
+_Placing.prototype.start = function (controller) {
+  controller.scope.placing_group = true;
+};
+
+_Placing.prototype.end = function (controller) {
+  controller.scope.placing_group = false;
+};
+
 _Placing.prototype.onMouseDown = function (controller) {
 
 	var scope = controller.scope;

@@ -39,7 +39,8 @@ class SVGFrame extends Component {
   render() {
     var frameStyle = {
       backgroundColor: '#ffffff',
-      cursor: (this.scope.selecting_state ? 'alias' : 'auto')
+      cursor: (this.scope.selecting_device ? 'alias' :
+               this.scope.placing_group ? 'crosshair' : 'auto')
     };
 
     var devices = [];
@@ -97,7 +98,7 @@ class SVGFrame extends Component {
               <feComposite in="SourceGraphic" operator="xor"/>
             </filter>
             <filter x="0" y="0" width="1" height="1" id="background">
-              <feFlood flood-color="#ffffff"/>
+              <feFlood floodColor="#ffffff"/>
               <feComposite in="SourceGraphic"/>
             </filter>
           </defs>
@@ -111,6 +112,7 @@ class SVGFrame extends Component {
           <Debug {...this.scope}
                  x={100}
                  move={this.scope.move_controller}
+                 group={this.scope.group_controller}
                  link={this.scope.link_controller}
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
