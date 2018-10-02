@@ -11,6 +11,7 @@ import Host from './network/Host'
 import Router from './network/Router'
 import Switch from './network/Switch'
 import Link from './network/Link'
+import Group from './network/Group'
 
 
 class SVGFrame extends Component {
@@ -46,13 +47,21 @@ class SVGFrame extends Component {
     for (var i = 0; i < this.scope.devices.length; i++) {
       device = this.scope.devices[i];
       if (device.type === "router") {
-        devices.push(<Router {...device} showDebug={this.scope.showDebug}/>);
+        devices.push(<Router {...device}
+                     key={'device' + i}
+                     showDebug={this.scope.showDebug}/>);
       } else if (device.type === "switch") {
-        devices.push(<Switch {...device} showDebug={this.scope.showDebug}/>);
+        devices.push(<Switch {...device}
+                     key={'device' + i}
+                     showDebug={this.scope.showDebug}/>);
       } else if (device.type === "host") {
-        devices.push(<Host {...device} showDebug={this.scope.showDebug}/>);
+        devices.push(<Host {...device}
+                     key={'device' + i}
+                     showDebug={this.scope.showDebug}/>);
       } else {
-        devices.push(<Device {...device} showDebug={this.scope.showDebug}/>);
+        devices.push(<Device {...device}
+                     key={'device' + i}
+                     showDebug={this.scope.showDebug}/>);
       }
     }
     var links = [];
@@ -60,9 +69,18 @@ class SVGFrame extends Component {
     for (i = 0; i < this.scope.links.length; i++) {
       link = this.scope.links[i];
       links.push(<Link {...link}
+                       key={'link' + i}
                        showDebug={this.scope.showDebug}
                        scaledX={this.scope.scaledX}
                        scaledY={this.scope.scaledY} />)
+    }
+    var groups = [];
+    for (i=0; i< this.scope.groups.length; i++) {
+      groups.push(<Group {...this.scope.groups[i]}
+                          key={'group' + i}
+                          showDebug={this.scope.showDebug}
+                          scaledX={this.scope.scaledX}
+                          scaledY={this.scope.scaledY} />);
     }
     return (
       <div className='SVGFrame'>
@@ -83,6 +101,7 @@ class SVGFrame extends Component {
                          'scale(' + this.scope.current_scale + ')'}>
           {links}
           {devices}
+          {groups}
           <Quadrants {...this.scope} />
           </g>
           <Debug {...this.scope}

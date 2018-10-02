@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@gouch/to-title-case": "^2.2.1",
     "history": "^4.7.2",
     "mathjs": "^5.1.2",
     "nunjucks": "^3.1.3",

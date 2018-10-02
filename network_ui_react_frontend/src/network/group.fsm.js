@@ -1,7 +1,6 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
+require('@gouch/to-title-case');
 var inherits = require('inherits');
-var titlecase = require('titlecase');
-
 var fsm = require('../fsm.js');
 var models = require('./models.js');
 var messages = require('./messages.js');
@@ -255,6 +254,7 @@ _Selected3.prototype.onMouseMove = function (controller) {
 _Selected3.prototype.onMouseMove.transitions = ['Move'];
 
 _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
+    /*
     let context_menu = controller.scope.context_menus[0];
     context_menu.enabled = true;
     context_menu.x = $event.x;
@@ -267,6 +267,9 @@ _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
 
     controller.changeState(ContextMenu);
 
+    */
+
+    controller.changeState(Selected2);
 };
 _Selected3.prototype.onMouseUp.transitions = ['ContextMenu'];
 
@@ -549,7 +552,7 @@ _Placing.prototype.onMouseDown = function (controller) {
     var id = scope.group_id_seq();
 
     group = new models.Group(id,
-                             titlecase.toTitleCase("" + scope.new_group_type + id),
+                             ("" + scope.new_group_type + id).toTitleCase(),
                              scope.new_group_type,
                              scope.scaledX,
                              scope.scaledY,

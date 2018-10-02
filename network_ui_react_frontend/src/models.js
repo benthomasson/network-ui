@@ -5,6 +5,7 @@ var time_fsm = require('./core/time.fsm.js');
 var view_fsm = require('./core/view.fsm.js');
 var move_fsm = require('./network/move.fsm.js');
 var link_fsm = require('./network/link.fsm.js');
+var group_fsm = require('./network/group.fsm.js');
 var buttons_fsm = require('./button/buttons.fsm.js');
 var core_messages = require('./core/messages.js');
 var button_models = require('./button/models.js');
@@ -35,6 +36,10 @@ function ApplicationScope (svgFrame) {
   this.send_trace_message =  this.send_trace_message.bind(this);
   this.uploadButtonHandler =  this.uploadButtonHandler.bind(this);
   this.downloadButtonHandler =  this.downloadButtonHandler.bind(this);
+  this.create_inventory_host =  this.create_inventory_host.bind(this);
+  this.create_inventory_group =  this.create_inventory_group.bind(this);
+  this.create_group_association =  this.create_group_association.bind(this);
+  this.delete_group_association =  this.delete_group_association.bind(this);
 
   var self = this;
 
@@ -128,6 +133,7 @@ function ApplicationScope (svgFrame) {
   this.buttons_controller = new fsm.FSMController(this, 'buttons_fsm', buttons_fsm.Start, this);
   this.time_controller = new fsm.FSMController(this, 'time_fsm', time_fsm.Start, this);
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
+  this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
 
 
   //Wire up controllers
@@ -136,6 +142,7 @@ function ApplicationScope (svgFrame) {
                       this.hotkeys_controller,
                       this.move_controller,
                       this.link_controller,
+                      this.group_controller,
                       this.buttons_controller,
                       this.time_controller];
 
@@ -420,4 +427,22 @@ ApplicationScope.prototype.create_inventory_host = function (device) {
   console.log(device);
 
   return [];
+};
+
+ApplicationScope.prototype.create_inventory_group = function (group) {
+  if (this.template_building || group.template) {
+      return;
+  }
+  console.log(group);
+  return [];
+};
+
+ApplicationScope.prototype.create_group_association = function () {};
+
+ApplicationScope.prototype.delete_group_association = function (group, devices) {
+  if (this.template_building || group.template) {
+      return;
+  }
+
+  console.log(['delete_group_association', group, devices]);
 };
