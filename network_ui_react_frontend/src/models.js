@@ -28,18 +28,20 @@ function ApplicationScope (svgFrame) {
   this.onResize = this.onResize.bind(this);
   this.onHistory = this.onHistory.bind(this);
   this.onTopology = this.onTopology.bind(this);
-  this.onClientId =  this.onClientId.bind(this);
-  this.onSnapshot =  this.onSnapshot.bind(this);
-  this.updateScaledXY =  this.updateScaledXY.bind(this);
-  this.updatePanAndScale =  this.updatePanAndScale.bind(this);
-  this.send_control_message =  this.send_control_message.bind(this);
-  this.send_trace_message =  this.send_trace_message.bind(this);
-  this.uploadButtonHandler =  this.uploadButtonHandler.bind(this);
-  this.downloadButtonHandler =  this.downloadButtonHandler.bind(this);
-  this.create_inventory_host =  this.create_inventory_host.bind(this);
-  this.create_inventory_group =  this.create_inventory_group.bind(this);
-  this.create_group_association =  this.create_group_association.bind(this);
-  this.delete_group_association =  this.delete_group_association.bind(this);
+  this.onClientId = this.onClientId.bind(this);
+  this.onSnapshot = this.onSnapshot.bind(this);
+  this.updateScaledXY = this.updateScaledXY.bind(this);
+  this.updatePanAndScale = this.updatePanAndScale.bind(this);
+  this.send_control_message = this.send_control_message.bind(this);
+  this.send_trace_message = this.send_trace_message.bind(this);
+  this.uploadButtonHandler = this.uploadButtonHandler.bind(this);
+  this.downloadButtonHandler = this.downloadButtonHandler.bind(this);
+  this.create_inventory_host = this.create_inventory_host.bind(this);
+  this.create_inventory_group = this.create_inventory_group.bind(this);
+  this.create_group_association = this.create_group_association.bind(this);
+  this.delete_group_association = this.delete_group_association.bind(this);
+  this.deleteDevice = this.deleteDevice.bind(this);
+  this.deleteGroup = this.deleteGroup.bind(this);
 
   var self = this;
 
@@ -445,4 +447,106 @@ ApplicationScope.prototype.delete_group_association = function (group, devices) 
   }
 
   console.log(['delete_group_association', group, devices]);
+};
+
+ApplicationScope.prototype.deleteDevice = function() {
+  var i = 0;
+  var j = 0;
+  var index = -1;
+  var devices = this.selected_devices;
+  var links = this.selected_links;
+  var all_links = this.links.slice();
+  this.selected_devices = [];
+  this.selected_links = [];
+  this.move_controller.changeState(move_fsm.Ready);
+  for (i = 0; i < links.length; i++) {
+      index = this.links.indexOf(links[i]);
+      if (index !== -1) {
+          links[i].selected = false;
+          links[i].remote_selected = false;
+          this.links.splice(index, 1);
+          this.send_control_message(new net_messages.LinkDestroy(this.client_id,
+                                                                         links[i].id,
+                                                                         links[i].from_device.id,
+                                                                         links[i].to_device.id,
+                                                                         links[i].from_interface.id,
+                                                                         links[i].to_interface.id,
+                                                                         links[i].name));
+      }
+  }
+  for (i = 0; i < devices.length; i++) {
+      index = this.devices.indexOf(devices[i]);
+      if (index !== -1) {
+          this.devices.splice(index, 1);
+          this.send_control_message(new net_messages.DeviceDestroy(this.client_id,
+                                                                           devices[i].id,
+                                                                           devices[i].x,
+                                                                           devices[i].y,
+                                                                           devices[i].name,
+                                                                           devices[i].type,
+                                                                           devices[i].host_id));
+      }
+      for (j = 0; j < all_links.length; j++) {
+          if (all_links[j].to_device === devices[i] ||
+              all_links[j].from_device === devices[i]) {
+              index = this.links.indexOf(all_links[j]);
+              if (index !== -1) {
+                  this.links.splice(index, 1);
+              }
+          }
+      }
+  }
+};
+
+ApplicationScope.prototype.deleteGroup = function () {
+  var i = 0;
+  var index = -1;
+  var selected_groups = this.selected_groups;
+  this.selected_groups = [];
+  this.group_controller.changeState(group_fsm.Ready);
+
+  var self = this;
+
+  function removeSingleGroup(group){
+      index = self.groups.indexOf(group);
+      if (index !== -1) {
+          group.selected = false;
+          group.remote_selected = false;
+          self.groups.splice(index, 1);
+      }
+      self.send_control_message(new net_messages.GroupDestroy(self.client_id,
+                                                                      group.id,
+                                                                      group.x1,
+                                                                      group.y1,
+                                                                      group.x2,
+                                                                      group.y2,
+                                                                      group.name,
+                                                                      group.group_id));
+  }
+
+  if(this.current_scale <= 0.5){
+      // current scale is in racks mode or sites mode
+      for (i = 0; i < selected_groups.length; i++) {
+          let group = selected_groups[i];
+          if(group.groups.length > 0){
+              for(var k = 0; k < group.groups.length; k++){
+                  let nested_group = group.groups[k];
+                  removeSingleGroup(nested_group);
+              }
+          }
+          // remove all the nested devices and links
+          this.selected_devices = group.devices;
+          this.selected_links = group.links;
+          this.deleteDevice();
+
+          removeSingleGroup(group);
+      }
+  }
+  if(this.current_scale > 0.5){
+      // current scale is in devices mode
+      for (i = 0; i < selected_groups.length; i++) {
+          let group = selected_groups[i];
+          removeSingleGroup(group);
+      }
+  }
 };
