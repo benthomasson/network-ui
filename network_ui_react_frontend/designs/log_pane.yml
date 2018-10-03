@@ -1,0 +1,32 @@
+diagram_id: 2
+name: diagram
+states:
+- id: 0
+  label: Hidden
+  x: 428
+  y: 548
+- id: 5
+  label: Playbook
+  x: 606
+  y: 317
+- id: 2
+  label: Start
+  x: 148
+  y: 552
+- id: 3
+  label: Visible
+  x: 771
+  y: 542
+transitions:
+- from_state: Hidden
+  label: onMouseOver
+  to_state: Playbook
+- from_state: Playbook
+  label: onMouseOut
+  to_state: Visible
+- from_state: Start
+  label: start
+  to_state: Hidden
+- from_state: Visible
+  label: onMouseMove
+  to_state: Hidden
