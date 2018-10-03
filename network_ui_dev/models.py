@@ -40,6 +40,7 @@ class Topology(models.Model):
     link_id_seq = models.IntegerField(default=0,)
     group_id_seq = models.IntegerField(default=0,)
     stream_id_seq = models.IntegerField(default=0,)
+    uuid = models.CharField(max_length=40, blank=True,)
 
     def __unicode__(self):
         return self.name

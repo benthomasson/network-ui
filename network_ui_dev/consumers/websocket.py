@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from pprint import pformat, pprint
+import uuid
 import logging
 import json
 import urllib.parse
@@ -128,17 +129,18 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_or_create_topology(self):
-        qs = urllib.parse.parse_qs(self.scope['query_string'])
-        print("qs: " + str(urllib.parse.parse_qs(self.scope['query_string'])))
-        self.topology_id = parse_topology_id(qs)
+        qs_data = urllib.parse.parse_qs(self.scope['query_string'])
+        print("qs_data: " + str(urllib.parse.parse_qs(self.scope['query_string'])))
+        topology_uuid = qs_data.get(b'topology_id', [b'xxxx'])[0].decode()
         print('self.topology_id: ' + repr(self.topology_id))
-        if self.topology_id:
-            self.topology = Topology.objects.get(topology_id=self.topology_id)
-        else:
-            self.topology = Topology(name="topology", scale=1.0, panX=0, panY=0)
-            self.topology.save()
-            self.topology_id = self.topology.pk
-        return transform_dict(dict(topology_id='topology_id',
+        self.topology, created = Topology.objects.get_or_create(
+                uuid=topology_uuid,
+                defaults=dict(name="topology", scale=1.0, panX=0, panY=0, uuid=str(uuid.uuid4())))
+
+
+
+        self.topology_id = self.topology.topology_id
+        return transform_dict(dict(uuid='topology_id',
                                    name='name',
                                    panX='panX',
                                    panY='panY',

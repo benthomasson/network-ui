@@ -10,6 +10,8 @@ var buttons_fsm = require('./button/buttons.fsm.js');
 var core_messages = require('./core/messages.js');
 var button_models = require('./button/models.js');
 var net_messages = require('./network/messages.js');
+var net_models = require('./network/models.js');
+var app_models = require('./application/models.js');
 var ReconnectingWebSocket = require('reconnectingwebsocket');
 var history = require('history');
 
@@ -97,9 +99,9 @@ function ApplicationScope (svgFrame) {
 
   //Connect websocket
   if (!this.disconnected) {
-    console.log( "ws://" + this.websocket_host + "/ws/prototype?topology_id=" + this.topology_id);
+    console.log( "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id);
     this.control_socket = new ReconnectingWebSocket(
-      "ws://" + this.websocket_host + "/ws/prototype?topology_id=" + this.topology_id,
+      "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id,
       null,
       {debug: false, reconnectInterval: 300});
     this.control_socket.onmessage = function(message) {
@@ -408,7 +410,7 @@ ApplicationScope.prototype.onHistory = function (data) {
 
 ApplicationScope.prototype.onTopology = function(data) {
 
-  var path_data = {pathname: '/toplogy_id:' + data.toplogy_id}
+  var path_data = {pathname: '/topology_id:' + data.topology_id}
   if (this.browser_history.location.pathname !== path_data.pathname) {
     this.browser_history.push(path_data);
   }
@@ -421,6 +423,196 @@ ApplicationScope.prototype.onClientId = function(data) {
 
 ApplicationScope.prototype.onSnapshot = function (data) {
 
+        //Erase the existing state
+        this.devices = [];
+        this.links = [];
+        this.groups = [];
+        this.streams = [];
+
+        var device_map = {};
+        var device_interface_map = {};
+        var i = 0;
+        var j = 0;
+        var device = null;
+        var intf = null;
+        var new_device = null;
+        var new_intf = null;
+        var max_device_id = null;
+        var max_link_id = null;
+        var max_group_id = null;
+        var max_stream_id = null;
+        var min_x = null;
+        var min_y = null;
+        var max_x = null;
+        var max_y = null;
+        var new_link = null;
+        var new_group = null;
+        var process = null;
+        var new_process = null;
+        var new_stream = null;
+
+        //Build the devices
+        for (i = 0; i < data.devices.length; i++) {
+            device = data.devices[i];
+            if (max_device_id === null || device.id > max_device_id) {
+                max_device_id = device.id;
+            }
+            if (min_x === null || device.x < min_x) {
+                min_x = device.x;
+            }
+            if (min_y === null || device.y < min_y) {
+                min_y = device.y;
+            }
+            if (max_x === null || device.x > max_x) {
+                max_x = device.x;
+            }
+            if (max_y === null || device.y > max_y) {
+                max_y = device.y;
+            }
+            new_device = new net_models.Device(device.id,
+                                           device.name,
+                                           device.x,
+                                           device.y,
+                                           device.device_type,
+                                           device.host_id);
+
+            /*
+            for (j=0; j < this.inventory_toolbox.items.length; j++) {
+                 if(this.inventory_toolbox.items[j].name === device.name) {
+                     this.inventory_toolbox.items.splice(j, 1);
+                     break;
+                 }
+            }
+            */
+            new_device.interface_seq = util.natural_numbers(device.interface_id_seq);
+            new_device.process_id_seq = util.natural_numbers(device.process_id_seq);
+            this.devices.push(new_device);
+            device_map[device.id] = new_device;
+            device_interface_map[device.id] = {};
+            for (j = 0; j < device.processes.length; j++) {
+                process = device.processes[j];
+                new_process = (new app_models.Process(process.id,
+                                                  process.name,
+                                                  process.process_type,
+                                                  0,
+                                                  0));
+                new_process.device = new_device;
+                new_device.processes.push(new_process);
+            }
+            for (j = 0; j < device.interfaces.length; j++) {
+                intf = device.interfaces[j];
+                new_intf = (new net_models.Interface(intf.id,
+                                                 intf.name));
+                new_intf.device = new_device;
+                device_interface_map[device.id][intf.id] = new_intf;
+                new_device.interfaces.push(new_intf);
+            }
+        }
+
+        //Build the links
+        var link = null;
+        for (i = 0; i < data.links.length; i++) {
+            link = data.links[i];
+            if (max_link_id === null || link.id > max_link_id) {
+                max_link_id = link.id;
+            }
+            new_link = new net_models.Link(link.id,
+                                       device_map[link.from_device_id],
+                                       device_map[link.to_device_id],
+                                       device_interface_map[link.from_device_id][link.from_interface_id],
+                                       device_interface_map[link.to_device_id][link.to_interface_id]);
+            new_link.name = link.name;
+            this.links.push(new_link);
+            device_interface_map[link.from_device_id][link.from_interface_id].link = new_link;
+            device_interface_map[link.to_device_id][link.to_interface_id].link = new_link;
+        }
+
+        //Build the streams
+        var stream = null;
+        for (i = 0; i < data.streams.length; i++) {
+            stream = data.streams[i];
+            if (max_stream_id === null || stream.id > max_stream_id) {
+                max_stream_id = stream.id;
+            }
+            new_stream = new app_models.Stream(stream.id,
+                                           device_map[stream.from_id],
+                                           device_map[stream.to_id],
+                                           stream.label);
+            this.streams.push(new_stream);
+        }
+
+        //Build the groups
+        var group = null;
+        for (i = 0; i < data.groups.length; i++) {
+            group = data.groups[i];
+            if (max_group_id === null || group.id > max_group_id) {
+                max_group_id = group.id;
+            }
+            new_group = new net_models.Group(group.id,
+                                         group.name,
+                                         group.group_type,
+                                         group.x1,
+                                         group.y1,
+                                         group.x2,
+                                         group.y2,
+                                         false);
+            new_group.group_id = group.inventory_group_id;
+            if (group.members !== undefined) {
+                for (j=0; j < group.members.length; j++) {
+                    new_group.devices.push(device_map[group.members[j]]);
+                }
+            }
+            this.groups.push(new_group);
+        }
+
+        //Update group membership
+
+        for (i = 0; i < this.groups.length; i++) {
+            this.groups[i].update_membership(this.devices, this.groups);
+        }
+
+        var diff_x;
+        var diff_y;
+
+        // Calculate the new scale to show the entire diagram
+        if (min_x !== null && min_y !== null && max_x !== null && max_y !== null) {
+            diff_x = max_x - min_x;
+            diff_y = max_y - min_y;
+
+            this.current_scale = Math.min(2, Math.max(0.10, Math.min((window.innerWidth-200)/diff_x, (window.innerHeight-300)/diff_y)));
+            this.updateScaledXY();
+            this.updatePanAndScale();
+        }
+        // Calculate the new panX and panY to show the entire diagram
+        if (min_x !== null && min_y !== null) {
+            diff_x = max_x - min_x;
+            diff_y = max_y - min_y;
+            this.panX = this.current_scale * (-min_x - diff_x/2) + window.innerWidth/2;
+            this.panY = this.current_scale * (-min_y - diff_y/2) + window.innerHeight/2;
+            this.updateScaledXY();
+            this.updatePanAndScale();
+        }
+
+        //Update the device_id_seq to be greater than all device ids to prevent duplicate ids.
+        if (max_device_id !== null) {
+            this.device_id_seq = util.natural_numbers(max_device_id);
+        }
+        //
+        //Update the link_id_seq to be greater than all link ids to prevent duplicate ids.
+        if (max_link_id !== null) {
+            this.link_id_seq = util.natural_numbers(max_link_id);
+        }
+        //Update the stream_id_seq to be greater than all stream ids to prevent duplicate ids.
+        if (max_stream_id !== null) {
+            this.stream_id_seq = util.natural_numbers(max_stream_id);
+        }
+        //Update the group_id_seq to be greater than all group ids to prevent duplicate ids.
+        if (max_group_id !== null) {
+            this.group_id_seq = util.natural_numbers(max_group_id);
+        }
+
+        this.updateInterfaceDots();
+        this.update_device_variables();
 };
 
 ApplicationScope.prototype.create_inventory_host = function (device) {
@@ -549,5 +741,25 @@ ApplicationScope.prototype.deleteGroup = function () {
           let group = selected_groups[i];
           removeSingleGroup(group);
       }
+  }
+};
+
+ApplicationScope.prototype.updateInterfaceDots = function () {
+  var i = 0;
+  var j = 0;
+  var devices = this.devices;
+  for (i = devices.length - 1; i >= 0; i--) {
+    for (j = devices[i].interfaces.length - 1; j >= 0; j--) {
+      devices[i].interfaces[j].dot();
+    }
+  }
+};
+
+ApplicationScope.prototype.update_device_variables = function () {
+
+  var hosts_by_id = {};
+  var i = 0;
+  for (i = 0; i < this.devices.length; i++) {
+    hosts_by_id[this.devices[i].host_id] = this.devices[i];
   }
 };
