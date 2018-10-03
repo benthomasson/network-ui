@@ -20,13 +20,14 @@ def index(request):
 
 
 class TopologyForm(forms.Form):
-    topology_id = forms.IntegerField()
+    topology_id = forms.CharField()
 
 
 def json_topology_data(request):
     form = TopologyForm(request.GET)
     if form.is_valid():
-        return JsonResponse(topology_data(form.cleaned_data['topology_id']))
+        topology_id = Topology.objects.get(uuid=form.cleaned_data['topology_id']).pk
+        return JsonResponse(topology_data(topology_id))
     else:
         return HttpResponseBadRequest(form.errors)
 
@@ -34,7 +35,8 @@ def json_topology_data(request):
 def yaml_topology_data(request):
     form = TopologyForm(request.GET)
     if form.is_valid():
-        return HttpResponse(yaml.safe_dump(topology_data(form.cleaned_data['topology_id']),
+        topology_id = Topology.objects.get(uuid=form.cleaned_data['topology_id']).pk
+        return HttpResponse(yaml.safe_dump(topology_data(topology_id),
                                            default_flow_style=False),
                             content_type='application/yaml')
     else:
@@ -42,7 +44,7 @@ def yaml_topology_data(request):
 
 
 class FSMTraceForm(forms.Form):
-    topology_id = forms.IntegerField()
+    topology_id = forms.CharField()
     trace_id = forms.IntegerField()
     client_id = forms.IntegerField()
 
@@ -65,7 +67,7 @@ def download_trace(request):
 
 
 class RecordingForm(forms.Form):
-    topology_id = forms.IntegerField()
+    topology_id = forms.CharField()
     trace_id = forms.IntegerField()
     client_id = forms.IntegerField()
 

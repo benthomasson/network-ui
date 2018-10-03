@@ -124,12 +124,10 @@ function ApplicationScope (svgFrame) {
 
   //Create Buttons
   this.buttons_by_name = {
-    upload: new button_models.Button("Topology", 20, 7, 50, 70, this.uploadButtonHandler, this),
-    download: new button_models.Button("Topology", 90, 7, 50, 70, this.downloadButtonHandler, this),
+    download: new button_models.Button("Topology", 20, 7, 50, 70, this.downloadButtonHandler, this)
   };
 
-  this.buttons = [this.buttons_by_name.upload,
-                  this.buttons_by_name.download];
+  this.buttons = [this.buttons_by_name.download];
 
   //Create FSM controllers
   this.hotkeys_controller = new fsm.FSMController(this, 'hot_keys_fsm', hot_keys_fsm.Start, this);
@@ -170,12 +168,12 @@ exports.ApplicationScope = ApplicationScope;
 
 ApplicationScope.prototype.uploadButtonHandler = function (message) {
   console.log(message);
-  window.open("/prototype/upload?topology_id=" + this.topology_id, "_top");
+  window.open("/network_ui/upload?topology_id=" + this.topology_id, "_top");
 };
 
 ApplicationScope.prototype.downloadButtonHandler = function (message) {
   console.log(message);
-  window.open("/prototype/download?topology_id=" + this.topology_id, "_blank");
+  window.open("/network_ui/download?topology_id=" + this.topology_id, "_blank");
 };
 
 ApplicationScope.prototype.send_trace_message = function (message) {
