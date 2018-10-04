@@ -49,6 +49,8 @@ _Recording.prototype.start = function (controller) {
                                                                                   scope.current_scale,
                                                                                   scope.panX,
                                                                                   scope.panY,
+                                                                                  scope.frameWidth,
+                                                                                  scope.frameHeight,
                                                                                   scope.trace_id),
                                                             new messages.Snapshot(scope.client_id,
                                                                                   scope.devices,
@@ -103,6 +105,20 @@ _Recording.prototype.onMouseWheel = function (controller, msg_type, $event) {
                                                                      deltaY,
                                                                      'mousewheel',
                                                                      controller.scope.trace_id));
+  controller.delegate_channel.send(msg_type, $event);
+};
+
+_Recording.prototype.onKeyDown = function (controller, msg_type, $event) {
+  var scope = controller.scope;
+  scope.send_control_message(new messages.KeyEvent(scope.client_id,
+                                                   $event.key,
+                                                   $event.keyCode,
+                                                   $event.type,
+                                                   $event.altKey,
+                                                   $event.shiftKey,
+                                                   $event.ctrlKey,
+                                                   $event.metaKey,
+                                                   scope.trace_id));
   controller.delegate_channel.send(msg_type, $event);
 };
 

@@ -70,12 +70,14 @@ function StopRecording(sender, trace_id) {
 }
 exports.StopRecording = StopRecording;
 
-function ViewPort(sender, scale, panX, panY, trace_id) {
+function ViewPort(sender, scale, panX, panY, frameWidth, frameHeight, trace_id) {
     this.msg_type = "ViewPort";
     this.sender = sender;
     this.scale = scale;
     this.panX = panX;
     this.panY = panY;
+    this.frameWidth = frameWidth;
+    this.frameHeight = frameHeight;
     this.trace_id = trace_id;
 }
 exports.ViewPort = ViewPort;
