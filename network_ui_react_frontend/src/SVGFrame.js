@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Debug from './core/Debug'
 import Cursor from './core/Cursor'
-import Upload from './button/Upload'
 import Download from './button/Download'
 import Quadrants from './core/Quadrants'
 import Help from './core/Help'
@@ -118,7 +117,6 @@ class SVGFrame extends Component {
                  link={this.scope.link_controller}
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
-                 group={this.scope.group_controller}
                  />
           {this.scope.showCursor ?
           <Cursor x={this.scope.cursorPosX}

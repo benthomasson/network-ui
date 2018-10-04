@@ -60,8 +60,6 @@ class Link extends Component {
     var circleDebugStyle = {
       fill: Colors['debugCopyNot']
     };
-    var interfaceTextSelectedStyle = {
-    };
     var interfaceSelectedStyle = {
       fill: Colors['selectedBlue'],
     };
