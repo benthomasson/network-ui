@@ -430,6 +430,18 @@ models:
   name: TestResult
   x: -1336
   y: -49
+- fields:
+  - name: replay_id
+    pk: true
+    type: AutoField
+  - name: replay_data
+    type: TextField
+  - len: 200
+    name: name
+    type: CharField
+  name: Replay
+  x: -1319
+  y: 513
 modules: []
 view:
   panX: 213.729555519212

@@ -211,3 +211,10 @@ class TestResult(models.Model):
     time = models.DateTimeField()
     id = models.IntegerField(default=0,)
     client = models.ForeignKey('Client', on_delete=models.CASCADE,)
+
+
+class Replay(models.Model):
+
+    replay_id = models.AutoField(primary_key=True,)
+    replay_data = models.TextField()
+    name = models.CharField(max_length=200, blank=True,)
