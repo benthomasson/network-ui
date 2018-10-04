@@ -245,10 +245,6 @@ o = urlparse(REDIS_URL)
 REDIS_HOST = o.hostname
 REDIS_PORT = int(o.port)
 
-print(REDIS_HOST)
-print(REDIS_PORT)
-
-
 ASGI_APPLICATION = 'config.settings.routing.application'
 CHANNEL_LAYERS = {
     'default': {
