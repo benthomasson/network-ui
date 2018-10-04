@@ -31,7 +31,9 @@ class SVGFrame extends Component {
        frameHeight: window.innerHeight
      });
      document.addEventListener('keydown', this.scope.onKeyDown);
-     window.addEventListener('resize', this.scope.onResize)
+     window.addEventListener('resize', this.scope.onResize);
+     window.addEventListener('beforeunload', this.scope.onUnload);
+
 
      this.forceUpdate();
   }

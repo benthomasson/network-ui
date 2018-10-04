@@ -7,6 +7,7 @@ var move_fsm = require('./network/move.fsm.js');
 var link_fsm = require('./network/link.fsm.js');
 var group_fsm = require('./network/group.fsm.js');
 var buttons_fsm = require('./button/buttons.fsm.js');
+var record_fsm = require('./ux/record.fsm.js');
 var core_messages = require('./core/messages.js');
 var button_models = require('./button/models.js');
 var net_messages = require('./network/messages.js');
@@ -28,6 +29,7 @@ function ApplicationScope (svgFrame) {
   this.timer = this.timer.bind(this);
   this.onKeyDown = this.onKeyDown.bind(this);
   this.onResize = this.onResize.bind(this);
+  this.onUnload = this.onUnload.bind(this);
   this.onHistory = this.onHistory.bind(this);
   this.onTopology = this.onTopology.bind(this);
   this.onClientId = this.onClientId.bind(this);
@@ -116,6 +118,7 @@ function ApplicationScope (svgFrame) {
   }
 
   //Create sequences
+  this.trace_id_seq = util.natural_numbers(0);
   this.trace_order_seq = util.natural_numbers(0);
   this.message_id_seq = util.natural_numbers(0);
   this.group_id_seq = util.natural_numbers(0);
@@ -137,6 +140,7 @@ function ApplicationScope (svgFrame) {
   this.time_controller = new fsm.FSMController(this, 'time_fsm', time_fsm.Start, this);
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
   this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
+  this.record_controller = new fsm.FSMController(this, 'record_fsm', record_fsm.Start, this);
 
 
   //Wire up controllers
@@ -147,7 +151,8 @@ function ApplicationScope (svgFrame) {
                       this.link_controller,
                       this.group_controller,
                       this.buttons_controller,
-                      this.time_controller];
+                      this.time_controller,
+                      this.record_controller];
 
 
   for (var i = 0; i < this.controllers.length - 1; i++) {
@@ -243,8 +248,8 @@ ApplicationScope.prototype.onMouseUp = function (e) {
 };
 
 ApplicationScope.prototype.onMouseWheel = function (e) {
-  //console.log(e);
-  this.first_channel.send("MouseWheel", [e, e.deltaY]);
+  console.log([e, e.deltaX, e.deltaY, e.deltaZ, e.metaKey, e.deltaMode]);
+  this.first_channel.send("MouseWheel", [e.deltaX, e.deltaY]);
   e.preventDefault();
   this.svgFrame.forceUpdate();
 };
@@ -264,6 +269,11 @@ ApplicationScope.prototype.timer = function () {
     frameNumber: this.state.frameNumber + 1
   });
   this.svgFrame.forceUpdate();
+};
+
+ApplicationScope.prototype.onUnload = function (e) {
+
+  this.first_channel.send('PageClose', {});
 };
 
 ApplicationScope.prototype.onResize = function (e) {
@@ -611,6 +621,8 @@ ApplicationScope.prototype.onSnapshot = function (data) {
 
         this.updateInterfaceDots();
         this.update_device_variables();
+
+        this.first_channel.send('SnapshotLoaded', {});
 };
 
 ApplicationScope.prototype.create_inventory_host = function (device) {

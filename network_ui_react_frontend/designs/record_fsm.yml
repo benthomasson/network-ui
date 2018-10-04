@@ -2,37 +2,31 @@ diagram_uuid: 1203da4a-3aea-45fc-8594-a69922de2fac
 finite_state_machine_id: 1
 name: record_fsm
 states:
-- id: 3
+- id: 5
   label: NotRecording
-  x: 963
-  y: 560
+  x: 928
+  y: 529
 - id: 4
   label: Ready
   x: 754
   y: 231
 - id: 2
   label: Recording
-  x: 539
-  y: 573
+  x: 563
+  y: 554
 - id: 1
   label: Start
   x: 757
   y: -23
 transitions:
-- from_state: NotRecording
-  label: start
-  to_state: Ready
 - from_state: Ready
-  label: onSnapshot
+  label: onSnapshotLoaded
   to_state: Recording
 - from_state: Ready
-  label: StartRecording
+  label: start
   to_state: Recording
 - from_state: Recording
   label: onPageClose
-  to_state: NotRecording
-- from_state: Recording
-  label: StopRecording
   to_state: NotRecording
 - from_state: Start
   label: start
