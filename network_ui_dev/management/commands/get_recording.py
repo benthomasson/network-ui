@@ -29,7 +29,9 @@ class Command(BaseCommand):
                                  .order_by('order')
                                  .values())
         data['snapshots'] = [json.loads(x) for x in TopologySnapshot
-                             .objects.filter(trace_session_id=trace_id, client_id=client_id)
+                             .objects.filter(topology_id=topology_id,
+                                             trace_session_id=trace_id,
+                                             client_id=client_id)
                              .order_by('order')
                              .values_list('snapshot_data', flat=True)]
 

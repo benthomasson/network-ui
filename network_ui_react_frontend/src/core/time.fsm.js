@@ -1,6 +1,7 @@
 var inherits = require('inherits');
 var fsm = require('../fsm.js');
 var messages = require('./messages.js');
+var util = require('../util.js');
 
 function _State () {
 }
@@ -362,3 +363,49 @@ _Present.prototype.undo = function(controller) {
         controller.changeState(Past);
     }
 };
+
+if (process.env.REACT_APP_REPLAY === 'true') {
+  _Present.prototype.onReplay = function(controller, msg_type, $event) {
+    controller.scope.first_channel.send(msg_type, $event);
+  }
+
+  _Present.prototype.onViewPort = function(controller, msg_type, message) {
+    controller.scope.current_scale = message.scale;
+    controller.scope.panX = message.panX;
+    controller.scope.panY = message.panY;
+    controller.scope.updateScaledXY();
+    controller.scope.updatePanAndScale();
+  };
+
+  _Present.prototype.onMouseEvent = function(controller, msg_type, message) {
+      message.preventDefault = util.noop;
+      message.pageX = message.x;
+      message.pageY = message.y;
+      if (message.type === "mousemove") {
+          controller.scope.onMouseMove(message);
+      }
+      if (message.type === "mouseup") {
+          controller.scope.onMouseUp(message);
+      }
+      if (message.type === "mousedown") {
+          controller.scope.onMouseDown(message);
+      }
+      if (message.type === "mouseover") {
+          controller.scope.onMouseOver(message);
+      }
+      if (message.type === "mouseout") {
+          controller.scope.onMouseOver(message);
+      }
+  };
+  _Present.prototype.onMouseWheelEvent = function(controller, msg_type, message) {
+      message.preventDefault = util.noop;
+      message.stopPropagation = util.noop;
+      controller.scope.onMouseWheel(message, message.delta, message.deltaX, message.deltaY);
+  };
+  _Present.prototype.onKeyEvent = function(controller, msg_type, message) {
+      message.preventDefault = util.noop;
+      if (message.type === "keydown") {
+          controller.scope.onKeyDown(message);
+      }
+  };
+}

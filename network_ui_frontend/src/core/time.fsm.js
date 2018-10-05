@@ -115,6 +115,7 @@ _Past.prototype.onStartReplay = function(controller) {
 _Past.prototype.onStopReplay = function(controller) {
         controller.scope.replay = false;
 };
+
 _Past.prototype.onViewPort = function(controller, msg_type, message) {
         if (message.sender === controller.scope.client_id) {
             return;
@@ -125,6 +126,7 @@ _Past.prototype.onViewPort = function(controller, msg_type, message) {
         controller.scope.updateScaledXY();
         controller.scope.updatePanAndScale();
 };
+
 _Past.prototype.onMouseEvent = function(controller, msg_type, message) {
         if (message.sender === controller.scope.client_id) {
             return;

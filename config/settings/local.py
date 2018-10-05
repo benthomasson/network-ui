@@ -95,3 +95,6 @@ LOGGING = {
         },
     },
 }
+
+
+REPLAY_ENABLED = True

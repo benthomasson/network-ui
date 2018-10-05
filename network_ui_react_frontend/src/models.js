@@ -15,6 +15,9 @@ var net_models = require('./network/models.js');
 var app_models = require('./application/models.js');
 var ReconnectingWebSocket = require('reconnectingwebsocket');
 var history = require('history');
+if (process.env.REACT_APP_REPLAY === 'true') {
+  var replay_fsm = require('./ux/replay.fsm.js');
+}
 
 
 
@@ -46,6 +49,10 @@ function ApplicationScope (svgFrame) {
   this.delete_group_association = this.delete_group_association.bind(this);
   this.deleteDevice = this.deleteDevice.bind(this);
   this.deleteGroup = this.deleteGroup.bind(this);
+  this.parseUrl = this.parseUrl.bind(this);
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    this.run_replay_events = this.run_replay_events.bind(this);
+  }
 
   var self = this;
 
@@ -75,6 +82,11 @@ function ApplicationScope (svgFrame) {
   this.client_id = 1;
   this.state = this;
   this.topology_id = 0;
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    this.replay_id = null;
+    this.replay = false;
+    this.replay_events = [];
+  }
   this.disconnected = process.env.REACT_APP_DISCONNECTED === 'true';
   this.websocket_host = process.env.REACT_APP_WEBSOCKET_HOST ? process.env.REACT_APP_WEBSOCKET_HOST : window.location.host;
   this.first_channel = null;
@@ -91,19 +103,18 @@ function ApplicationScope (svgFrame) {
   this.links = [];
   this.last_selected_device = [];
 
-
-  var split = this.browser_history.location.pathname.split('/');
-  var last = split[split.length - 1];
-  var split2 = last.split(':');
-  var last2 = split2[split2.length - 1];
-  this.topology_id = last2;
+  this.parseUrl();
 
 
   //Connect websocket
   if (!this.disconnected) {
     console.log( "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id);
+    this.control_socket_url = "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id;
+    if (process.env.REACT_APP_REPLAY === 'true') {
+      this.control_socket_url = this.control_socket_url + "&replay_id=" + this.replay_id;
+    }
     this.control_socket = new ReconnectingWebSocket(
-      "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id,
+      this.control_socket_url,
       null,
       {debug: false, reconnectInterval: 300});
     this.control_socket.onmessage = function(message) {
@@ -141,6 +152,9 @@ function ApplicationScope (svgFrame) {
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
   this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
   this.record_controller = new fsm.FSMController(this, 'record_fsm', record_fsm.Start, this);
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    this.replay_controller = new fsm.FSMController(this, 'replay_fsm', replay_fsm.Start, this);
+  }
 
 
   //Wire up controllers
@@ -151,8 +165,17 @@ function ApplicationScope (svgFrame) {
                       this.link_controller,
                       this.group_controller,
                       this.buttons_controller,
-                      this.time_controller,
-                      this.record_controller];
+                      this.time_controller];
+
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    this.controllers.push(this.replay_controller);
+  }
+  else {
+    this.controllers.push(this.record_controller);
+  }
+
+  console.log(this.controllers);
+
 
 
   for (var i = 0; i < this.controllers.length - 1; i++) {
@@ -170,6 +193,33 @@ function ApplicationScope (svgFrame) {
 
 }
 exports.ApplicationScope = ApplicationScope;
+
+ApplicationScope.prototype.parseUrl = function () {
+
+  var data = {};
+
+  var split = this.browser_history.location.pathname.split('/');
+  var last = split[split.length - 1];
+  var split2 = last.split('&');
+  for (var j = 0; j < split2.length; j++) {
+    var split3 = split2[j].split(':');
+    if (split3.length === 2) {
+      var name = split3[0];
+      var value = split3[1];
+      data[name] = value;
+    }
+  }
+  if (data.topology_id !== undefined && data.topology_id !== null) {
+    this.topology_id = data.topology_id;
+  }
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    if (data.replay_id !== undefined && data.replay_id !== null) {
+      this.replay_id = data.replay_id;
+    }
+  }
+
+  console.log(this);
+};
 
 ApplicationScope.prototype.uploadButtonHandler = function (message) {
   console.log(message);
@@ -189,7 +239,17 @@ ApplicationScope.prototype.send_control_message = function (message) {
   console.log(message);
   message.sender = this.client_id;
   message.message_id = this.message_id_seq();
+  if (message.msg_type === "MultipleMessage") {
+      for (var i=0; i < message.messages.length; i++) {
+          message.messages[i].message_id = this.message_id_seq();
+      }
+  }
   var data = core_messages.serialize(message);
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    if (this.replay) {
+      return;
+    }
+  }
   console.log(["Sending", message.msg_type, message.sender, message.message_id]);
   this.control_socket.send(data);
 };
@@ -218,6 +278,7 @@ ApplicationScope.prototype.onMouseMove = function (e) {
 };
 
 ApplicationScope.prototype.onMouseDown = function (e) {
+  this.mouse_pressed = true;
   this.first_channel.send('MouseDown', e);
   this.setState({
     cursorPosX: e.pageX,
@@ -233,6 +294,7 @@ ApplicationScope.prototype.onMouseDown = function (e) {
 };
 
 ApplicationScope.prototype.onMouseUp = function (e) {
+  this.mouse_pressed = false;
   this.first_channel.send('MouseUp', e);
   this.setState({
     cursorPosX: e.pageX,
@@ -277,6 +339,11 @@ ApplicationScope.prototype.onUnload = function (e) {
 };
 
 ApplicationScope.prototype.onResize = function (e) {
+  if (process.env.REACT_APP_REPLAY === 'true') {
+    if (this.replay) {
+      return;
+    }
+  }
    this.setState({
      frameWidth: window.innerWidth,
      frameHeight: window.innerHeight
@@ -419,6 +486,9 @@ ApplicationScope.prototype.onHistory = function (data) {
 ApplicationScope.prototype.onTopology = function(data) {
 
   var path_data = {pathname: '/topology_id:' + data.topology_id}
+  if (process.env.REACT_APP_REPLAY === 'true' && this.replay_id !== null) {
+    path_data.pathname = path_data.pathname + "&replay_id:" + this.replay_id;
+  }
   if (this.browser_history.location.pathname !== path_data.pathname) {
     this.browser_history.push(path_data);
   }
@@ -435,7 +505,6 @@ ApplicationScope.prototype.onSnapshot = function (data) {
         this.devices = [];
         this.links = [];
         this.groups = [];
-        this.streams = [];
 
         var device_map = {};
         var device_interface_map = {};
@@ -533,20 +602,6 @@ ApplicationScope.prototype.onSnapshot = function (data) {
             this.links.push(new_link);
             device_interface_map[link.from_device_id][link.from_interface_id].link = new_link;
             device_interface_map[link.to_device_id][link.to_interface_id].link = new_link;
-        }
-
-        //Build the streams
-        var stream = null;
-        for (i = 0; i < data.streams.length; i++) {
-            stream = data.streams[i];
-            if (max_stream_id === null || stream.id > max_stream_id) {
-                max_stream_id = stream.id;
-            }
-            new_stream = new app_models.Stream(stream.id,
-                                           device_map[stream.from_id],
-                                           device_map[stream.to_id],
-                                           stream.label);
-            this.streams.push(new_stream);
         }
 
         //Build the groups
@@ -773,3 +828,26 @@ ApplicationScope.prototype.update_device_variables = function () {
     hosts_by_id[this.devices[i].host_id] = this.devices[i];
   }
 };
+
+ApplicationScope.prototype.reset_flags = function () {
+
+};
+ApplicationScope.prototype.reset_fsm_state = function () {
+
+};
+ApplicationScope.prototype.reset_history = function () {
+
+};
+
+if (process.env.REACT_APP_REPLAY === 'true') {
+  ApplicationScope.prototype.run_replay_events = function () {
+    var replay_event = null;
+    if (this.replay_events.length  > 0) {
+        replay_event = this.replay_events.shift();
+        replay_event.sender = 0;
+        console.log(replay_event);
+        this.first_channel.send(replay_event.msg_type, replay_event);
+        this.svgFrame.forceUpdate();
+    }
+  };
+}

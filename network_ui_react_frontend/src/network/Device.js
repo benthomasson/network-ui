@@ -51,13 +51,13 @@ class Device extends Component {
         <circle
             cx="0"
             cy="0"
-            r="{{50 + 2}}"
+            r={50 + 2}
             style={deviceStyle}>
         </circle>
         <circle
             cx="0"
             cy="0"
-            r="{{50}}">
+            r="50">
         </circle>
         </g>
         <g>

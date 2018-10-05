@@ -1,0 +1,43 @@
+diagram_uuid: 5b6e8131-e44b-4464-9419-bb8e51e5a840
+finite_state_machine_id: 1
+name: replay_fsm
+states:
+- id: 0
+  label: Disabled
+  x: -13
+  y: -201
+- id: 3
+  label: Loading
+  x: -450
+  y: 184
+- id: 4
+  label: Ready
+  x: -312
+  y: -192
+- id: 2
+  label: Running
+  x: 146
+  y: 176
+- id: 1
+  label: Start
+  x: -157
+  y: -467
+transitions:
+- from_state: Disabled
+  label: onEnableReplay
+  to_state: Ready
+- from_state: Loading
+  label: start
+  to_state: Running
+- from_state: Ready
+  label: onDisableReplay
+  to_state: Disabled
+- from_state: Ready
+  label: start
+  to_state: Loading
+- from_state: Running
+  label: onReplayCompleted
+  to_state: Disabled
+- from_state: Start
+  label: start
+  to_state: Disabled

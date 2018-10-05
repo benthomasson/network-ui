@@ -7,6 +7,7 @@ import logging
 import json
 import urllib.parse
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 from collections import defaultdict
 from django.utils.dateparse import parse_datetime
 from ..models import Client, Topology, MessageType, TopologyHistory, Device
@@ -17,8 +18,11 @@ from ..models import FSMTrace, TopologySnapshot
 from ..models import EventTrace, Coverage, TestResult
 from ..models import Result, TestCase, CodeUnderTest
 from ..models import Process, Stream, Toolbox, ToolboxItem
+from ..models import Replay
 
 from ..utils import transform_dict
+
+from django.conf import settings
 
 logger = logging.getLogger("network_ui_dev.consumers")
 
@@ -38,34 +42,14 @@ class NetworkUIException(Exception):
     pass
 
 
-def parse_topology_id(data):
-    topology_id = data.get(b'topology_id', ['null'])
-    try:
-        topology_id = int(topology_id[0])
-    except ValueError as e:
-        topology_id = None
-    if not topology_id:
-        topology_id = None
-    return topology_id
-
-
-def parse_inventory_id(data):
-    inventory_id = data.get(b'inventory_id', ['null'])
-    try:
-        inventory_id = int(inventory_id[0])
-    except ValueError:
-        inventory_id = None
-    if not inventory_id:
-        inventory_id = None
-    return inventory_id
-
-
 class NetworkUIConsumer(AsyncWebsocketConsumer):
 
     async def send_json(self, message_data):
         await self.send(text_data=json.dumps(message_data))
 
     async def connect(self, event=None):
+        self.rooms = []
+
         await self.accept()
         self.message_types = await self.get_message_types()
         self.ignore_message_types = ['DeviceSelected',
@@ -79,6 +63,13 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         self.topology_id = 0
         await self.create_client()
         await self.send(text_data=json.dumps(['id', self.client.pk]))
+        if settings.REPLAY_ENABLED:
+            logger.info('REPLAY_ENABLED')
+            replay = await self.send_replay()
+            if replay:
+                await self.send_json(["Replay", replay])
+                logger.info('replay sent, connect done')
+                return
         await self.get_or_create_topology()
         topology_data = await self.get_or_create_topology()
         await self.send(text_data=json.dumps(['Topology', topology_data]))
@@ -88,7 +79,6 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         await self.send_json(["History", history])
         await self.send_toolboxes()
         await self.send_tests()
-        self.rooms = []
         for room in ['all']:
             self.rooms.append(room)
             await self.channel_layer.group_add(room, self.channel_name)
@@ -126,6 +116,24 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         self.client = Client()
         self.client.save()
         self.client_id = self.client.pk
+
+    @database_sync_to_async
+    def send_replay(self):
+        qs_data = urllib.parse.parse_qs(self.scope['query_string'])
+        try:
+            replay_id = int(qs_data.get(b'replay_id', [b'0'])[0].decode())
+            logger.info('replay_id %s', replay_id)
+        except ValueError:
+            return False
+        if replay_id == 0:
+            return False
+        try:
+            replay = Replay.objects.filter(pk=replay_id).values()[0]
+            logger.info('Found replay %s', replay['replay_id'])
+            return  transform_dict(dict(replay_id='replay_id',
+                                        replay_data='replay_data'), replay)
+        except ObjectDoesNotExist as e:
+            return False
 
     @database_sync_to_async
     def get_or_create_topology(self):
@@ -188,8 +196,8 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
 
         if handler is not None:
             try:
-                await handler(message_value, self.topology_id, self.client_id)
                 logger.info(message_type)
+                await handler(message_value, self.topology_id, self.client_id)
             except NetworkUIException as e:
                 # Group("client-%s" % client_id).send({"text": json.dumps(["Error", str(e)])})
                 raise
@@ -280,18 +288,19 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         return getattr(self, "on{0}".format(message_type), None)
 
     async def onMultipleMessage(self, message_value, topology_id, client_id):
+        logger.info("MultipleMessage %s", len(message_value['messages']))
         for message in message_value['messages']:
             message_type = message['msg_type']
+            logger.info(message_type)
             if message_type not in self.message_types:
                 logger.warning("Unsupported message %s: no message type", message_type)
-                return
+                continue
 
             if message_type in self.ignore_message_types:
-                return
+                continue
             handler = self.get_handler(message_type)
             if handler is not None:
                 await handler(message, topology_id, client_id)
-                logger.info(message_type)
             else:
                 logger.warning("Unsupported message %s", message)
 

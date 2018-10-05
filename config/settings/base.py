@@ -254,3 +254,4 @@ CHANNEL_LAYERS = {
         }
     }
 }
+REPLAY_ENABLED = False

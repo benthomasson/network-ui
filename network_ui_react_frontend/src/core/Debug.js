@@ -29,6 +29,9 @@ class Debug extends Component {
           <text x={this.props.x} y={next_i()} style={debugStyle}>Move: {this.props.move.state.name} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>Link: {this.props.link.state.name} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>Group: {this.props.group.state.name} </text>
+          {process.env.REACT_APP_REPLAY === 'true' ?
+          <text x={this.props.x} y={next_i()} style={debugStyle}>Repllay: {this.props.replay_events.length} </text>
+            : null}
         </g>
       );
     } else {

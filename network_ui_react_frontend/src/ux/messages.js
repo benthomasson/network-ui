@@ -92,3 +92,9 @@ function Snapshot(sender, devices, links, groups, order, trace_id) {
     this.trace_id = trace_id;
 }
 exports.Snapshot = Snapshot;
+
+function ReplayCompleted(sender) {
+    this.msg_type = 'ReplayCompleted';
+    this.sender = sender;
+}
+exports.ReplayCompleted = ReplayCompleted;

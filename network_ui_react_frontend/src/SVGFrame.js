@@ -33,7 +33,6 @@ class SVGFrame extends Component {
      window.addEventListener('resize', this.scope.onResize);
      window.addEventListener('beforeunload', this.scope.onUnload);
 
-
      this.forceUpdate();
   }
 
@@ -120,7 +119,8 @@ class SVGFrame extends Component {
                  />
           {this.scope.showCursor ?
           <Cursor x={this.scope.cursorPosX}
-                  y={this.scope.cursorPosY} />
+                  y={this.scope.cursorPosY}
+                  pressed={this.scope.mouse_pressed}/>
           : null}
           {this.scope.showButtons ?
           <g>
