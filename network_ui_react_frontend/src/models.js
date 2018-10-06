@@ -78,6 +78,7 @@ function ApplicationScope (svgFrame) {
   this.showDebug = false;
   this.showHelp = true;
   this.showCursor = false;
+  this.showKey = false;
   this.showButtons = true;
   this.client_id = 1;
   this.state = this;

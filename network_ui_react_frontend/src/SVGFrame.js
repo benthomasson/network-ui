@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Debug from './core/Debug'
 import Cursor from './core/Cursor'
+import Key from './core/Key'
 import Download from './button/Download'
 import Quadrants from './core/Quadrants'
 import Help from './core/Help'
@@ -121,6 +122,11 @@ class SVGFrame extends Component {
           <Cursor x={this.scope.cursorPosX}
                   y={this.scope.cursorPosY}
                   pressed={this.scope.mouse_pressed}/>
+          : null}
+          {this.scope.showKey ?
+          <Key x={this.scope.frameWidth/2}
+               y={this.scope.frameHeight - 100}
+               lastKey={this.scope.lastKey}/>
           : null}
           {this.scope.showButtons ?
           <g>

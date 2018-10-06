@@ -58,12 +58,13 @@ _Running.prototype.start = function (controller) {
   controller.scope.replay = true;
   controller.scope.disconnected = true;
   controller.scope.showCursor = true;
+  controller.scope.showKey = true;
   controller.scope.replay_events = controller.scope.current_replay.event_trace.slice();
   controller.scope.replay_events.push(new messages.ReplayCompleted());
   controller.scope.reset_flags();
   controller.scope.reset_fsm_state();
   controller.scope.reset_history();
-  controller.scope.replayInterval = setInterval(controller.scope.run_replay_events, 10);
+  controller.scope.replayInterval = setInterval(controller.scope.run_replay_events, 20);
 };
 
 _Running.prototype.end = function (controller) {
