@@ -35,4 +35,5 @@ class Command(BaseCommand):
                              .order_by('order')
                              .values_list('snapshot_data', flat=True)]
 
-        print(json.dumps(data, sort_keys=True, indent=4))
+        with open('recording_{0}_{1}_{2}.json'.format(topology_id, trace_id, client_id), 'w') as f:
+            f.write(json.dumps(data, sort_keys=True, indent=4))
