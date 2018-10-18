@@ -106,11 +106,13 @@ function ApplicationScope (svgFrame) {
 
   this.parseUrl();
 
+  var ws_protocol = window.location.protocol === 'https:' ? 'wss://': 'ws://';
+
 
   //Connect websocket
   if (!this.disconnected) {
-    console.log( "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id);
-    this.control_socket_url = "ws://" + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id;
+    console.log( ws_protocol + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id);
+    this.control_socket_url = ws_protocol + this.websocket_host + "/ws/network_ui?topology_id=" + this.topology_id;
     if (process.env.REACT_APP_REPLAY === 'true') {
       this.control_socket_url = this.control_socket_url + "&replay_id=" + this.replay_id;
     }
