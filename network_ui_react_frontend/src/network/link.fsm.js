@@ -95,10 +95,10 @@ _Connecting.prototype.onMouseUp = function (controller) {
     if (selected_device !== null) {
         controller.scope.new_link.to_device = selected_device;
         i = controller.scope.new_link.to_device.interface_seq();
-        to_device_interface = new models.Interface(i, "eth" + i);
+        to_device_interface = new models.Interface(controller.scope.interface_id_seq(), controller.scope.interface_prefix + i);
         controller.scope.new_link.to_device.interfaces.push(to_device_interface);
         i = controller.scope.new_link.from_device.interface_seq();
-        from_device_interface = new models.Interface(i, "eth" + i);
+        from_device_interface = new models.Interface(controller.scope.interface_id_seq(), controller.scope.interface_prefix + i);
         controller.scope.new_link.from_device.interfaces.push(from_device_interface);
         to_device_interface.link = controller.scope.new_link;
         from_device_interface.link = controller.scope.new_link;
@@ -123,6 +123,12 @@ _Connecting.prototype.onMouseUp = function (controller) {
                                     controller.scope.new_link.to_device.id,
                                     from_device_interface.id,
                                     to_device_interface.id)]));
+        controller.scope.update_cursor_pos(models.object_id(controller.scope.new_link),
+                                           controller.scope.new_link);
+        controller.scope.update_cursor_pos(models.object_id(to_device_interface),
+                                           to_device_interface);
+        controller.scope.update_cursor_pos(models.object_id(from_device_interface),
+                                           from_device_interface);
         controller.scope.new_link = null;
         controller.changeState(Connected);
     } else {

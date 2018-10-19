@@ -1,0 +1,16 @@
+diagram_uuid: b820323a-69ee-488b-be2f-b87c112f6c9e
+finite_state_machine_id: 1
+name: future
+states:
+- id: 2
+  label: Ready
+  x: 590
+  y: 372
+- id: 1
+  label: Start
+  x: 591
+  y: 141
+transitions:
+- from_state: Start
+  label: start
+  to_state: Ready

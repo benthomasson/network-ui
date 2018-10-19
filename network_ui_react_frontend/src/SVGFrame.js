@@ -23,8 +23,8 @@ class SVGFrame extends Component {
   }
 
   componentDidMount() {
-     //var intervalId = setInterval(this.scope.timer, 17);
-     var intervalId = null;
+     var intervalId = setInterval(this.scope.timer, 17);
+     //var intervalId = null;
      this.scope.setState({
        intervalId: intervalId,
        frameWidth: window.innerWidth,

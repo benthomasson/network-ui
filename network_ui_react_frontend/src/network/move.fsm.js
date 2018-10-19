@@ -109,7 +109,7 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
 
 	if (message.type === "router") {
         id = controller.scope.device_id_seq();
-		device = new models.Device(id,
+		    device = new models.Device(id,
                                    "Router" + id,
                                    scope.scaledX,
                                    scope.scaledY,
@@ -117,7 +117,7 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
 	}
     else if (message.type === "switch") {
         id = controller.scope.device_id_seq();
-		device = new models.Device(id,
+		    device = new models.Device(id,
                                    "Switch" + id,
                                    scope.scaledX,
                                    scope.scaledY,
@@ -125,7 +125,7 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
 	}
     else if (message.type === "host") {
         id = controller.scope.device_id_seq();
-		device = new models.Device(id,
+		    device = new models.Device(id,
                                    "Host" + id,
                                    scope.scaledX,
                                    scope.scaledY,
@@ -147,6 +147,8 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
         scope.create_inventory_host(device);
         scope.selected_devices.push(device);
         device.selected = true;
+        controller.scope.update_cursor_pos(models.object_id(device),
+                                           device);
         controller.changeState(Placing);
     }
 };
@@ -249,6 +251,14 @@ _Start.prototype.start = function (controller) {
 };
 _Start.prototype.start.transitions = ['Ready'];
 
+_Selected2.prototype.start = function (controller, msg_type, message) {
+
+  var item = null;
+  for (var i = 0; i < controller.scope.selected_items.length; i++) {
+    item = controller.scope.selected_items[i];
+    controller.scope.update_cursor_pos(models.object_id(item), item);
+  }
+};
 
 _Selected2.prototype.onNewDevice = function (controller, msg_type, message) {
 
@@ -446,7 +456,7 @@ _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
 
     controller.changeState(ContextMenu);
     */
-    controller.changeState(Selected2);
+    controller.changeState(EditLabel);
 };
 _Selected3.prototype.onMouseUp.transitions = ['ContextMenu'];
 
@@ -457,6 +467,8 @@ _Selected3.prototype.onMouseMove.transitions = ['Move'];
 
 _EditLabel.prototype.start = function (controller) {
     controller.scope.selected_items[0].edit_label = true;
+    controller.scope.update_cursor_pos(models.object_id(controller.scope.selected_items[0]),
+                                       controller.scope.selected_items[0]);
 };
 
 _EditLabel.prototype.end = function (controller) {
@@ -478,29 +490,31 @@ _EditLabel.prototype.onKeyDown = function (controller, msg_type, $event) {
 	var item = controller.scope.selected_items[0];
     var previous_name = item.name;
 	if ($event.keyCode === 8 || $event.keyCode === 46) { //Delete
-		item.name = item.name.slice(0, -1);
+		    item.name = item.name.slice(0, -1);
+        controller.scope.future_update_cursor_pos(models.object_id(item), item);
 	} else if ($event.keyCode >= 48 && $event.keyCode <=90) { //Alphanumeric
         item.name += $event.key;
+        controller.scope.future_update_cursor_pos(models.object_id(item), item);
 	} else if ($event.keyCode >= 186 && $event.keyCode <=222) { //Punctuation
         item.name += $event.key;
+        controller.scope.future_update_cursor_pos(models.object_id(item), item);
 	} else if ($event.keyCode === 13) { //Enter
-        controller.scope.$emit('editSearchOption', item);
         controller.changeState(Selected2);
     }
-    if (item.constructor.name === "Device") {
+    if (item.model_type === "Device") {
         controller.scope.send_control_message(new messages.DeviceLabelEdit(controller.scope.client_id,
                                                                            item.id,
                                                                            item.name,
                                                                            previous_name));
     }
-    if (item.constructor.name === "Interface") {
+    if (item.model_type === "Interface") {
         controller.scope.send_control_message(new messages.InterfaceLabelEdit(controller.scope.client_id,
                                                                            item.id,
                                                                            item.device.id,
                                                                            item.name,
                                                                            previous_name));
     }
-    if (item.constructor.name === "Link") {
+    if (item.model_type === "Link") {
         controller.scope.send_control_message(new messages.LinkLabelEdit(controller.scope.client_id,
                                                                            item.id,
                                                                            item.name,

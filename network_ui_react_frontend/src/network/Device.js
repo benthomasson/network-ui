@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import TextInput from '../text/TextInput';
+
 import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
@@ -60,14 +62,15 @@ class Device extends Component {
             r="50">
         </circle>
         </g>
-        <g>
-        <text style={deviceTextStyle}
-  filter="url(#selected)"
-              textAnchor="middle"
-  x="0"
-  y="0"> {this.props.name} </text>
-        <text style={deviceTextStyle} textAnchor="middle" x="0" y="0">{this.props.name}{this.props.edit_label?'_':''}</text>
-                    </g>
+                    <TextInput x="0" y="75"
+                               value={this.props.name}
+                               selected={this.props.selected}
+                               width={this.props.text_width} height={20}
+                               show_cursor={this.props.edit_label}
+                               edit={this.props.edit_label}
+                               id={'Device_' + this.props.id}
+                               cursor_pos={this.props.cursor_pos}
+                               />
       </g>
     );
   }

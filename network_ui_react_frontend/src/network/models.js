@@ -1,13 +1,20 @@
 /* Copyright (c) 2017-2018 Red Hat, Inc. */
 var util = require('../util.js');
+var text_models = require('../text/models.js');
+
+function object_id(item) {
+  return item.model_type + "_" + item.id;
+};
+exports.object_id = object_id;
 
 function Device(id, name, x, y, type, host_id) {
+    this.model_type = 'Device';
     this.id = id;
     this.host_id = host_id ? host_id: 0;
     this.name = name;
     this.x = x;
     this.y = y;
-    this.height = type === "host" ? 20 : 37.5;
+    this.height = 37.5;
     this.width = 37.5;
     this.size = 37.5;
     this.type = type;
@@ -27,6 +34,8 @@ function Device(id, name, x, y, type, host_id) {
     this.in_group = false;
     this.template = false;
     this.variables = {};
+    this.text_width = null;
+    this.cursor_pos = null;
 }
 exports.Device = Device;
 
@@ -80,6 +89,7 @@ Device.prototype.compile_variables = function () {
 };
 
 function Interface(id, name) {
+    this.model_type = 'Interface';
     this.id = id;
     this.name = name;
     this.link = null;
@@ -87,6 +97,8 @@ function Interface(id, name) {
     this.edit_label = false;
     this.dot_x = null;
     this.dot_y = null;
+    this.text_width = null;
+    this.cursor_pos = null;
 }
 exports.Interface = Interface;
 
@@ -224,6 +236,7 @@ Interface.prototype.dot = function () {
 };
 
 function Link(id, from_device, to_device, from_interface, to_interface) {
+    this.model_type = 'Link';
     this.id = id;
     this.from_device = from_device;
     this.to_device = to_device;
@@ -234,6 +247,8 @@ function Link(id, from_device, to_device, from_interface, to_interface) {
     this.status = null;
     this.edit_label = false;
     this.name = "";
+    this.text_width = null;
+    this.cursor_pos = null;
 }
 exports.Link = Link;
 

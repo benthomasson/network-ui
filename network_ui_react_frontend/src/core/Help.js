@@ -30,7 +30,7 @@ class Upload extends Component {
       key = this.props.shortcuts[j][0];
       shortcut = this.props.shortcuts[j][1];
       y = next_y();
-      keys.push(<g>
+      keys.push(<g key={'Help' + j}>
                 <rect x='-5' y={y-15} width='20' height='20' style={keyStyle} rx='3'/>
                 <text x='5' y={y} textAnchor="middle">{key}</text>
                 <text x='20' y={y}>{shortcut}</text>

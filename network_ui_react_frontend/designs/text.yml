@@ -1,0 +1,14 @@
+states:
+    - {label: Start}
+    - {label: Edit}
+    - {label: Ready}
+    - {label: TextSelected}
+transitions:
+    - {from_state: Start, to_state: Ready, label: start}
+    - {from_state: Edit, to_state: TextSelected, label: onMouseDown}
+    - {from_state: Edit, to_state: Ready, label: onMouseDown}
+    - {from_state: Edit, to_state: Ready, label: onKeyDown}
+    - {from_state: Ready, to_state: Edit, label: onMouseDown}
+    - {from_state: TextSelected, to_state: Edit, label: onMouseDown}
+    - {from_state: TextSelected, to_state: Edit, label: onKeyDown}
+

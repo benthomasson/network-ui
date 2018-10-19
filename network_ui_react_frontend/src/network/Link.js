@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Colors from '../style/Colors';
 import util from '../util';
+import TextInput from '../text/TextInput';
 
 class Link extends Component {
 
@@ -150,19 +151,16 @@ class Link extends Component {
                       "rotate(" + this.slope() + ")" +
                       "translate(" + -this.length()/2 + ", 0)" +
                       "rotate(" + -this.slope() + ")" +
-                      "translate(0, -5)"}>
-          {this.props.selected ?
-          <text style={linkTextStyle}
-                filter="url(#selected)"
-                textAnchor="middle"
-                fontSize="8"
-                x="0"
-                y="0"> {this.props.name}</text>
-          :null}
-          <text style={linkTextStyle}
-                filter="url(#background)"
-                textAnchor="middle"
-                x="0" y="0">{this.props.name}{this.props.edit_label?'_':''}</text>
+                      "translate(0, -5) scale(0.75)"}>
+          <TextInput x="0" y="0"
+                     value={this.props.name}
+                     selected={this.props.selected}
+                     width={this.props.text_width} height={20}
+                     show_cursor={this.props.edit_label}
+                     edit={this.props.edit_label}
+                     id={'Link_' + this.props.id}
+                     cursor_pos={this.props.cursor_pos}
+                     />
         </g>
         : null}
 
@@ -170,20 +168,16 @@ class Link extends Component {
         <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
                     "rotate(" + this.slope() + ")" +
                     "translate(" + (-this.props.from_interface.dot_d - 25) + ", 0)" +
-                    "rotate(" + -this.slope() + ")"}>
-          {this.props.from_interface.selected ?
-          <text style={interfaceTextStyle}
-                filter="url(#selected)"
-                textAnchor="middle"
-                fontSize="8"
-                x="0"
-                y="0"> {this.props.from_interface.name}</text>
-          : null}
-
-          <text style={interfaceTextStyle}
-                filter={this.props.from_interface.selected ? "" : "url(#background)"}
-                textAnchor="middle"
-                x="0" y="0">{this.props.from_interface.name}{this.props.from_interface.edit_label ? '_': ''}</text>
+                    "rotate(" + -this.slope() + ") scale(0.5)"}>
+          <TextInput x="0" y="0"
+                     value={this.props.from_interface.name}
+                     selected={this.props.from_interface.selected}
+                     width={this.props.from_interface.text_width} height={20}
+                     show_cursor={this.props.from_interface.edit_label}
+                     edit={this.props.from_interface.edit_label}
+                     id={'Interface_' + this.props.from_interface.id}
+                     cursor_pos={this.props.from_interface.cursor_pos}
+                     />
         </g>
         : null}
 
@@ -191,18 +185,16 @@ class Link extends Component {
         <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
                       "rotate(" + this.slope() + ")" +
                       "translate(" + (-this.length() + this.props.to_interface.dot_d + 25) + ", 0)" +
-                      "rotate(" + -this.slope() + ")"}>
-        {this.props.to_interface.selected ?
-          <text style={interfaceTextStyle}
-              filter="url(#selected)"
-              textAnchor="middle"
-              x="0"
-              y="0"> {this.props.to_interface.name}</text>
-        : null}
-        <text style={interfaceTextStyle}
-              filter={this.props.to_interface.selected ? "" : "url(#background)"}
-              textAnchor="middle"
-              x="0" y="0">{this.props.to_interface.name}{this.props.to_interface.edit_label?'_':''}</text>
+                      "rotate(" + -this.slope() + ") scale(0.5)"}>
+          <TextInput x="0" y="0"
+                     value={this.props.to_interface.name}
+                     selected={this.props.to_interface.selected}
+                     width={this.props.to_interface.text_width} height={20}
+                     show_cursor={this.props.to_interface.edit_label}
+                     edit={this.props.to_interface.edit_label}
+                     id={'Interface_' + this.props.to_interface.id}
+                     cursor_pos={this.props.to_interface.cursor_pos}
+                     />
         </g>
         : null}
         {this.props.to_device !== null ?

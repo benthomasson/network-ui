@@ -3,6 +3,7 @@ var fsm = require('./fsm.js');
 var hot_keys_fsm = require('./core/hotkeys.fsm.js');
 var time_fsm = require('./core/time.fsm.js');
 var view_fsm = require('./core/view.fsm.js');
+var future_fsm = require('./core/future.fsm.js');
 var move_fsm = require('./network/move.fsm.js');
 var link_fsm = require('./network/link.fsm.js');
 var group_fsm = require('./network/group.fsm.js');
@@ -50,6 +51,8 @@ function ApplicationScope (svgFrame) {
   this.deleteDevice = this.deleteDevice.bind(this);
   this.deleteGroup = this.deleteGroup.bind(this);
   this.parseUrl = this.parseUrl.bind(this);
+  this.update_cursor_pos = this.update_cursor_pos.bind(this);
+  this.future_update_cursor_pos = this.future_update_cursor_pos.bind(this);
   if (process.env.REACT_APP_REPLAY === 'true') {
     this.run_replay_events = this.run_replay_events.bind(this);
   }
@@ -92,6 +95,7 @@ function ApplicationScope (svgFrame) {
   this.websocket_host = process.env.REACT_APP_WEBSOCKET_HOST ? process.env.REACT_APP_WEBSOCKET_HOST : window.location.host;
   this.first_channel = null;
   this.history = [];
+  this.future_messages = [];
   this.selecting_device = false;
   this.placing_group = false;
   this.browser_history = history.createHashHistory({hashType: "hashbang"});
@@ -103,6 +107,7 @@ function ApplicationScope (svgFrame) {
   this.devices = [];
   this.links = [];
   this.last_selected_device = [];
+  this.interface_prefix = 'eth';
 
   this.parseUrl();
 
@@ -138,6 +143,7 @@ function ApplicationScope (svgFrame) {
   this.group_id_seq = util.natural_numbers(0);
   this.device_id_seq = util.natural_numbers(0);
   this.link_id_seq = util.natural_numbers(0);
+  this.interface_id_seq = util.natural_numbers(0);
 
   //Create Buttons
   this.buttons_by_name = {
@@ -155,6 +161,7 @@ function ApplicationScope (svgFrame) {
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
   this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
   this.record_controller = new fsm.FSMController(this, 'record_fsm', record_fsm.Start, this);
+  this.future_controller = new fsm.FSMController(this, 'future_fsm', future_fsm.Start, this);
   if (process.env.REACT_APP_REPLAY === 'true') {
     this.replay_controller = new fsm.FSMController(this, 'replay_fsm', replay_fsm.Start, this);
   }
@@ -168,7 +175,8 @@ function ApplicationScope (svgFrame) {
                       this.link_controller,
                       this.group_controller,
                       this.buttons_controller,
-                      this.time_controller];
+                      this.time_controller,
+                      this.future_controller];
 
   if (process.env.REACT_APP_REPLAY === 'true') {
     this.controllers.push(this.replay_controller);
@@ -333,7 +341,19 @@ ApplicationScope.prototype.timer = function () {
   this.setState({
     frameNumber: this.state.frameNumber + 1
   });
-  this.svgFrame.forceUpdate();
+  if (this.future_messages.length > 0) {
+
+    for(var i = 0; i < this.future_messages.length; i++) {
+      this.first_channel.send(this.future_messages[i][0],
+                              this.future_messages[i][1]);
+    }
+
+    this.future_messages = [];
+    this.svgFrame.forceUpdate();
+  }
+  if (this.showDebug) {
+    this.svgFrame.forceUpdate();
+  }
 };
 
 ApplicationScope.prototype.onUnload = function (e) {
@@ -855,3 +875,33 @@ if (process.env.REACT_APP_REPLAY === 'true') {
     }
   };
 }
+
+ApplicationScope.prototype.future_update_cursor_pos = function(id, object) {
+    this.future_messages.push(['UpdateCursor', {id:id, object:object, counter:5}]);
+};
+
+ApplicationScope.prototype.update_cursor_pos = function(id, object, counter) {
+
+    console.log(['update_cursor_pos', 'text_' + id, counter]);
+
+    if (id === undefined) {
+      return;
+    }
+    if (counter === undefined) {
+      counter = 5;
+    }
+    if (counter <= 0) {
+      return;
+    }
+
+    var textInput = document.getElementById('text_' + id);
+    console.log(textInput);
+    if (textInput !== null) {
+        console.log(textInput.getBBox().width);
+        var width = textInput.getBBox().width;
+        object.cursor_pos = width + 9;
+        object.text_width = width + 16;
+    } else {
+        this.future_messages.push(['UpdateCursor', {id:id, object:object, counter:counter-1}]);
+    }
+};

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import TextInput from '../text/TextInput';
+
 import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
@@ -91,16 +93,15 @@ class Router extends Component {
                     </g>
                 </g>
                 <g>
-                    {this.props.selected ?
-                    <text filter="url(#selected)"
-                          textAnchor="middle"
-                          x="0"
-                          y="70"> {this.props.name}</text>
-                    : null}
-                    <text style={deviceTextStyle}
-                          filter={this.props.selected ? "" : "url(#background)"}
-                          textAnchor="middle"
-                          x="0" y="70">{this.props.name}{this.props.edit_label?'_':''}</text>
+                    <TextInput x="0" y="75"
+                               value={this.props.name}
+                               selected={this.props.selected}
+                               width={this.props.text_width} height={20}
+                               show_cursor={this.props.edit_label}
+                               edit={this.props.edit_label}
+                               id={'Device_' + this.props.id}
+                               cursor_pos={this.props.cursor_pos}
+                               />
                 </g>
             </g>
       </g>

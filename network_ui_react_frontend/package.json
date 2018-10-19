@@ -10,7 +10,8 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "1.1.5",
-    "reconnectingwebsocket": "^1.0.0"
+    "reconnectingwebsocket": "^1.0.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
