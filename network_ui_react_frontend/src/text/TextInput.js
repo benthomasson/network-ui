@@ -66,7 +66,7 @@ class TextInput extends Component {
                 style={textSelectedStyle}>
           </rect>
         : null}
-      {(!this.props.text_selected && this.props.width !== null) ?
+      {(!this.props.text_selected && this.props.width !== null && this.props.value !== "") ?
           <rect x={-this.props.width/2 + 2} y='2'
                 width={this.props.cursor_pos} height='16'
                 style={textBackgroundtyle}>
