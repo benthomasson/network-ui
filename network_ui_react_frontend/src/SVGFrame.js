@@ -134,8 +134,19 @@ class SVGFrame extends Component {
           </g>
           : null}
           <Help showHelp={this.scope.showHelp}
-                y={0}
-                x={this.scope.frameWidth - 200} />
+                y={10}
+                x={this.scope.frameWidth - 200}
+                shortcuts={[['0', 'Reset scale and pan'],
+                     ['?', 'Toggle help'],
+                     ['d', 'Toggle debug'],
+                     ['p', 'Toggle pointer'],
+                     ['b', 'Toggle buttons'],
+                     ['r', 'Place new router'],
+                     ['s', 'Place new switch'],
+                     ['h', 'Place new host'],
+                     ['l', 'Make new link'],
+                     ['g', 'Make new group']
+                    ]} />;
         </svg>
       </div>
     );
