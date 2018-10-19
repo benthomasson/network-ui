@@ -495,6 +495,7 @@ ApplicationScope.prototype.onTopology = function(data) {
   if (this.browser_history.location.pathname !== path_data.pathname) {
     this.browser_history.push(path_data);
   }
+  this.parseUrl();
 };
 
 ApplicationScope.prototype.onClientId = function(data) {
