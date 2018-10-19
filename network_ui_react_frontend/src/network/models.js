@@ -1,6 +1,5 @@
 /* Copyright (c) 2017-2018 Red Hat, Inc. */
 var util = require('../util.js');
-var text_models = require('../text/models.js');
 
 function object_id(item) {
   return item.model_type + "_" + item.id;
@@ -14,7 +13,7 @@ function Device(id, name, x, y, type, host_id) {
     this.name = name;
     this.x = x;
     this.y = y;
-    this.height = 37.5;
+    this.height = type === "host" ? 20 : 37.5;
     this.width = 37.5;
     this.size = 37.5;
     this.type = type;

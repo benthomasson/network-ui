@@ -39,6 +39,12 @@ class TextInput extends Component {
     };
     return (
       <g transform={'translate(' + (this.props.x) + ',' + (this.props.y - 15) + ')'}>
+      {(!this.props.text_selected && this.props.width !== null && this.props.value !== "") ?
+          <rect x={-this.props.width/2 + 2} y='2'
+                width={this.props.cursor_pos} height='16'
+                style={textBackgroundtyle}>
+          </rect>
+        : null}
       {(this.props.selected && this.props.width !== null) ?
           <rect x={-this.props.width/2} y='0'
                 width={this.props.width} height='20'
@@ -64,12 +70,6 @@ class TextInput extends Component {
           <rect x={-this.props.width/2 + 2} y='2'
                 width={this.props.cursor_pos} height='16'
                 style={textSelectedStyle}>
-          </rect>
-        : null}
-      {(!this.props.text_selected && this.props.width !== null && this.props.value !== "") ?
-          <rect x={-this.props.width/2 + 2} y='2'
-                width={this.props.cursor_pos} height='16'
-                style={textBackgroundtyle}>
           </rect>
         : null}
       {(this.props.show_cursor && this.props.width !== null) ?
