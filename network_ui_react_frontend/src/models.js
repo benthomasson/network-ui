@@ -31,6 +31,7 @@ function ApplicationScope (svgFrame) {
   this.onMouseDown = this.onMouseDown.bind(this);
   this.onMouseWheel = this.onMouseWheel.bind(this);
   this.timer = this.timer.bind(this);
+  this.blinkTimer = this.blinkTimer.bind(this);
   this.onKeyDown = this.onKeyDown.bind(this);
   this.onResize = this.onResize.bind(this);
   this.onUnload = this.onUnload.bind(this);
@@ -78,6 +79,7 @@ function ApplicationScope (svgFrame) {
   this.frameHeight = 0;
   this.lastKey = '';
   this.frameNumber = 0;
+  this.blink = false;
   this.showDebug = false;
   this.showHelp = true;
   this.showCursor = false;
@@ -354,6 +356,11 @@ ApplicationScope.prototype.timer = function () {
   if (this.showDebug) {
     this.svgFrame.forceUpdate();
   }
+};
+
+ApplicationScope.prototype.blinkTimer = function () {
+  this.blink = !this.blink;
+  this.svgFrame.forceUpdate();
 };
 
 ApplicationScope.prototype.onUnload = function (e) {

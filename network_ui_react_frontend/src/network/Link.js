@@ -160,6 +160,7 @@ class Link extends Component {
                      edit={this.props.edit_label}
                      id={'Link_' + this.props.id}
                      cursor_pos={this.props.cursor_pos}
+                     blink={this.props.blink}
                      />
         </g>
         : null}
@@ -177,6 +178,7 @@ class Link extends Component {
                      edit={this.props.from_interface.edit_label}
                      id={'Interface_' + this.props.from_interface.id}
                      cursor_pos={this.props.from_interface.cursor_pos}
+                     blink={this.props.blink}
                      />
         </g>
         : null}
@@ -194,6 +196,7 @@ class Link extends Component {
                      edit={this.props.to_interface.edit_label}
                      id={'Interface_' + this.props.to_interface.id}
                      cursor_pos={this.props.to_interface.cursor_pos}
+                     blink={this.props.blink}
                      />
         </g>
         : null}

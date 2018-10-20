@@ -23,10 +23,12 @@ class SVGFrame extends Component {
   }
 
   componentDidMount() {
+     var blinkIntervalId = setInterval(this.scope.blinkTimer, 500);
      var intervalId = setInterval(this.scope.timer, 17);
      //var intervalId = null;
      this.scope.setState({
        intervalId: intervalId,
+       blinkIntervalId: blinkIntervalId,
        frameWidth: window.innerWidth,
        frameHeight: window.innerHeight
      });
@@ -51,18 +53,22 @@ class SVGFrame extends Component {
       if (device.type === "router") {
         devices.push(<Router {...device}
                      key={'device' + i}
+                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "switch") {
         devices.push(<Switch {...device}
                      key={'device' + i}
+                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "host") {
         devices.push(<Host {...device}
                      key={'device' + i}
+                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else {
         devices.push(<Device {...device}
                      key={'device' + i}
+                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       }
     }
@@ -72,6 +78,7 @@ class SVGFrame extends Component {
       link = this.scope.links[i];
       links.push(<Link {...link}
                        key={'link' + i}
+                       blink={this.scope.blink}
                        showDebug={this.scope.showDebug}
                        scaledX={this.scope.scaledX}
                        scaledY={this.scope.scaledY} />)
@@ -80,6 +87,7 @@ class SVGFrame extends Component {
     for (i=0; i< this.scope.groups.length; i++) {
       groups.push(<Group {...this.scope.groups[i]}
                           key={'group' + i}
+                          blink={this.scope.blink}
                           showDebug={this.scope.showDebug}
                           scaledX={this.scope.scaledX}
                           scaledY={this.scope.scaledY} />);

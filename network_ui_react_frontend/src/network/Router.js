@@ -101,6 +101,7 @@ class Router extends Component {
                                edit={this.props.edit_label}
                                id={'Device_' + this.props.id}
                                cursor_pos={this.props.cursor_pos}
+                               blink={this.props.blink}
                                />
                 </g>
             </g>

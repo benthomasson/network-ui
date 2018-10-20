@@ -72,10 +72,11 @@ class TextInput extends Component {
                 style={textSelectedStyle}>
           </rect>
         : null}
-      {(this.props.show_cursor && this.props.width !== null) ?
+      {(this.props.show_cursor && this.props.width !== null && !this.props.blink) ?
           <line x1={this.props.cursor_pos - this.props.width/2} x2={this.props.cursor_pos - this.props.width/2}
                 y1='2' y2='18'
-                style={cursorStyle}></line>
+                style={cursorStyle}>
+          </line>
         : null }
         <text textAnchor="middle" id={'text_' + this.props.id}
               x='0' y='15'
