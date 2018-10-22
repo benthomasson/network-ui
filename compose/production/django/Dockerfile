@@ -9,7 +9,9 @@ RUN apk update \
   # Pillow dependencies
   && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
   # CFFI dependencies
-  && apk add libffi-dev py-cffi
+  && apk add libffi-dev py-cffi \
+  && apk add linux-headers \
+  && apk add alpine-sdk
 
 RUN addgroup -S django \
     && adduser -S -G django django
@@ -28,6 +30,11 @@ COPY ./compose/production/django/start /start
 RUN sed -i 's/\r//' /start
 RUN chmod +x /start
 RUN chown django /start
+
+COPY ./compose/production/django/daphne.sh /daphne.sh
+RUN sed -i 's/\r//' /daphne.sh
+RUN chmod +x /daphne.sh
+RUN chown django /daphne.sh
 
 COPY . /app
 

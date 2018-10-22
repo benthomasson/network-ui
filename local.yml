@@ -12,8 +12,8 @@ services:
       dockerfile: ./compose/local/django/Dockerfile
     image: benthomasson/network-ui
     depends_on:
-      - redis
       - postgres
+      - redis
     volumes:
       - .:/app
     env_file:

@@ -1,9 +1,8 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
-  production_caddy: {}
+  postgres_data: {}
+  postgres_backup: {}
 
 services:
   django:
@@ -17,7 +16,7 @@ services:
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
-    command: /start
+    command: /daphne.sh
 
   postgres:
     build:
@@ -25,25 +24,23 @@ services:
       dockerfile: ./compose/production/postgres/Dockerfile
     image: network_ui_production_postgres
     volumes:
-      - production_postgres_data:/var/lib/postgresql/data
-      - production_postgres_data_backups:/backups
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup:/backups
     env_file:
       - ./.envs/.production/.postgres
 
-  caddy:
+  nginx:
     build:
       context: .
-      dockerfile: ./compose/production/caddy/Dockerfile
-    image: network_ui_production_caddy
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: network_ui_production_nginx
+    volumes:
+        - ./compose/production/nginx/conf.d:/etc/nginx/conf.d
+        - ./network_ui/static:/static/static
     depends_on:
       - django
-    volumes:
-      - production_caddy:/root/.caddy
-    env_file:
-      - ./.envs/.production/.caddy
     ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
+      - "0.0.0.0:8002:80"
 
   redis:
     image: redis:3.2
