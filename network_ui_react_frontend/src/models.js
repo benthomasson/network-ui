@@ -149,7 +149,7 @@ function ApplicationScope (svgFrame) {
 
   //Create Buttons
   this.buttons_by_name = {
-    download: new button_models.Button("Topology", 20, 7, 50, 70, this.downloadButtonHandler, this)
+    download: new button_models.Button("Topology", 20, 7, 40, 40, this.downloadButtonHandler, this)
   };
 
   this.buttons = [this.buttons_by_name.download];

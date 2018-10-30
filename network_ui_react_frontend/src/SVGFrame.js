@@ -5,6 +5,8 @@ import Key from './core/Key'
 import Download from './button/Download'
 import Quadrants from './core/Quadrants'
 import Help from './core/Help'
+import Header from './core/Header'
+import GetStarted from './core/GetStarted'
 import models from './models'
 import Device from './network/Device'
 import Host from './network/Host'
@@ -136,13 +138,8 @@ class SVGFrame extends Component {
                y={this.scope.frameHeight - 100}
                lastKey={this.scope.lastKey}/>
           : null}
-          {this.scope.showButtons ?
-          <g>
-          <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
-          </g>
-          : null}
           <Help showHelp={this.scope.showHelp}
-                y={10}
+                y={50}
                 x={this.scope.frameWidth - 200}
                 shortcuts={[['0', 'Reset scale and pan'],
                      ['?', 'Toggle help'],
@@ -155,6 +152,15 @@ class SVGFrame extends Component {
                      ['l', 'Make new link'],
                      ['g', 'Make new group']
                     ]} />;
+          {this.scope.showButtons ?
+          <g>
+          <Header width={this.scope.frameWidth} />
+          <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
+          </g>
+          : null}
+          {this.scope.devices.length == 0 && this.scope.groups.length == 0 ?
+              <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
+          : null}
         </svg>
       </div>
     );

@@ -15,7 +15,13 @@ var colors = {
   group: '#707070',
   buttonText: '#707070',
   lightBackground: '#ffffff',
-  buttonOutline: '#b7b7b7'
+  buttonOutline: '#b7b7b7',
+  helpText: '#161b1f',
+  keyText: '#ffffff',
+  key: '#848992',
+  keyTitle: '#707070',
+  header: '#ebebeb',
+  headerLine: '#b7b7b7'
 };
 
 export default colors;

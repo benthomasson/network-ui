@@ -18,8 +18,17 @@ class Upload extends Component {
       stroke: Colors.darkWidgetDetail
     };
     var keyStyle = {
-      fill: Colors.widgetBody,
-      stroke: Colors.darkWidgetDetail
+      fill: Colors.key,
+      stroke: Colors.key
+    };
+    var textStyle = {
+      fill: Colors.helpText
+    };
+    var keyTextStyle = {
+      fill: Colors.keyText
+    };
+    var keyTitleStyle = {
+      fill: Colors.keyTitle
     };
     var keys = [];
 
@@ -31,17 +40,16 @@ class Upload extends Component {
       shortcut = this.props.shortcuts[j][1];
       y = next_y();
       keys.push(<g key={'Help' + j}>
-                <rect x='-5' y={y-15} width='20' height='20' style={keyStyle} rx='3'/>
-                <text x='5' y={y} textAnchor="middle">{key}</text>
-                <text x='20' y={y}>{shortcut}</text>
+                <circle cx='5' cy={y-5} r='11' style={keyStyle}/>
+                <text x='5' y={y} textAnchor="middle" style={keyTextStyle}>{key}</text>
+                <text x='20' y={y} style={textStyle}>{shortcut}</text>
                 </g>);
     }
     return (
         this.props.showHelp ?
           <g transform={'translate(' + this.props.x + ',' + this.props.y + ')'}>
-              <rect x='-20' y='0' width='200' height={y+20} style={backgroundRectStyle}/>
-              <rect x='-20' y='0' width='200' height='28' style={titleRectStyle}/>
-              <text x='0' y='20'>Keyboard shortcuts</text>
+              <rect x='-20' y='-5' width='200' height={y+25} style={backgroundRectStyle} rx='5'/>
+              <text x='-5' y='20' style={keyTitleStyle} >Key</text>
               {keys}
           </g>
       : null
