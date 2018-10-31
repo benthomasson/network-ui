@@ -3,6 +3,7 @@ import Debug from './core/Debug'
 import Cursor from './core/Cursor'
 import Key from './core/Key'
 import Download from './button/Download'
+import Launch from './button/Launch'
 import Quadrants from './core/Quadrants'
 import Help from './core/Help'
 import Header from './core/Header'
@@ -14,6 +15,7 @@ import Router from './network/Router'
 import Switch from './network/Switch'
 import Link from './network/Link'
 import Group from './network/Group'
+import PlaybookStatus from './monitor/PlaybookStatus'
 
 
 class SVGFrame extends Component {
@@ -121,7 +123,7 @@ class SVGFrame extends Component {
           <Quadrants {...this.scope} />
           </g>
           <Debug {...this.scope}
-                 x={100}
+                 x={400}
                  move={this.scope.move_controller}
                  group={this.scope.group_controller}
                  link={this.scope.link_controller}
@@ -156,6 +158,8 @@ class SVGFrame extends Component {
           <g>
           <Header width={this.scope.frameWidth} />
           <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
+          <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
+          <PlaybookStatus {...this.scope.playbook_status} showDebug={this.scope.showDebug} frame={this.scope.frameNumber}/>
           </g>
           : null}
           {this.scope.devices.length == 0 && this.scope.groups.length == 0 ?

@@ -14,6 +14,7 @@ var button_models = require('./button/models.js');
 var net_messages = require('./network/messages.js');
 var net_models = require('./network/models.js');
 var app_models = require('./application/models.js');
+var monitor_models = require('./monitor/models.js');
 var ReconnectingWebSocket = require('reconnectingwebsocket');
 var history = require('history');
 if (process.env.REACT_APP_REPLAY === 'true') {
@@ -45,6 +46,7 @@ function ApplicationScope (svgFrame) {
   this.send_trace_message = this.send_trace_message.bind(this);
   this.uploadButtonHandler = this.uploadButtonHandler.bind(this);
   this.downloadButtonHandler = this.downloadButtonHandler.bind(this);
+  this.launchButtonHandler = this.launchButtonHandler.bind(this);
   this.create_inventory_host = this.create_inventory_host.bind(this);
   this.create_inventory_group = this.create_inventory_group.bind(this);
   this.create_group_association = this.create_group_association.bind(this);
@@ -111,6 +113,7 @@ function ApplicationScope (svgFrame) {
   this.last_selected_device = [];
   this.interface_prefix = 'eth';
 
+
   this.parseUrl();
 
   var ws_protocol = window.location.protocol === 'https:' ? 'wss://': 'ws://';
@@ -146,13 +149,31 @@ function ApplicationScope (svgFrame) {
   this.device_id_seq = util.natural_numbers(0);
   this.link_id_seq = util.natural_numbers(0);
   this.interface_id_seq = util.natural_numbers(0);
+  this.play_id_seq = util.natural_numbers(0);
 
   //Create Buttons
   this.buttons_by_name = {
-    download: new button_models.Button("Topology", 20, 7, 40, 40, this.downloadButtonHandler, this)
+    download: new button_models.Button("Topology", 20, 7, 40, 40, this.downloadButtonHandler, this),
+    launch: new button_models.Button("Launch", 70, 7, 40, 40, this.launchButtonHandler, this)
   };
 
-  this.buttons = [this.buttons_by_name.download];
+  this.buttons = [this.buttons_by_name.download, this.buttons_by_name.launch];
+
+
+  //Create Playbook Status
+  this.playbook_status = new monitor_models.PlayStatus(null, this);
+  this.playbook_status.x = 100;
+  this.playbook_status.y = 100;
+  this.playbook_status.width = 200;
+  this.playbook_status.height = 1000;
+  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'A'));
+  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'B'));
+  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'C'));
+  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'D'));
+
+  this.playbook_status.playbooks[0].status = true;
+  this.playbook_status.playbooks[1].status = false;
+  this.playbook_status.playbooks[2].working = true;
 
   //Create FSM controllers
   this.hotkeys_controller = new fsm.FSMController(this, 'hot_keys_fsm', hot_keys_fsm.Start, this);
@@ -242,6 +263,10 @@ ApplicationScope.prototype.uploadButtonHandler = function (message) {
 ApplicationScope.prototype.downloadButtonHandler = function (message) {
   console.log(message);
   window.open("/network_ui/download?topology_id=" + this.topology_id, "_blank");
+};
+
+ApplicationScope.prototype.launchButtonHandler = function (message) {
+  console.log(message);
 };
 
 ApplicationScope.prototype.send_trace_message = function (message) {

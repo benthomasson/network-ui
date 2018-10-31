@@ -10,7 +10,7 @@ class Header extends Component {
     };
     return (
       <g>
-        <rect x='-1' y='-1' width={this.props.width + 1} height='51' style={headerStyle} />
+        <rect x='-1' y='-1' width={this.props.width + 2} height='51' style={headerStyle} />
       </g>
     );
   }

@@ -1,5 +1,7 @@
 
 var colors = {
+  green: '#5CB85C',
+  red: '#D9534F',
   blue: '#337AB7',
   selected1: '#79b7fd',
   selected2: '#c7e1fe',
@@ -21,7 +23,10 @@ var colors = {
   key: '#848992',
   keyTitle: '#707070',
   header: '#ebebeb',
-  headerLine: '#b7b7b7'
+  headerLine: '#b7b7b7',
+  statusText: '#161b1f',
+  pass: '#5CB85C',
+  fail: '#D9534F'
 };
 
 export default colors;
