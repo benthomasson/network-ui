@@ -4,6 +4,8 @@ var util = require('../util.js');
 
 function Button(label, x, y, width, height, callback, tracer) {
     this.label = label;
+    this.original_x = x;
+    this.original_y = y;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -17,5 +19,17 @@ function Button(label, x, y, width, height, callback, tracer) {
     this.fsm = new fsm.FSMController(this, 'button_fsm', button.Start, tracer);
 }
 exports.Button = Button;
+
+Button.prototype.update_size = function ($window) {
+
+  if (this.original_x < 0) {
+    this.x = $window.innerWidth + this.original_x;
+  }
+
+  if (this.original_y < 0) {
+    this.y = $window.innerHeight + this.original_y;
+  }
+
+};
 
 Button.prototype.is_selected = util.rectangle_is_selected;

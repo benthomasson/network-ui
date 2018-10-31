@@ -49,6 +49,8 @@ function ApplicationScope (svgFrame) {
   this.uploadButtonHandler = this.uploadButtonHandler.bind(this);
   this.downloadButtonHandler = this.downloadButtonHandler.bind(this);
   this.launchButtonHandler = this.launchButtonHandler.bind(this);
+  this.keyButtonHandler = this.keyButtonHandler.bind(this);
+  this.toolbarButtonHandler = this.toolbarButtonHandler.bind(this);
   this.create_inventory_host = this.create_inventory_host.bind(this);
   this.create_inventory_group = this.create_inventory_group.bind(this);
   this.create_group_association = this.create_group_association.bind(this);
@@ -157,11 +159,19 @@ function ApplicationScope (svgFrame) {
 
   //Create Buttons
   this.buttons_by_name = {
-    download: new button_models.Button("Topology", 20, 7, 40, 40, this.downloadButtonHandler, this),
-    launch: new button_models.Button("Launch", 70, 7, 40, 40, this.launchButtonHandler, this)
+    toggle_toolbar: new button_models.Button("Toolbar", 20, 7, 40, 40, this.toolbarButtonHandler, this),
+    download: new button_models.Button("Topology", 70, 7, 40, 40, this.downloadButtonHandler, this),
+    launch: new button_models.Button("Launch", 120, 7, 40, 40, this.launchButtonHandler, this),
+    toggle_key: new button_models.Button("Key", -50, 7, 40, 40, this.keyButtonHandler, this)
   };
 
-  this.buttons = [this.buttons_by_name.download, this.buttons_by_name.launch];
+  this.buttons = [this.buttons_by_name.download,
+                  this.buttons_by_name.launch,
+                  this.buttons_by_name.toggle_key,
+                  this.buttons_by_name.toggle_toolbar];
+
+  this.viewport_update_subscribers.push(this.buttons_by_name.toggle_key);
+  this.buttons_by_name.toggle_key.update_size(window);
 
   //Create Log Pane
   this.log_pane = new log_models.LogPane(this);
@@ -287,6 +297,14 @@ ApplicationScope.prototype.downloadButtonHandler = function (message) {
 };
 
 ApplicationScope.prototype.launchButtonHandler = function (message) {
+  console.log(message);
+};
+
+ApplicationScope.prototype.keyButtonHandler = function (message) {
+  this.showHelp = !this.showHelp;
+};
+
+ApplicationScope.prototype.toolbarButtonHandler = function (message) {
   console.log(message);
 };
 
@@ -420,11 +438,18 @@ ApplicationScope.prototype.onResize = function (e) {
       return;
     }
   }
+
+  for( var i = 0; i < this.viewport_update_subscribers.length; i++ ) {
+    this.viewport_update_subscribers[i].update_size(window);
+  }
    this.setState({
      frameWidth: window.innerWidth,
      frameHeight: window.innerHeight
    });
   this.svgFrame.forceUpdate();
+};
+
+ApplicationScope.prototype.update_size = function () {
 };
 
 ApplicationScope.prototype.clear_selections = function () {

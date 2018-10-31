@@ -12,6 +12,11 @@ var pathStyle = {
   stroke: Colors['darkWidgetDetail'],
 };
 
+var buttonStyle = {
+  fill: Colors.buttonBackground,
+  stroke: Colors.buttonBackground
+};
+
 var textStyle = {
   fill: Colors['darkWidgetDetail'],
 };

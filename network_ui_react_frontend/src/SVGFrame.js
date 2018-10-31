@@ -4,6 +4,8 @@ import Cursor from './core/Cursor';
 import Key from './core/Key';
 import Download from './button/Download';
 import Launch from './button/Launch';
+import KeyButton from './button/Key';
+import ToolbarButton from './button/Toolbar';
 import Quadrants from './core/Quadrants';
 import Help from './core/Help';
 import Header from './core/Header';
@@ -158,6 +160,8 @@ class SVGFrame extends Component {
           <Header width={this.scope.frameWidth} />
           <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
           <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
+          <ToolbarButton {...this.scope.buttons_by_name.toggle_toolbar} showDebug={this.scope.showDebug} />
+          <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
           </g>
           : null}
           <PlaybookStatus {...this.scope.playbook_status} showDebug={this.scope.showDebug} frame={this.scope.frameNumber}/>

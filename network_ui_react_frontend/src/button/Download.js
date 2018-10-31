@@ -4,7 +4,7 @@ import {textStyle, pathStyle, debugStyle} from '../style/Styles.js';
 import Colors from '../style/Colors';
 
 
-class Upload extends Component {
+class Download extends Component {
   render() {
     return (
         <g style={{cursor: 'pointer'}}>
@@ -22,4 +22,4 @@ class Upload extends Component {
   }
 }
 
-export default Upload;
+export default Download;

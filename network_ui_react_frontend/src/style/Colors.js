@@ -27,7 +27,8 @@ var colors = {
   statusText: '#161b1f',
   pass: '#5CB85C',
   fail: '#D9534F',
-  logText: '#161b1f'
+  logText: '#161b1f',
+  buttonBackground: '#377bb5'
 };
 
 export default colors;
