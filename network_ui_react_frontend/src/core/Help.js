@@ -47,7 +47,7 @@ class Upload extends Component {
     }
     return (
         this.props.showHelp ?
-          <g transform={'translate(' + this.props.x + ',' + this.props.y + ')'}>
+          <g transform={'translate(' + this.props.x + ',' + (this.props.y - this.props.y_offset) + ')'}>
               <rect x='-20' y='-5' width='200' height={y+25} style={backgroundRectStyle} rx='5'/>
               <text x='-5' y='20' style={keyTitleStyle} >Key</text>
               {keys}

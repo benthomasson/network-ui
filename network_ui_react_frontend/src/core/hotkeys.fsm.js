@@ -74,7 +74,7 @@ _Enabled.prototype.onKeyDown = function(controller, msg_type, $event) {
         return;
     }
     if ($event.key === '?') {
-        scope.showHelp = !scope.showHelp;
+        scope.keyButtonHandler();
         return;
     }
 

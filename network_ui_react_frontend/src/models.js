@@ -1,5 +1,6 @@
 var util = require('./util.js');
 var fsm = require('./fsm.js');
+var core_models = require('./core/models.js');
 var hot_keys_fsm = require('./core/hotkeys.fsm.js');
 var time_fsm = require('./core/time.fsm.js');
 var view_fsm = require('./core/view.fsm.js');
@@ -17,6 +18,7 @@ var app_models = require('./application/models.js');
 var monitor_models = require('./monitor/models.js');
 var log_models = require('./log/models.js');
 var log_pane_fsm = require('./log/log.pane.fsm.js');
+var core_animations = require('./core/animations.js');
 var ReconnectingWebSocket = require('reconnectingwebsocket');
 var history = require('history');
 if (process.env.REACT_APP_REPLAY === 'true') {
@@ -119,6 +121,8 @@ function ApplicationScope (svgFrame) {
 
   this.viewport_update_subscribers = [this];
 
+  this.help_offset = 0;
+  this.help_animation = null;
 
   this.parseUrl();
 
@@ -148,6 +152,7 @@ function ApplicationScope (svgFrame) {
   }
 
   //Create sequences
+  this.animation_id_seq = util.natural_numbers(0);
   this.trace_id_seq = util.natural_numbers(0);
   this.trace_order_seq = util.natural_numbers(0);
   this.message_id_seq = util.natural_numbers(0);
@@ -301,7 +306,31 @@ ApplicationScope.prototype.launchButtonHandler = function (message) {
 };
 
 ApplicationScope.prototype.keyButtonHandler = function (message) {
-  this.showHelp = !this.showHelp;
+  var self = this;
+  if (this.showHelp) {
+    this.help_animation = new core_models.Animation(this.animation_id_seq(),
+                                                    35,
+                                                    {scope: this,
+                                                     direction: 10,
+                                                     component:this.svgFrame},
+                                                    this,
+                                                    this,
+                                                    core_animations.help_animation,
+                                                    function () {self.showHelp = false;},
+                                                    util.noop);
+  } else {
+    this.showHelp = true;
+    this.help_animation = new core_models.Animation(this.animation_id_seq(),
+                                                    35,
+                                                    {scope: this,
+                                                     direction: -10,
+                                                     component:this.svgFrame},
+                                                    this,
+                                                    this,
+                                                    core_animations.help_animation,
+                                                    util.noop,
+                                                    util.noop);
+  }
 };
 
 ApplicationScope.prototype.toolbarButtonHandler = function (message) {

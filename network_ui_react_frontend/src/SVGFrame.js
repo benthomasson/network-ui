@@ -144,6 +144,7 @@ class SVGFrame extends Component {
           <Help showHelp={this.scope.showHelp}
                 y={50}
                 x={this.scope.frameWidth - 200}
+                y_offset={this.scope.help_offset}
                 shortcuts={[['0', 'Reset scale and pan'],
                      ['?', 'Toggle help'],
                      ['d', 'Toggle debug'],
