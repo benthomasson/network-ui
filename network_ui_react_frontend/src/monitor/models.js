@@ -66,7 +66,7 @@ PlayStatus.prototype.update_height = function () {
 
 PlayStatus.prototype.update_size = function ($window) {
 
-    this.x = $window.innerWidth - 300;
+    this.x = 100;
     this.y = 100;
 };
 

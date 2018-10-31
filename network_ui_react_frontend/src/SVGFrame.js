@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import Debug from './core/Debug'
-import Cursor from './core/Cursor'
-import Key from './core/Key'
-import Download from './button/Download'
-import Launch from './button/Launch'
-import Quadrants from './core/Quadrants'
-import Help from './core/Help'
-import Header from './core/Header'
-import GetStarted from './core/GetStarted'
-import models from './models'
-import Device from './network/Device'
-import Host from './network/Host'
-import Router from './network/Router'
-import Switch from './network/Switch'
-import Link from './network/Link'
-import Group from './network/Group'
-import PlaybookStatus from './monitor/PlaybookStatus'
+import Debug from './core/Debug';
+import Cursor from './core/Cursor';
+import Key from './core/Key';
+import Download from './button/Download';
+import Launch from './button/Launch';
+import Quadrants from './core/Quadrants';
+import Help from './core/Help';
+import Header from './core/Header';
+import GetStarted from './core/GetStarted';
+import models from './models';
+import Device from './network/Device';
+import Host from './network/Host';
+import Router from './network/Router';
+import Switch from './network/Switch';
+import Link from './network/Link';
+import Group from './network/Group';
+import PlaybookStatus from './monitor/PlaybookStatus';
+import LogPane from './log/LogPane';
 
 
 class SVGFrame extends Component {
@@ -114,6 +115,12 @@ class SVGFrame extends Component {
               <feFlood floodColor="#ffffff"/>
               <feComposite in="SourceGraphic"/>
             </filter>
+            <clipPath id="log-pane-clip-path">
+							<rect x={this.scope.log_pane.x-1}
+										y={this.scope.log_pane.y-1}
+										width={this.scope.log_pane.width+2}
+										height={this.scope.log_pane.height+2} />
+						</clipPath>
           </defs>
           <g transform={'translate(' + this.scope.panX + ',' + this.scope.panY + ') ' +
                          'scale(' + this.scope.current_scale + ')'}>
@@ -122,14 +129,6 @@ class SVGFrame extends Component {
           {groups}
           <Quadrants {...this.scope} />
           </g>
-          <Debug {...this.scope}
-                 x={400}
-                 move={this.scope.move_controller}
-                 group={this.scope.group_controller}
-                 link={this.scope.link_controller}
-                 transition={this.scope.transition_controller}
-                 view={this.scope.view_controller}
-                 />
           {this.scope.showCursor ?
           <Cursor x={this.scope.cursorPosX}
                   y={this.scope.cursorPosY}
@@ -159,12 +158,22 @@ class SVGFrame extends Component {
           <Header width={this.scope.frameWidth} />
           <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
           <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
-          <PlaybookStatus {...this.scope.playbook_status} showDebug={this.scope.showDebug} frame={this.scope.frameNumber}/>
           </g>
           : null}
-          {this.scope.devices.length == 0 && this.scope.groups.length == 0 ?
+          <PlaybookStatus {...this.scope.playbook_status} showDebug={this.scope.showDebug} frame={this.scope.frameNumber}/>
+          {this.scope.devices.length === 0 && this.scope.groups.length === 0 ?
               <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
           : null}
+          <LogPane {...this.scope.log_pane} />
+          <Debug {...this.scope}
+                 x={400}
+                 move={this.scope.move_controller}
+                 group={this.scope.group_controller}
+                 link={this.scope.link_controller}
+                 transition={this.scope.transition_controller}
+                 view={this.scope.view_controller}
+                 log={this.scope.log_pane_controller}
+                 />
         </svg>
       </div>
     );

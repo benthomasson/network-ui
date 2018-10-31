@@ -15,6 +15,8 @@ var net_messages = require('./network/messages.js');
 var net_models = require('./network/models.js');
 var app_models = require('./application/models.js');
 var monitor_models = require('./monitor/models.js');
+var log_models = require('./log/models.js');
+var log_pane_fsm = require('./log/log.pane.fsm.js');
 var ReconnectingWebSocket = require('reconnectingwebsocket');
 var history = require('history');
 if (process.env.REACT_APP_REPLAY === 'true') {
@@ -113,6 +115,8 @@ function ApplicationScope (svgFrame) {
   this.last_selected_device = [];
   this.interface_prefix = 'eth';
 
+  this.viewport_update_subscribers = [this];
+
 
   this.parseUrl();
 
@@ -159,13 +163,21 @@ function ApplicationScope (svgFrame) {
 
   this.buttons = [this.buttons_by_name.download, this.buttons_by_name.launch];
 
+  //Create Log Pane
+  this.log_pane = new log_models.LogPane(this);
+  this.viewport_update_subscribers.push(this.log_pane);
+  this.log_pane.update_size(window);
+  this.log_pane.hidden = false;
+  this.log_pane.x = 200;
+  this.log_pane.y = 100;
+  this.log_pane.log_offset = -20;
 
   //Create Playbook Status
-  this.playbook_status = new monitor_models.PlayStatus(null, this);
-  this.playbook_status.x = 100;
-  this.playbook_status.y = 100;
+  this.playbook_status = new monitor_models.PlayStatus(this.log_pane, this);
+  this.viewport_update_subscribers.push(this.playbook_status);
+  this.playbook_status.update_size(window);
   this.playbook_status.width = 200;
-  this.playbook_status.height = 1000;
+  this.playbook_status.height = 500;
   this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'A'));
   this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'B'));
   this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'C'));
@@ -174,6 +186,12 @@ function ApplicationScope (svgFrame) {
   this.playbook_status.playbooks[0].status = true;
   this.playbook_status.playbooks[1].status = false;
   this.playbook_status.playbooks[2].working = true;
+
+  this.buttons.push(this.playbook_status);
+
+  this.log_pane.target = this.playbook_status.playbooks[2];
+  this.log_pane.target.log = ["Hello World", "1", "2", "3", "4", "5", "6", "7"];
+
 
   //Create FSM controllers
   this.hotkeys_controller = new fsm.FSMController(this, 'hot_keys_fsm', hot_keys_fsm.Start, this);
@@ -184,6 +202,8 @@ function ApplicationScope (svgFrame) {
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
   this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
   this.record_controller = new fsm.FSMController(this, 'record_fsm', record_fsm.Start, this);
+  this.log_pane_controller = new fsm.FSMController(this.log_pane, 'log_pane_fsm', log_pane_fsm.Visible, this);
+  this.log_pane.fsm = this.log_pane_controller;
   this.future_controller = new fsm.FSMController(this, 'future_fsm', future_fsm.Start, this);
   if (process.env.REACT_APP_REPLAY === 'true') {
     this.replay_controller = new fsm.FSMController(this, 'replay_fsm', replay_fsm.Start, this);
@@ -197,6 +217,7 @@ function ApplicationScope (svgFrame) {
                       this.move_controller,
                       this.link_controller,
                       this.group_controller,
+                      this.log_pane_controller,
                       this.buttons_controller,
                       this.time_controller,
                       this.future_controller];
@@ -274,7 +295,7 @@ ApplicationScope.prototype.send_trace_message = function (message) {
 };
 
 ApplicationScope.prototype.send_control_message = function (message) {
-  console.log(message);
+  //console.log(message);
   message.sender = this.client_id;
   message.message_id = this.message_id_seq();
   if (message.msg_type === "MultipleMessage") {
@@ -288,7 +309,7 @@ ApplicationScope.prototype.send_control_message = function (message) {
       return;
     }
   }
-  console.log(["Sending", message.msg_type, message.sender, message.message_id]);
+  //console.log(["Sending", message.msg_type, message.sender, message.message_id]);
   this.control_socket.send(data);
 };
 

@@ -26,7 +26,8 @@ var colors = {
   headerLine: '#b7b7b7',
   statusText: '#161b1f',
   pass: '#5CB85C',
-  fail: '#D9534F'
+  fail: '#D9534F',
+  logText: '#161b1f'
 };
 
 export default colors;
