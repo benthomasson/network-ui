@@ -10,6 +10,7 @@ var link_fsm = require('./network/link.fsm.js');
 var group_fsm = require('./network/group.fsm.js');
 var buttons_fsm = require('./button/buttons.fsm.js');
 var record_fsm = require('./ux/record.fsm.js');
+var runner_fsm = require('./monitor/runner.fsm.js');
 var core_messages = require('./core/messages.js');
 var button_models = require('./button/models.js');
 var net_messages = require('./network/messages.js');
@@ -119,6 +120,9 @@ function ApplicationScope (svgFrame) {
   this.last_selected_device = [];
   this.interface_prefix = 'eth';
 
+  this.playbooks = [];
+  this.playbooks_by_id = {};
+
   this.viewport_update_subscribers = [this];
 
   this.help_offset = 0;
@@ -188,23 +192,23 @@ function ApplicationScope (svgFrame) {
   this.log_pane.log_offset = -20;
 
   //Create Playbook Status
-  this.playbook_status = new monitor_models.PlayStatus(this.log_pane, this);
-  this.viewport_update_subscribers.push(this.playbook_status);
-  this.playbook_status.update_size(window);
-  this.playbook_status.width = 200;
-  this.playbook_status.height = 500;
-  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'A'));
-  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'B'));
-  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'C'));
-  this.playbook_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'D'));
+  this.play_status = new monitor_models.PlayStatus(this.log_pane, this);
+  this.viewport_update_subscribers.push(this.play_status);
+  this.play_status.update_size(window);
+  this.play_status.width = 200;
+  this.play_status.height = 500;
+  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'A'));
+  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'B'));
+  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'C'));
+  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'D'));
 
-  this.playbook_status.playbooks[0].status = true;
-  this.playbook_status.playbooks[1].status = false;
-  this.playbook_status.playbooks[2].working = true;
+  this.play_status.playbooks[0].status = true;
+  this.play_status.playbooks[1].status = false;
+  this.play_status.playbooks[2].working = true;
 
-  this.buttons.push(this.playbook_status);
+  this.buttons.push(this.play_status);
 
-  this.log_pane.target = this.playbook_status.playbooks[2];
+  this.log_pane.target = this.play_status.playbooks[2];
   this.log_pane.target.log = ["Hello World", "1", "2", "3", "4", "5", "6", "7"];
 
 
@@ -217,7 +221,8 @@ function ApplicationScope (svgFrame) {
   this.view_controller = new fsm.FSMController(this, 'view_fsm', view_fsm.Start, this);
   this.group_controller = new fsm.FSMController(this, 'group_fsm', group_fsm.Start, this);
   this.record_controller = new fsm.FSMController(this, 'record_fsm', record_fsm.Start, this);
-  this.log_pane_controller = new fsm.FSMController(this.log_pane, 'log_pane_fsm', log_pane_fsm.Visible, this);
+  this.log_pane_controller = new fsm.FSMController(this.log_pane, 'log_pane_fsm', log_pane_fsm.Start, this);
+  this.runner_controller = new fsm.FSMController(this, 'runner_fsm', runner_fsm.Start, this);
   this.log_pane.fsm = this.log_pane_controller;
   this.future_controller = new fsm.FSMController(this, 'future_fsm', future_fsm.Start, this);
   if (process.env.REACT_APP_REPLAY === 'true') {
@@ -233,6 +238,7 @@ function ApplicationScope (svgFrame) {
                       this.link_controller,
                       this.group_controller,
                       this.log_pane_controller,
+                      this.runner_controller,
                       this.buttons_controller,
                       this.time_controller,
                       this.future_controller];
@@ -302,7 +308,7 @@ ApplicationScope.prototype.downloadButtonHandler = function (message) {
 };
 
 ApplicationScope.prototype.launchButtonHandler = function (message) {
-  console.log(message);
+  this.send_control_message(new net_messages.Deploy(this.client_id));
 };
 
 ApplicationScope.prototype.keyButtonHandler = function (message) {

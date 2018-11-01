@@ -1,0 +1,16 @@
+diagram_uuid: 5edc14fe-7c3a-4d30-90c2-732fa1bdce12
+finite_state_machine_id: 2
+name: Runner
+states:
+- id: 2
+  label: Ready
+  x: 376
+  y: 396
+- id: 1
+  label: Start
+  x: 371
+  y: 92
+transitions:
+- from_state: Start
+  label: start
+  to_state: Ready

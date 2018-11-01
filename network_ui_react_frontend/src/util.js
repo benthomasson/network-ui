@@ -1,6 +1,14 @@
 /* Copyright (c) 2017 Red Hat, Inc. */
 var math = require('mathjs');
 
+Array.prototype.extend = function (other_array) {
+    /* you should include a test to check whether other_array really is an array */
+    var i = 0;
+    for (i = 0; i < other_array.length; i++) {
+        this.push(other_array[i]);
+    }
+};
+
 function noop () {
 }
 exports.noop = noop;
@@ -240,3 +248,8 @@ function pCase(x, y, x1, y1, x2, y2) {
   return param;
 }
 exports.pCase = pCase;
+
+function split_new_lines(s) {
+    return s.split("\n");
+}
+exports.split_new_lines = split_new_lines;
