@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import StatusLight from '../monitor/StatusLight';
 import TextInput from '../text/TextInput';
 
 import {debugLineStyle,
@@ -106,6 +107,7 @@ class Switch extends Component {
                                />
                 </g>
             </g>
+            <StatusLight item={this.props} />
         </g>
       </g>
     );
