@@ -6,7 +6,8 @@ class LogPane extends Component {
   render() {
 
     var logPaneTextStyle = {
-      fill: Colors.logText
+      fill: Colors.logText,
+      fontFamily: 'monospace'
     };
 
 
