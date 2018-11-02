@@ -66,7 +66,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
         playbook.log.extend(util.split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
         new_task = new monitor_models.Task(message.event_data.task_uuid,
-                                   message.event_data.task);
+                                           message.event_data.task);
         play.tasks.push(new_task);
         play.tasks_by_id[new_task.id] = new_task;
     }
