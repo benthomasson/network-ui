@@ -302,7 +302,11 @@ ApplicationScope.prototype.launchButtonHandler = function (message) {
 
 ApplicationScope.prototype.keyButtonHandler = function (message) {
   var self = this;
+  if (this.help_animation !== null) {
+    this.help_animation.fsm.handle_message('AnimationCancelled');
+  }
   if (this.showHelp) {
+    this.showHelp = true;
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
                                                     35,
                                                     {scope: this,
@@ -312,7 +316,7 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
                                                     this,
                                                     core_animations.help_animation,
                                                     function () {self.showHelp = false;},
-                                                    util.noop);
+                                                    function () {self.showHelp = true;});
   } else {
     this.showHelp = true;
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
@@ -323,8 +327,8 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
                                                     this,
                                                     this,
                                                     core_animations.help_animation,
-                                                    util.noop,
-                                                    util.noop);
+                                                    function () {self.showHelp = true;},
+                                                    function () {self.showHelp = false;});
   }
 };
 

@@ -52,7 +52,6 @@ _Running.prototype.start = function (controller) {
             return;
         }
         controller.scope.callback(controller.scope);
-        console.log(controller.scope);
         controller.scope.data.component.forceUpdate();
     }, 17);
 };
@@ -72,13 +71,13 @@ _Running.prototype.onAnimationCompleted = function (controller) {
 _Running.prototype.onAnimationCompleted.transitions = ['Completed'];
 
 _Completed.prototype.start = function (controller) {
-    controller.scope.completed_callback(controller.scope);
     controller.scope.active = false;
     clearInterval(controller.scope.interval);
+    controller.scope.completed_callback(controller.scope);
 };
 
 _Cancelled.prototype.start = function (controller) {
-    controller.scope.cancelled_callback(controller.scope);
     controller.scope.active = false;
     clearInterval(controller.scope.interval);
+    controller.scope.cancelled_callback(controller.scope);
 };
