@@ -7,7 +7,7 @@ class Upload extends Component {
     var i = -1;
     function next_y () {
       i = i + 1;
-      return 48 + i * 25;
+      return 48 + i * 30;
     }
     var backgroundRectStyle = {
       fill: Colors.lightBackground,
@@ -48,7 +48,7 @@ class Upload extends Component {
     return (
         this.props.showHelp ?
           <g transform={'translate(' + this.props.x + ',' + (this.props.y - this.props.y_offset) + ')'}>
-              <rect x='-20' y='-5' width='200' height={y+25} style={backgroundRectStyle} rx='5'/>
+              <rect x='-20' y='-5' width='200' height={y+30} style={backgroundRectStyle} rx='5'/>
               <text x='-5' y='20' style={keyTitleStyle} >Key</text>
               {keys}
           </g>
