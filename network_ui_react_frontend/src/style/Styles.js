@@ -51,6 +51,27 @@ var devicePathStyle = {
   fill: Colors['blue'],
   cursor: 'move'
 };
+
+var statusCircleStyle = {
+  fill: Colors.widgetBody,
+  stroke: Colors.darkWidgetDetail,
+  strokeWidth: 2
+};
+
+var statusCircleStylePass = Object.assign({}, statusCircleStyle);
+var statusCircleStyleFail = Object.assign({}, statusCircleStyle);
+statusCircleStylePass.fill = Colors.pass;
+statusCircleStyleFail.fill = Colors.fail;
+
+var statusPathStyle = {
+  fill: 'none',
+  stroke: Colors.darkWidgetDetail,
+  strokeWidth: 2
+};
+
+var statusTextStyle = {
+  fill: Colors.statusText
+    }
 export {textStyle,
         pathStyle,
         debugStyle,
@@ -60,5 +81,10 @@ export {textStyle,
         deviceStyle,
         deviceSelectedStyle,
         devicePathStyle,
-        deviceTextStyle
+        deviceTextStyle,
+        statusCircleStyle,
+        statusCircleStylePass,
+        statusCircleStyleFail,
+        statusPathStyle,
+        statusTextStyle
        };

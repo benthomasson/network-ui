@@ -6,7 +6,12 @@ import {debugLineStyle,
         debugRectStyle,
         constructionLineStyle,
         deviceStyle,
-        deviceTextStyle
+        deviceTextStyle,
+        statusCircleStyle,
+        statusCircleStylePass,
+        statusCircleStyleFail,
+        statusPathStyle,
+        statusTextStyle
         } from '../style/Styles.js';
 
 import util from '../util'
@@ -17,30 +22,6 @@ class PlaybookStatus extends Component {
     var playbooks = [];
 
     var last7 = this.props.playbooks.slice(-7);
-
-    var debugStyle = {
-    };
-
-    var statusCircleStyle = {
-      fill: Colors.widgetBody,
-      stroke: Colors.darkWidgetDetail,
-      strokeWidth: 2
-    };
-
-    var statusCircleStylePass = Object.assign({}, statusCircleStyle);
-    var statusCircleStyleFail = Object.assign({}, statusCircleStyle);
-    statusCircleStylePass.fill = Colors.pass;
-    statusCircleStyleFail.fill = Colors.fail;
-
-    var statusPathStyle = {
-      fill: 'none',
-      stroke: Colors.darkWidgetDetail,
-      strokeWidth: 2
-    };
-
-    var statusTextStyle = {
-      fill: Colors.statusText
-    }
 
     for (var i = 0; i < last7.length; i++) {
       var item = last7[i];

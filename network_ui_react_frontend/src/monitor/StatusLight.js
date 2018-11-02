@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 
+import {debugLineStyle,
+        debugRectStyle,
+        constructionLineStyle,
+        deviceStyle,
+        deviceTextStyle,
+        statusCircleStyle,
+        statusCircleStylePass,
+        statusCircleStyleFail,
+        statusPathStyle,
+        statusTextStyle
+        } from '../style/Styles.js';
+
 import util from '../util'
 
 class Template extends Component {
   render() {
-    var statusPathStyle = {
-    };
-    var statusCircleStyle = {
-    };
     return (
       <g>
         {this.props.working ?
@@ -18,8 +26,7 @@ class Template extends Component {
         <circle cx={-this.props.item.width}
                 cy={-this.props.item.height}
                 r="10"
-                style={statusCircleStyle}>
-        </circle>
+                style={this.props.item.status === null ? statusCircleStyle : this.props.item.status ? statusCircleStylePass : statusCircleStyleFail} />
         : null }
       </g>
     );
