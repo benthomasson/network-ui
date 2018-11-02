@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class Header extends Component {
+class Header extends PureComponent {
+
   render() {
     var headerStyle = {
       fill: Colors.header,

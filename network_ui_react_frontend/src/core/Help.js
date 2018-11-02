@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class Upload extends Component {
+class Upload extends PureComponent {
+
   render() {
     var i = -1;
     function next_y () {

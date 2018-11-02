@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class GetStarted extends Component {
+class GetStarted extends PureComponent {
+
   render() {
     var textStyle = {
       fill: Colors.key

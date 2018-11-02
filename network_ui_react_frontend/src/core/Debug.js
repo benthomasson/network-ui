@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 
 class Debug extends Component {
+
+  shouldComponentUpdate () {
+    return true;
+  }
+
   render() {
     var debugStyle = {
       fill: 'rgb(77,200,242)',

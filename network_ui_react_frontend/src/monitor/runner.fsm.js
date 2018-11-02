@@ -55,7 +55,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "playbook_on_play_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
-        playbook.log.extend(util.split_new_lines(message.stdout));
+        playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         new_play = new monitor_models.Play(message.event_data.play_uuid,
                                    message.event_data.play);
         playbook.plays.push(new_play);
@@ -63,7 +63,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "playbook_on_task_start") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
-        playbook.log.extend(util.split_new_lines(message.stdout));
+        playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
         new_task = new monitor_models.Task(message.event_data.task_uuid,
                                            message.event_data.task);
@@ -72,7 +72,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "runner_on_ok") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
-        playbook.log.extend(util.split_new_lines(message.stdout));
+        playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
         task = play.tasks_by_id[message.event_data.task_uuid];
         task.status = true;
@@ -86,7 +86,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     }
     if (message.event === "playbook_on_stats") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
-        playbook.log.extend(util.split_new_lines(message.stdout));
+        playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         playbook.working = false;
         if (Object.keys(message.event_data.failures).length === 0) {
             playbook.status = true;

@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import {textStyle, pathStyle, debugStyle} from '../style/Styles.js';
 import Colors from '../style/Colors';
 
 
-class Key extends Component {
+class Key extends PureComponent {
+
   render() {
     return (
         <g style={{cursor: 'pointer'}}>

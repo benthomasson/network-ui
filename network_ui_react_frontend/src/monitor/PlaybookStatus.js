@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
@@ -16,7 +16,8 @@ import {debugLineStyle,
 
 import util from '../util'
 
-class PlaybookStatus extends Component {
+class PlaybookStatus extends PureComponent {
+
   render() {
 
     var playbooks = [];

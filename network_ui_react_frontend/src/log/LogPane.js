@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class LogPane extends Component {
+class LogPane extends PureComponent {
+
   render() {
 
     var logPaneTextStyle = {
@@ -18,11 +19,11 @@ class LogPane extends Component {
 
     var lines = [];
 
-    if (this.props.target !== null) {
-      for (var i = 0; i < this.props.target.log.length; i++) {
-        var line = this.props.target.log[i];
-        lines.push(<text key={"logPaneText " + i} style={logPaneTextStyle} transform={"translate(0, " + (i * 20 + this.props.log_offset) + ")"}>{line}</text>);
-      }
+    var log = this.props.log.toArray();
+
+    for (var i = 0; i < log.length; i++) {
+      var line = log[i];
+      lines.push(<text key={"logPaneText " + i} style={logPaneTextStyle} transform={"translate(0, " + (i * 20 + this.props.log_offset) + ")"}>{line}</text>);
     }
     return (
       <g clipPath="url(#log-pane-clip-path)">

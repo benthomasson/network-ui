@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 
-class Template extends Component {
+class TaskStatus extends Component {
+
+  shouldComponentUpdate () {
+    return false;
+  }
+
   render() {
     return (
       <g>
@@ -9,4 +14,4 @@ class Template extends Component {
   }
 }
 
-export default Template;
+export default TaskStatus;

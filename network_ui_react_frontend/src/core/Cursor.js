@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-class Cursor extends Component {
+class Cursor extends PureComponent {
+
   render() {
     var debugStyle = {
       stroke: 'rgb(77,200,242)',

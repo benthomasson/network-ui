@@ -149,7 +149,7 @@ function ApplicationScope (svgFrame) {
         self.first_channel.send("Message", message);
       }
       console.log(message);
-      self.svgFrame.forceUpdate();
+      self.svgFrame.setState({});
     };
   } else {
     this.control_socket = {send: util.noop};
@@ -379,7 +379,7 @@ ApplicationScope.prototype.onMouseMove = function (e) {
   this.updateScaledXY();
 
   e.preventDefault();
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onMouseDown = function (e) {
@@ -395,7 +395,7 @@ ApplicationScope.prototype.onMouseDown = function (e) {
   this.updateScaledXY();
 
   e.preventDefault();
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onMouseUp = function (e) {
@@ -411,14 +411,14 @@ ApplicationScope.prototype.onMouseUp = function (e) {
   this.updateScaledXY();
 
   e.preventDefault();
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onMouseWheel = function (e) {
   console.log([e, e.deltaX, e.deltaY, e.deltaZ, e.metaKey, e.deltaMode]);
   this.first_channel.send("MouseWheel", [e.deltaX, e.deltaY]);
   e.preventDefault();
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onKeyDown = function (e) {
@@ -428,7 +428,7 @@ ApplicationScope.prototype.onKeyDown = function (e) {
   });
 
   e.preventDefault();
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.timer = function () {
@@ -443,16 +443,16 @@ ApplicationScope.prototype.timer = function () {
     }
 
     this.future_messages = [];
-    this.svgFrame.forceUpdate();
+    this.svgFrame.setState({});
   }
   if (this.showDebug) {
-    this.svgFrame.forceUpdate();
+    this.svgFrame.setState({});
   }
 };
 
 ApplicationScope.prototype.blinkTimer = function () {
   this.blink = !this.blink;
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onUnload = function (e) {
@@ -474,7 +474,7 @@ ApplicationScope.prototype.onResize = function (e) {
      frameWidth: window.innerWidth,
      frameHeight: window.innerHeight
    });
-  this.svgFrame.forceUpdate();
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.update_size = function () {
@@ -977,7 +977,7 @@ if (process.env.REACT_APP_REPLAY === 'true') {
         replay_event.sender = 0;
         console.log(replay_event);
         this.first_channel.send(replay_event.msg_type, replay_event);
-        this.svgFrame.forceUpdate();
+        this.svgFrame.setState({});
     }
   };
 }

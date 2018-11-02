@@ -6,6 +6,11 @@ import TextInput from '../text/TextInput';
 
 class Link extends Component {
 
+  shouldComponentUpdate () {
+    return false;
+  }
+
+
   length () {
       //Return the length of this link.
       var x1 = this.props.from_device.x;

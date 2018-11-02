@@ -1,12 +1,13 @@
 
 var fsm = require('../fsm.js');
+var immutable = require('immutable');
 var button_fsm = require('../button/button.fsm.js');
 
 
 function Playbook(id, name) {
     this.id = id;
     this.name = name;
-    this.log = [];
+    this.log = immutable.List([]);
     this.plays = [];
     this.plays_by_id = {};
     this.working = null;

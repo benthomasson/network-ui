@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import StatusLight from '../monitor/StatusLight';
 import TextInput from '../text/TextInput';
@@ -12,7 +12,8 @@ import {debugLineStyle,
         deviceTextStyle
         } from '../style/Styles.js';
 
-class Switch extends Component {
+class Switch extends PureComponent {
+
   render() {
     return (
       <g>

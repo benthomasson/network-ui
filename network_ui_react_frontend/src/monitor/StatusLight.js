@@ -15,6 +15,11 @@ import {debugLineStyle,
 import util from '../util'
 
 class Template extends Component {
+
+  shouldComponentUpdate () {
+    return false;
+  }
+
   render() {
     return (
       <g>

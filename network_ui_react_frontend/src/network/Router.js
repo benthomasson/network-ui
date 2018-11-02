@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import StatusLight from '../monitor/StatusLight';
 import TextInput from '../text/TextInput';
@@ -13,7 +13,8 @@ import {debugLineStyle,
         } from '../style/Styles.js';
 
 
-class Router extends Component {
+class Router extends PureComponent {
+
   render() {
     return (
       <g>

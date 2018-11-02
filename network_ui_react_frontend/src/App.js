@@ -3,6 +3,7 @@ import './App.css';
 import SVGFrame from './SVGFrame';
 
 class App extends Component {
+
   render() {
     return (
       <div className="App">

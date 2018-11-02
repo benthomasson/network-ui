@@ -27,6 +27,11 @@ class SVGFrame extends Component {
     super(props);
     window.svgFrame = this;
     this.scope = new models.ApplicationScope(this);
+    this.state = {frameNumber: 0};
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    return true;
   }
 
   componentDidMount() {
@@ -43,7 +48,7 @@ class SVGFrame extends Component {
      window.addEventListener('resize', this.scope.onResize);
      window.addEventListener('beforeunload', this.scope.onUnload);
 
-     this.forceUpdate();
+     this.setState({});
   }
 
   render() {
@@ -169,7 +174,9 @@ class SVGFrame extends Component {
           {this.scope.devices.length === 0 && this.scope.groups.length === 0 ?
               <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
           : null}
-          <LogPane {...this.scope.log_pane} />
+          {this.scope.log_pane.target !== null ?
+          <LogPane log={this.scope.log_pane.target.log} {...this.scope.log_pane}/>
+          : null}
           <Debug {...this.scope}
                  x={400}
                  move={this.scope.move_controller}

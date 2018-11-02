@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import TextInput from '../text/TextInput';
 
@@ -10,7 +10,8 @@ import {debugLineStyle,
         } from '../style/Styles.js';
 
 
-class Device extends Component {
+class Device extends PureComponent {
+
   render() {
     return (
       <g transform={"translate(" + this.props.x + "," + this.props.y + ")"}>

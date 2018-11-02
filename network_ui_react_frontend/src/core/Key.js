@@ -3,6 +3,11 @@ import React, { Component } from 'react';
 import Colors from '../style/Colors';
 
 class Key extends Component {
+
+  shouldComponentUpdate () {
+    return false;
+  }
+
   render() {
 
     var keyStyle = {

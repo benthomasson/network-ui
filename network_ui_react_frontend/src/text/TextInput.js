@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors'
 
 
-class TextInput extends Component {
+class TextInput extends PureComponent {
+
   render() {
     var textInputBoxStyle = {
       fill: 'none',

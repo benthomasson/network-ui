@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import {textStyle, pathStyle, debugStyle} from '../style/Styles.js'
 
 
-class Upload extends Component {
+class Upload extends PureComponent {
+
   render() {
     return (
         <g style={{cursor: 'pointer'}}>

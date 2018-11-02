@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import util from '../util'
 
 import Colors from '../style/Colors'
 
-class Group extends Component {
+class Group extends PureComponent {
 
   width () {
     var x2 = this.props.x2 !== null ? this.props.x2 : this.props.scaledX;
