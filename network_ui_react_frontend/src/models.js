@@ -197,19 +197,8 @@ function ApplicationScope (svgFrame) {
   this.play_status.update_size(window);
   this.play_status.width = 200;
   this.play_status.height = 500;
-  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'A'));
-  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'B'));
-  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'C'));
-  this.play_status.playbooks.push(new monitor_models.Play(this.play_id_seq(), 'D'));
-
-  this.play_status.playbooks[0].status = true;
-  this.play_status.playbooks[1].status = false;
-  this.play_status.playbooks[2].working = true;
 
   this.buttons.push(this.play_status);
-
-  this.log_pane.target = this.play_status.playbooks[2];
-  this.log_pane.target.log = ["Hello World", "1", "2", "3", "4", "5", "6", "7"];
 
 
   //Create FSM controllers
