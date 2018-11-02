@@ -25,7 +25,7 @@ class SVGFrame extends Component {
 
   constructor(props) {
     super(props);
-    window.scope = this;
+    window.svgFrame = this;
     this.scope = new models.ApplicationScope(this);
   }
 
