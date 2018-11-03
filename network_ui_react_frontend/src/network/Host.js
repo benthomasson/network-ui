@@ -103,7 +103,9 @@ class Host extends PureComponent {
                     </g>
                 </g>
                 <g>
-                    <TextInput x="0" y="50"
+                    <TextInput object={this.props.device}
+                               scope={this.props.scope}
+                               x="0" y="50"
                                value={this.props.name}
                                selected={this.props.selected}
                                width={this.props.text_width} height={20}

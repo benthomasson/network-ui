@@ -96,7 +96,9 @@ class Switch extends PureComponent {
                     </g>
                 </g>
                 <g>
-                    <TextInput x="0" y="75"
+                    <TextInput scope={this.props.scope}
+                               object={this.props.device}
+                               x="0" y="75"
                                value={this.props.name}
                                selected={this.props.selected}
                                width={this.props.text_width} height={20}

@@ -127,6 +127,7 @@ function ApplicationScope (svgFrame) {
   this.help_offset = 0;
   this.help_animation = null;
   this.help = null;
+  this.text_components = new WeakMap();
 
   this.parseUrl();
 

@@ -8,6 +8,7 @@ class TextInput extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {blink: false}
+    this.props.scope.text_components.set(this.props.object, this);
   }
 
   render() {

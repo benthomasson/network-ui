@@ -153,7 +153,9 @@ class Link extends PureComponent {
                       "translate(" + -this.length()/2 + ", 0)" +
                       "rotate(" + -this.slope() + ")" +
                       "translate(0, -5) scale(0.75)"}>
-          <TextInput x="0" y="0"
+          <TextInput scope={this.props.scope}
+                     object={this.props.link}
+                     x="0" y="0"
                      value={this.props.name}
                      selected={this.props.selected}
                      width={this.props.text_width} height={20}
@@ -170,7 +172,9 @@ class Link extends PureComponent {
                     "rotate(" + this.slope() + ")" +
                     "translate(" + (-this.props.from_interface.dot_d - 25) + ", 0)" +
                     "rotate(" + -this.slope() + ") scale(0.5)"}>
-          <TextInput x="0" y="0"
+          <TextInput scope={this.props.scope}
+                     object={this.props.from_interface}
+                     x="0" y="0"
                      value={this.props.from_interface.name}
                      selected={this.props.from_interface.selected}
                      width={this.props.from_interface.text_width} height={20}
@@ -187,7 +191,9 @@ class Link extends PureComponent {
                       "rotate(" + this.slope() + ")" +
                       "translate(" + (-this.length() + this.props.to_interface.dot_d + 25) + ", 0)" +
                       "rotate(" + -this.slope() + ") scale(0.5)"}>
-          <TextInput x="0" y="0"
+          <TextInput scope={this.props.scope}
+                     object={this.props.to_interface}
+                     x="0" y="0"
                      value={this.props.to_interface.name}
                      selected={this.props.to_interface.selected}
                      width={this.props.to_interface.text_width} height={20}

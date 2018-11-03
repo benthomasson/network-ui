@@ -63,18 +63,26 @@ class SVGFrame extends Component {
       device = this.scope.devices[i];
       if (device.type === "router") {
         devices.push(<Router {...device}
+                     device={device}
+                     scope={this.scope}
                      key={device.id.toString()}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "switch") {
         devices.push(<Switch {...device}
+                     device={device}
+                     scope={this.scope}
                      key={device.id.toString()}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "host") {
         devices.push(<Host {...device}
+                     device={device}
+                     scope={this.scope}
                      key={device.id.toString()}
                      showDebug={this.scope.showDebug}/>);
       } else {
         devices.push(<Device {...device}
+                     device={device}
+                     scope={this.scope}
                      key={device.id.toString()}
                      showDebug={this.scope.showDebug}/>);
       }
@@ -89,6 +97,8 @@ class SVGFrame extends Component {
                          from_device_y = {link.from_device.y}
                          to_device_x = {link.to_device.x}
                          to_device_y = {link.to_device.y}
+                         link={link}
+                         scope={this.scope}
                          key={link.id.toString()}
                          showDebug={this.scope.showDebug} />)
       } else {
@@ -97,6 +107,8 @@ class SVGFrame extends Component {
                          from_device_y = {link.from_device.y}
                          to_device_x = {link.to_device.x}
                          to_device_y = {link.to_device.y}
+                         link={link}
+                         scope={this.scope}
                          key={link.id.toString()}
                          scaledX={this.scope.scaledX}
                          scaledY={this.scope.scaledY}
