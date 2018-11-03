@@ -35,7 +35,8 @@ class SVGFrame extends Component {
   }
 
   componentDidMount() {
-     var blinkIntervalId = setInterval(this.scope.blinkTimer, 500);
+     //var blinkIntervalId = setInterval(this.scope.blinkTimer, 500);
+     var blinkIntervalId = null;
      var intervalId = setInterval(this.scope.timer, 17);
      //var intervalId = null;
      this.scope.setState({
@@ -148,10 +149,9 @@ class SVGFrame extends Component {
                y={this.scope.frameHeight - 100}
                lastKey={this.scope.lastKey}/>
           : null}
-          <Help showHelp={this.scope.showHelp}
+          <Help scope={this.scope}
                 y={50}
                 x={this.scope.frameWidth - 200}
-                y_offset={this.scope.help_offset}
                 shortcuts={[['0', 'Reset scale and pan'],
                      ['?', 'Toggle help'],
                      ['d', 'Toggle debug'],

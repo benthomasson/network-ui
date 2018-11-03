@@ -2,7 +2,13 @@ import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class Upload extends PureComponent {
+class Help extends PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.state = {y_offset: 0, showHelp: true, extending: true};
+    this.props.scope.help = this;
+  }
 
   render() {
     var i = -1;
@@ -47,8 +53,8 @@ class Upload extends PureComponent {
                 </g>);
     }
     return (
-        this.props.showHelp ?
-          <g transform={'translate(' + this.props.x + ',' + (this.props.y - this.props.y_offset) + ')'}>
+        this.state.showHelp ?
+          <g transform={'translate(' + this.props.x + ',' + (this.props.y - this.state.y_offset) + ')'}>
               <rect x='-20' y='-5' width='200' height={y+30} style={backgroundRectStyle} rx='5'/>
               <text x='-5' y='20' style={keyTitleStyle} >Key</text>
               {keys}
@@ -58,4 +64,4 @@ class Upload extends PureComponent {
   }
 }
 
-export default Upload;
+export default Help;

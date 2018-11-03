@@ -52,7 +52,6 @@ _Running.prototype.start = function (controller) {
             return;
         }
         controller.scope.callback(controller.scope);
-        controller.scope.data.component.setState({});
     }, 17);
 };
 

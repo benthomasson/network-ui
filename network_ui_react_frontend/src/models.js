@@ -127,6 +127,7 @@ function ApplicationScope (svgFrame) {
 
   this.help_offset = 0;
   this.help_animation = null;
+  this.help = null;
 
   this.parseUrl();
 
@@ -305,30 +306,30 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
   if (this.help_animation !== null) {
     this.help_animation.fsm.handle_message('AnimationCancelled');
   }
-  if (this.showHelp) {
-    this.showHelp = true;
+  if (this.help.state.extending) {
+    this.help.setState({showHelp: true, extending: false});
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
                                                     35,
                                                     {scope: this,
                                                      direction: 10,
-                                                     component:this.svgFrame},
+                                                     component:this.help},
                                                     this,
                                                     this,
                                                     core_animations.help_animation,
-                                                    function () {self.showHelp = false;},
-                                                    function () {self.showHelp = true;});
+                                                    function () {self.help.setState({showHelp: false})},
+                                                    function () {self.help.setState({showHelp: true})});
   } else {
-    this.showHelp = true;
+    this.help.setState({showHelp: true, extending: true});
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
                                                     35,
                                                     {scope: this,
                                                      direction: -10,
-                                                     component:this.svgFrame},
+                                                     component:this.help},
                                                     this,
                                                     this,
                                                     core_animations.help_animation,
-                                                    function () {self.showHelp = true;},
-                                                    function () {self.showHelp = false;});
+                                                    function () {self.help.setState({showHelp: true})},
+                                                    function () {self.help.setState({showHelp: false})});
   }
 };
 
@@ -448,7 +449,6 @@ ApplicationScope.prototype.timer = function () {
   if (this.showDebug) {
     this.svgFrame.setState({});
   }
-  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.blinkTimer = function () {
