@@ -128,6 +128,7 @@ function ApplicationScope (svgFrame) {
   this.help_animation = null;
   this.help = null;
   this.text_components = new WeakMap();
+  this.text_animation = new Map();
 
   this.parseUrl();
 
@@ -309,6 +310,7 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
   if (this.help.state.extending) {
     this.help.setState({showHelp: true, extending: false});
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
+                                                    17,
                                                     35,
                                                     {scope: this,
                                                      direction: 10,
@@ -321,6 +323,7 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
   } else {
     this.help.setState({showHelp: true, extending: true});
     this.help_animation = new core_models.Animation(this.animation_id_seq(),
+                                                    17,
                                                     35,
                                                     {scope: this,
                                                      direction: -10,

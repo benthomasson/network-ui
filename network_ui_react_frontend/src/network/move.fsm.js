@@ -3,6 +3,8 @@ var inherits = require('inherits');
 var nunjucks = require('nunjucks');
 var fsm = require('../fsm.js');
 var models = require('./models.js');
+var models = require('./models.js');
+var core_models = require('../core/models.js');
 var app_models = require('../application/models.js');
 var messages = require('./messages.js');
 var app_messages = require('../application/messages.js');
@@ -466,13 +468,32 @@ _Selected3.prototype.onMouseMove = function (controller) {
 _Selected3.prototype.onMouseMove.transitions = ['Move'];
 
 _EditLabel.prototype.start = function (controller) {
-    controller.scope.selected_items[0].edit_label = true;
-    controller.scope.update_cursor_pos(models.object_id(controller.scope.selected_items[0]),
-                                       controller.scope.selected_items[0]);
+    var item = controller.scope.selected_items[0];
+    item.edit_label = true;
+    controller.scope.update_cursor_pos(models.object_id(item),
+                                       item);
+    if (controller.scope.text_animation.has(item)) {
+      controller.scope.text_animation.get(item).fsm.handle_message('AnimationCancelled');
+    }
+    controller.scope.text_animation.set(item, new core_models.Animation(controller.scope.animation_id_seq(),
+                                                    500,
+                                                    -1,
+                                                    {component: controller.scope.text_components.get(item)},
+                                                    this,
+                                                    controller.scope,
+                                                    function (scope) {
+                                                      scope.data.component.setState({blink: !scope.data.component.state.blink});
+                                                    },
+                                                    util.noop,
+                                                    util.noop));
 };
 
 _EditLabel.prototype.end = function (controller) {
-    controller.scope.selected_items[0].edit_label = false;
+    var item = controller.scope.selected_items[0];
+    item.edit_label = false;
+    if (controller.scope.text_animation.has(item)) {
+      controller.scope.text_animation.get(item).fsm.handle_message('AnimationCancelled');
+    }
 };
 
 _EditLabel.prototype.onMouseDown = function (controller, msg_type, $event) {

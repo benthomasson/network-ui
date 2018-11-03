@@ -44,6 +44,10 @@ _Running.prototype.start = function (controller) {
 
     controller.scope.interval = setInterval(function () {
         controller.scope.frame_number = controller.scope.frame_number_seq();
+        if (controller.scope.steps < 0) {
+            controller.scope.callback(controller.scope);
+            return;
+        }
         if (!controller.scope.active) {
             return;
         }
@@ -52,7 +56,7 @@ _Running.prototype.start = function (controller) {
             return;
         }
         controller.scope.callback(controller.scope);
-    }, 17);
+    }, controller.scope.delay);
 };
 
 _Running.prototype.onAnimationCancelled = function (controller) {
