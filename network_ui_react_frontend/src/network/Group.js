@@ -6,33 +6,27 @@ import Colors from '../style/Colors'
 class Group extends PureComponent {
 
   width () {
-    var x2 = this.props.x2 !== null ? this.props.x2 : this.props.scaledX;
-    return Math.abs(this.props.x1 - x2);
+    return Math.abs(this.props.x1 - this.props.x2);
   };
 
   height () {
-    var y2 = this.props.y2 !== null ? this.props.y2 : this.props.scaledY;
-    return Math.abs(this.props.y1 - y2);
+    return Math.abs(this.props.y1 - this.props.y2);
   };
 
   top_extent () {
-    var y2 = this.props.y2 !== null ? this.props.y2 : this.props.scaledY;
-    return (this.props.y1 < y2? this.props.y1 : y2);
+    return (this.props.y1 < this.props.y2 ? this.props.y1 : this.props.y2);
   };
 
   left_extent () {
-    var x2 = this.props.x2 !== null ? this.props.x2 : this.props.scaledX;
-    return (this.props.x1 < x2? this.props.x1 : x2);
+    return (this.props.x1 < this.props.x2 ? this.props.x1 : this.props.x2);
   };
 
   bottom_extent () {
-    var y2 = this.props.y2 !== null ? this.props.y2 : this.props.scaledY;
-    return (this.props.y1 > y2? this.props.y1 : y2);
+    return (this.props.y1 > this.props.y2 ? this.props.y1 : this.props.y2);
   };
 
   right_extent () {
-    var x2 = this.props.x2 !== null ? this.props.x2 : this.props.scaledX;
-    return (this.props.x1 > x2? this.props.x1 : x2);
+    return (this.props.x1 > this.props.x2 ? this.props.x1 : this.props.x2);
   };
   render() {
     var groupStyle = {

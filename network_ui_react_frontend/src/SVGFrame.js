@@ -89,12 +89,17 @@ class SVGFrame extends Component {
     var link = null;
     for (i = 0; i < this.scope.links.length; i++) {
       link = this.scope.links[i];
-      links.push(<Link {...link}
-                       key={link.id.toString()}
-                       blink={this.scope.blink}
-                       showDebug={this.scope.showDebug}
-                       scaledX={this.scope.scaledX}
-                       scaledY={this.scope.scaledY} />)
+      if (link.to_device !== null) {
+        links.push(<Link {...link}
+                         key={link.id.toString()}
+                         showDebug={this.scope.showDebug} />)
+      } else {
+        links.push(<Link {...link}
+                         key={link.id.toString()}
+                         scaledX={this.scope.scaledX}
+                         scaledY={this.scope.scaledY}
+                         showDebug={this.scope.showDebug} />)
+      }
     }
     var groups = [];
     var group = null;
@@ -102,10 +107,7 @@ class SVGFrame extends Component {
       group = this.scope.groups[i];
       groups.push(<Group {...group}
                           key={group.id.toString()}
-                          blink={this.scope.blink}
-                          showDebug={this.scope.showDebug}
-                          scaledX={this.scope.scaledX}
-                          scaledY={this.scope.scaledY} />);
+                          showDebug={this.scope.showDebug} />);
     }
     return (
       <div className='SVGFrame'>
