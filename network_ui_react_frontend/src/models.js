@@ -37,7 +37,6 @@ function ApplicationScope (svgFrame) {
   this.onMouseDown = this.onMouseDown.bind(this);
   this.onMouseWheel = this.onMouseWheel.bind(this);
   this.timer = this.timer.bind(this);
-  this.blinkTimer = this.blinkTimer.bind(this);
   this.onKeyDown = this.onKeyDown.bind(this);
   this.onResize = this.onResize.bind(this);
   this.onUnload = this.onUnload.bind(this);
@@ -87,8 +86,6 @@ function ApplicationScope (svgFrame) {
   this.frameWidth = 0;
   this.frameHeight = 0;
   this.lastKey = '';
-  this.frameNumber = 0;
-  this.blink = false;
   this.showDebug = false;
   this.showHelp = true;
   this.showCursor = false;
@@ -433,9 +430,6 @@ ApplicationScope.prototype.onKeyDown = function (e) {
 };
 
 ApplicationScope.prototype.timer = function () {
-  this.setState({
-    frameNumber: this.state.frameNumber + 1
-  });
   if (this.future_messages.length > 0) {
 
     for(var i = 0; i < this.future_messages.length; i++) {
@@ -446,14 +440,6 @@ ApplicationScope.prototype.timer = function () {
     this.future_messages = [];
     this.svgFrame.setState({});
   }
-  if (this.showDebug) {
-    this.svgFrame.setState({});
-  }
-};
-
-ApplicationScope.prototype.blinkTimer = function () {
-  this.blink = !this.blink;
-  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.onUnload = function (e) {

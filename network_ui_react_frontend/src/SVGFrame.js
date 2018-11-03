@@ -27,7 +27,6 @@ class SVGFrame extends Component {
     super(props);
     window.svgFrame = this;
     this.scope = new models.ApplicationScope(this);
-    this.state = {frameNumber: 0};
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -35,13 +34,9 @@ class SVGFrame extends Component {
   }
 
   componentDidMount() {
-     //var blinkIntervalId = setInterval(this.scope.blinkTimer, 500);
-     var blinkIntervalId = null;
-     var intervalId = setInterval(this.scope.timer, 17);
-     //var intervalId = null;
+    var intervalId = setInterval(this.scope.timer, 17);
      this.scope.setState({
        intervalId: intervalId,
-       blinkIntervalId: blinkIntervalId,
        frameWidth: window.innerWidth,
        frameHeight: window.innerHeight
      });
@@ -66,22 +61,18 @@ class SVGFrame extends Component {
       if (device.type === "router") {
         devices.push(<Router {...device}
                      key={device.id.toString()}
-                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "switch") {
         devices.push(<Switch {...device}
                      key={device.id.toString()}
-                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "host") {
         devices.push(<Host {...device}
                      key={device.id.toString()}
-                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else {
         devices.push(<Device {...device}
                      key={device.id.toString()}
-                     blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       }
     }
@@ -174,7 +165,7 @@ class SVGFrame extends Component {
           <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
           </g>
           : null}
-          <PlaybookStatus {...this.scope.play_status} showDebug={this.scope.showDebug} frame={this.scope.frameNumber}/>
+          <PlaybookStatus {...this.scope.play_status} showDebug={this.scope.showDebug}/>
           {this.scope.devices.length === 0 && this.scope.groups.length === 0 ?
               <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
           : null}

@@ -28,7 +28,6 @@ class Debug extends Component {
           <text x={this.props.x} y={next_i()} style={debugStyle}>Pan: ({this.props.panX}, {this.props.panY}) </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>Scale: {this.props.current_scale} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>Key: {this.props.lastKey} </text>
-          <text x={this.props.x} y={next_i()} style={debugStyle}>Frame #: {this.props.frameNumber} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}># Selected: {this.props.selected_items.length} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>View: {this.props.view.state.name} </text>
           <text x={this.props.x} y={next_i()} style={debugStyle}>Move: {this.props.move.state.name} </text>
