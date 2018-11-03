@@ -106,6 +106,8 @@ function ApplicationScope (svgFrame) {
   this.future_messages = [];
   this.selecting_device = false;
   this.placing_group = false;
+  this.grabbed = false;
+  this.dragging = false;
   this.browser_history = history.createHashHistory({hashType: "hashbang"});
   console.log(this.browser_history.location);
 

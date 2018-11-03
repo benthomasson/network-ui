@@ -94,6 +94,13 @@ _Scale.prototype.onMouseWheel = function (controller, msg_type, message) {
 };
 _Scale.prototype.onMouseWheel.transitions = ['Ready'];
 
+_Pressed.prototype.start = function (controller) {
+  controller.scope.grabbed = true;
+};
+
+_Pressed.prototype.end = function (controller) {
+  controller.scope.grabbed = false;
+};
 
 _Pressed.prototype.onMouseUp = function (controller) {
 
@@ -109,6 +116,14 @@ _Pressed.prototype.onMouseMove = function (controller, msg_type, $event) {
 };
 _Pressed.prototype.onMouseMove.transitions = ['Pan'];
 
+
+_Pan.prototype.start = function (controller) {
+  controller.scope.dragging = true;
+};
+
+_Pan.prototype.end = function (controller) {
+  controller.scope.dragging = false;
+};
 
 _Pan.prototype.onMouseMove = function (controller) {
 

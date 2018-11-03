@@ -51,7 +51,10 @@ class SVGFrame extends Component {
     var frameStyle = {
       backgroundColor: '#ffffff',
       cursor: (this.scope.selecting_device ? 'alias' :
-               this.scope.placing_group ? 'crosshair' : 'auto')
+               this.scope.placing_group ? 'crosshair' :
+               this.scope.grabbed ? 'grab' :
+               this.scope.dragging ? 'grabbing' :
+               'auto')
     };
 
     var devices = [];
