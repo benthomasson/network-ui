@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 import util from '../util';
 import TextInput from '../text/TextInput';
 
-class Link extends Component {
-
-  shouldComponentUpdate () {
-    return false;
-  }
+class Link extends PureComponent {
 
 
   length () {
