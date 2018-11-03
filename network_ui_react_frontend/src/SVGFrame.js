@@ -82,10 +82,18 @@ class SVGFrame extends Component {
       link = this.scope.links[i];
       if (link.to_device !== null) {
         links.push(<Link {...link}
+                         from_device_x = {link.from_device.x}
+                         from_device_y = {link.from_device.y}
+                         to_device_x = {link.to_device.x}
+                         to_device_y = {link.to_device.y}
                          key={link.id.toString()}
                          showDebug={this.scope.showDebug} />)
       } else {
         links.push(<Link {...link}
+                         from_device_x = {link.from_device.x}
+                         from_device_y = {link.from_device.y}
+                         to_device_x = {link.to_device.x}
+                         to_device_y = {link.to_device.y}
                          key={link.id.toString()}
                          scaledX={this.scope.scaledX}
                          scaledY={this.scope.scaledY}

@@ -9,19 +9,19 @@ class Link extends PureComponent {
 
   length () {
       //Return the length of this link.
-      var x1 = this.props.from_device.x;
-      var y1 = this.props.from_device.y;
-      var x2 = this.props.to_device.x;
-      var y2 = this.props.to_device.y;
+      var x1 = this.props.from_device_x;
+      var y1 = this.props.from_device_y;
+      var x2 = this.props.to_device_x;
+      var y2 = this.props.to_device_y;
       return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
   }
 
   slope () {
       //Return the slope in degrees for this link.
-      var x1 = this.props.from_device.x;
-      var y1 = this.props.from_device.y;
-      var x2 = this.props.to_device.x;
-      var y2 = this.props.to_device.y;
+      var x1 = this.props.from_device_x;
+      var y1 = this.props.from_device_y;
+      var x2 = this.props.to_device_x;
+      var y2 = this.props.to_device_y;
       return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI + 180;
   }
 
@@ -29,20 +29,20 @@ class Link extends PureComponent {
       //Return the length of the link.
       var x = this.props.scaledX;
       var y = this.props.scaledY;
-      var x1 = this.props.from_device.x;
-      var y1 = this.props.from_device.y;
-      var x2 = this.props.to_device.x;
-      var y2 = this.props.to_device.y;
+      var x1 = this.props.from_device_x;
+      var y1 = this.props.from_device_y;
+      var x2 = this.props.to_device_x;
+      var y2 = this.props.to_device_y;
       return util.pDistance(x, y, x1, y1, x2, y2);
   }
   pDistanceLine () {
 
       var x = this.props.scaledX;
       var y = this.props.scaledY;
-      var x1 = this.props.from_device.x;
-      var y1 = this.props.from_device.y;
-      var x2 = this.props.to_device.x;
-      var y2 = this.props.to_device.y;
+      var x1 = this.props.from_device_x;
+      var y1 = this.props.from_device_y;
+      var x2 = this.props.to_device_x;
+      var y2 = this.props.to_device_y;
       return util.pDistanceLine(x, y, x1, y1, x2, y2);
   };
 
@@ -79,16 +79,16 @@ class Link extends PureComponent {
     return (
       <g>
         {this.props.selected ?
-        <line x1={this.props.from_device.x}
-              y1={this.props.from_device.y}
-              x2={this.props.to_device !== null ? this.props.to_device.x : this.props.scaledX}
-              y2={this.props.to_device !== null ? this.props.to_device.y : this.props.scaledY}
+        <line x1={this.props.from_device_x}
+              y1={this.props.from_device_y}
+              x2={this.props.to_device !== null ? this.props.to_device_x : this.props.scaledX}
+              y2={this.props.to_device !== null ? this.props.to_device_y : this.props.scaledY}
               style={networkLinkSelectedStyle} />
         : null}
-        <line x1={this.props.from_device.x}
-              y1={this.props.from_device.y}
-              x2={this.props.to_device !== null ? this.props.to_device.x : this.props.scaledX}
-              y2={this.props.to_device !== null ? this.props.to_device.y : this.props.scaledY}
+        <line x1={this.props.from_device_x}
+              y1={this.props.from_device_y}
+              x2={this.props.to_device !== null ? this.props.to_device_x : this.props.scaledX}
+              y2={this.props.to_device !== null ? this.props.to_device_y : this.props.scaledY}
               style={networkLinkStyle} />
         {this.props.showDebug ?
           <g>
@@ -102,7 +102,7 @@ class Link extends PureComponent {
           : null}
           {this.props.to_device !== null ?
           <g>
-          <g transform={"translate(" + this.props.to_device.x + "," + this.props.to_device.y + ")" +
+          <g transform={"translate(" + this.props.to_device_x + "," + this.props.to_device_y + ")" +
                         "rotate(" + this.slope() + ")" +
                         "translate(" + this.length()/2 + ", 0)"}>
           <circle cx="0"
@@ -110,12 +110,12 @@ class Link extends PureComponent {
                   r="10"
                   style={circleDebugStyle}> </circle>
           </g>
-          <g transform={"translate(" + this.props.to_device.x + "," + this.props.to_device.y + ")" +
+          <g transform={"translate(" + this.props.to_device_x + "," + this.props.to_device_y + ")" +
                         "rotate(" + this.slope() + ")" +
                         "translate(" + this.length()/2 + ", 0)"}>
           <line x1="0" y1="-20"  x2="0" y2="20" style={linkDebugStyle}/>
           </g>
-          <g transform={"translate(" + this.props.to_device.x + "," + this.props.to_device.y + ")" +
+          <g transform={"translate(" + this.props.to_device_x + "," + this.props.to_device_y + ")" +
                         "rotate(" + this.slope() + ")" +
                         "translate(" + this.props.to_device.size + ", 0)"}>
           <circle cx="0"
@@ -123,7 +123,7 @@ class Link extends PureComponent {
                   r="10"
                   style={circleDebugStyle}> </circle>
           </g>
-          <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
+          <g transform={"translate(" + this.props.from_device_x + "," + this.props.from_device_y + ")" +
                         "rotate(" + this.slope() + ")" +
                         "translate(" + (-this.props.from_device.size) + ", 0)"}>
           <circle cx="0"
@@ -137,7 +137,7 @@ class Link extends PureComponent {
 
         : null}
         {this.props.to_device !== null ?
-        <g transform={"translate(" + this.props.to_device.x + "," + this.props.to_device.y + ")" +
+        <g transform={"translate(" + this.props.to_device_x + "," + this.props.to_device_y + ")" +
                       "rotate(" + this.slope() + ")" +
                       "translate(" + this.props.to_device.size + ", 0)" +
                       "rotate(180)" +
@@ -148,7 +148,7 @@ class Link extends PureComponent {
         <g>
 
         {this.props.to_device !== null ?
-        <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
+        <g transform={"translate(" + this.props.from_device_x + "," + this.props.from_device_y + ")" +
                       "rotate(" + this.slope() + ")" +
                       "translate(" + -this.length()/2 + ", 0)" +
                       "rotate(" + -this.slope() + ")" +
@@ -161,13 +161,12 @@ class Link extends PureComponent {
                      edit={this.props.edit_label}
                      id={'Link_' + this.props.id}
                      cursor_pos={this.props.cursor_pos}
-                     blink={this.props.blink}
                      />
         </g>
         : null}
 
         {this.props.to_device !== null ?
-        <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
+        <g transform={"translate(" + this.props.from_device_x + "," + this.props.from_device_y + ")" +
                     "rotate(" + this.slope() + ")" +
                     "translate(" + (-this.props.from_interface.dot_d - 25) + ", 0)" +
                     "rotate(" + -this.slope() + ") scale(0.5)"}>
@@ -179,13 +178,12 @@ class Link extends PureComponent {
                      edit={this.props.from_interface.edit_label}
                      id={'Interface_' + this.props.from_interface.id}
                      cursor_pos={this.props.from_interface.cursor_pos}
-                     blink={this.props.blink}
                      />
         </g>
         : null}
 
         {this.props.to_device !== null ?
-        <g transform={"translate(" + this.props.from_device.x + "," + this.props.from_device.y + ")" +
+        <g transform={"translate(" + this.props.from_device_x + "," + this.props.from_device_y + ")" +
                       "rotate(" + this.slope() + ")" +
                       "translate(" + (-this.length() + this.props.to_interface.dot_d + 25) + ", 0)" +
                       "rotate(" + -this.slope() + ") scale(0.5)"}>
@@ -197,7 +195,6 @@ class Link extends PureComponent {
                      edit={this.props.to_interface.edit_label}
                      id={'Interface_' + this.props.to_interface.id}
                      cursor_pos={this.props.to_interface.cursor_pos}
-                     blink={this.props.blink}
                      />
         </g>
         : null}
