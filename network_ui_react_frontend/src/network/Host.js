@@ -115,7 +115,7 @@ class Host extends PureComponent {
                                />
                 </g>
             </g>
-            <StatusLight item={this.props} />
+            <StatusLight {...this.props} />
         </g>
       </g>
     );

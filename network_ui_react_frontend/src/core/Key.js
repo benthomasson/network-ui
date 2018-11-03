@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
 
-class Key extends Component {
-
-  shouldComponentUpdate () {
-    return false;
-  }
+class Key extends PureComponent {
 
   render() {
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import {debugLineStyle,
         debugRectStyle,
@@ -14,28 +14,24 @@ import {debugLineStyle,
 
 import util from '../util'
 
-class Template extends Component {
-
-  shouldComponentUpdate () {
-    return false;
-  }
+class StatusLight extends PureComponent {
 
   render() {
     return (
       <g>
         {this.props.working ?
-            <path transform={"translate(" + (-this.props.item.width) + "," + (-this.props.item.height) + ") rotate(" + (this.props.frame/3) + ")"}
+            <path transform={"translate(" + (-this.props.width) + "," + (-this.props.height) + ") rotate(" + (this.props.frame/3) + ")"}
                   style={statusPathStyle} d={util.describeArc(0, 0, 10, 0, 270)}/>
         : null }
         {!this.props.working ?
-        <circle cx={-this.props.item.width}
-                cy={-this.props.item.height}
+        <circle cx={-this.props.width}
+                cy={-this.props.height}
                 r="10"
-                style={this.props.item.status === null ? statusCircleStyle : this.props.item.status ? statusCircleStylePass : statusCircleStyleFail} />
+                style={this.props.status === null ? statusCircleStyle : this.props.status ? statusCircleStylePass : statusCircleStyleFail} />
         : null }
       </g>
     );
   }
 }
 
-export default Template;
+export default StatusLight;

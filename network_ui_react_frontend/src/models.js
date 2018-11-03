@@ -448,6 +448,7 @@ ApplicationScope.prototype.timer = function () {
   if (this.showDebug) {
     this.svgFrame.setState({});
   }
+  this.svgFrame.setState({});
 };
 
 ApplicationScope.prototype.blinkTimer = function () {
