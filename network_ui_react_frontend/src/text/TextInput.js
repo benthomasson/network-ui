@@ -5,6 +5,11 @@ import Colors from '../style/Colors'
 
 class TextInput extends PureComponent {
 
+  constructor(props) {
+    super(props);
+    this.state = {blink: false}
+  }
+
   render() {
     var textInputBoxStyle = {
       fill: 'none',
@@ -73,7 +78,7 @@ class TextInput extends PureComponent {
                 style={textSelectedStyle}>
           </rect>
         : null}
-      {(this.props.show_cursor && this.props.width !== null && !this.props.blink) ?
+      {(this.props.show_cursor && this.props.width !== null && !this.state.blink) ?
           <line x1={this.props.cursor_pos - this.props.width/2} x2={this.props.cursor_pos - this.props.width/2}
                 y1='2' y2='18'
                 style={cursorStyle}>
