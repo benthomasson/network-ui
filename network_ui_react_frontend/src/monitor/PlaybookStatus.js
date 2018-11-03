@@ -27,7 +27,7 @@ class PlaybookStatus extends PureComponent {
     for (var i = 0; i < last7.length; i++) {
       var item = last7[i];
       playbooks.push(
-        <g key={"play_status " + i}>
+        <g key={item.id.toString()}>
         {item.working ?
             <path transform={"translate(0," + (i * 24) + ") rotate(" + (this.props.frame  * 5) + ")"} style={statusPathStyle} d={util.describeArc(0, 0, 10, 0, 270)}/>
         : null}

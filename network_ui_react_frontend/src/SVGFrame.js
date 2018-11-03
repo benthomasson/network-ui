@@ -64,22 +64,22 @@ class SVGFrame extends Component {
       device = this.scope.devices[i];
       if (device.type === "router") {
         devices.push(<Router {...device}
-                     key={'device' + i}
+                     key={device.id.toString()}
                      blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "switch") {
         devices.push(<Switch {...device}
-                     key={'device' + i}
+                     key={device.id.toString()}
                      blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else if (device.type === "host") {
         devices.push(<Host {...device}
-                     key={'device' + i}
+                     key={device.id.toString()}
                      blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       } else {
         devices.push(<Device {...device}
-                     key={'device' + i}
+                     key={device.id.toString()}
                      blink={this.scope.blink}
                      showDebug={this.scope.showDebug}/>);
       }
@@ -89,16 +89,18 @@ class SVGFrame extends Component {
     for (i = 0; i < this.scope.links.length; i++) {
       link = this.scope.links[i];
       links.push(<Link {...link}
-                       key={'link' + i}
+                       key={link.id.toString()}
                        blink={this.scope.blink}
                        showDebug={this.scope.showDebug}
                        scaledX={this.scope.scaledX}
                        scaledY={this.scope.scaledY} />)
     }
     var groups = [];
+    var group = null;
     for (i=0; i< this.scope.groups.length; i++) {
-      groups.push(<Group {...this.scope.groups[i]}
-                          key={'group' + i}
+      group = this.scope.groups[i];
+      groups.push(<Group {...group}
+                          key={group.id.toString()}
                           blink={this.scope.blink}
                           showDebug={this.scope.showDebug}
                           scaledX={this.scope.scaledX}

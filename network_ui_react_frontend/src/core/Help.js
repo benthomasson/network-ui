@@ -40,7 +40,7 @@ class Upload extends PureComponent {
       key = this.props.shortcuts[j][0];
       shortcut = this.props.shortcuts[j][1];
       y = next_y();
-      keys.push(<g key={'Help' + j}>
+      keys.push(<g key={key}>
                 <circle cx='5' cy={y-5} r='11' style={keyStyle}/>
                 <text x='5' y={y} textAnchor="middle" style={keyTextStyle}>{key}</text>
                 <text x='20' y={y} style={textStyle}>{shortcut}</text>

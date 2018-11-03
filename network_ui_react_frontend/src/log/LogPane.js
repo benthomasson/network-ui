@@ -23,7 +23,7 @@ class LogPane extends PureComponent {
 
     for (var i = 0; i < log.length; i++) {
       var line = log[i];
-      lines.push(<text key={"logPaneText " + i} style={logPaneTextStyle} transform={"translate(0, " + (i * 20 + this.props.log_offset) + ")"}>{line}</text>);
+      lines.push(<text key={i.toString()} style={logPaneTextStyle} transform={"translate(0, " + (i * 20 + this.props.log_offset) + ")"}>{line}</text>);
     }
     return (
       <g clipPath="url(#log-pane-clip-path)">
