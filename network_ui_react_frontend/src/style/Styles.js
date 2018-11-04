@@ -71,7 +71,17 @@ var statusPathStyle = {
 
 var statusTextStyle = {
   fill: Colors.statusText
-    }
+};
+
+var toolTipStyle = {
+  fill: Colors.toolTipBackground
+};
+
+var toolTipTextStyle = {
+  fill: Colors.lightBackground,
+  stroke: "none"
+};
+
 export {textStyle,
         pathStyle,
         debugStyle,
@@ -86,5 +96,7 @@ export {textStyle,
         statusCircleStylePass,
         statusCircleStyleFail,
         statusPathStyle,
-        statusTextStyle
+        statusTextStyle,
+        toolTipStyle,
+        toolTipTextStyle
        };

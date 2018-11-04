@@ -211,6 +211,7 @@ class SVGFrame extends Component {
                  transition={this.scope.transition_controller}
                  view={this.scope.view_controller}
                  log={this.scope.log_pane_controller}
+                 download={this.scope.buttons_by_name.download}
                  />
         </svg>
       </div>

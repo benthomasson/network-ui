@@ -28,7 +28,8 @@ var colors = {
   pass: '#5CB85C',
   fail: '#D9534F',
   logText: '#161b1f',
-  buttonBackground: '#377bb5'
+  buttonBackground: '#377bb5',
+  toolTipBackground: '#161b1f'
 };
 
 export default colors;
