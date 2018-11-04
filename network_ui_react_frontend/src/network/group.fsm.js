@@ -4,6 +4,8 @@ var inherits = require('inherits');
 var fsm = require('../fsm.js');
 var models = require('./models.js');
 var messages = require('./messages.js');
+var util = require('../util.js');
+var core_models = require('../core/models.js');
 
 function _State () {
 }
@@ -87,13 +89,6 @@ function _Placing () {
 inherits(_Placing, _State);
 var Placing = new _Placing();
 exports.Placing = Placing;
-
-function _ContextMenu () {
-    this.name = 'ContextMenu';
-}
-inherits(_ContextMenu, _State);
-var ContextMenu = new _ContextMenu();
-exports.ContextMenu = ContextMenu;
 
 _State.prototype.onUnselectAll = function (controller, msg_type, $event) {
 
@@ -254,24 +249,9 @@ _Selected3.prototype.onMouseMove = function (controller) {
 _Selected3.prototype.onMouseMove.transitions = ['Move'];
 
 _Selected3.prototype.onMouseUp = function (controller, msg_type, $event) {
-    /*
-    let context_menu = controller.scope.context_menus[0];
-    context_menu.enabled = true;
-    context_menu.x = $event.x;
-    context_menu.y = $event.y;
-    context_menu.buttons.forEach(function(button, index){
-        button.x = $event.x;
-        let menuPaddingTop = 5;
-        button.y = $event.y + menuPaddingTop + (button.height * index);
-    });
-
-    controller.changeState(ContextMenu);
-
-    */
-
-    controller.changeState(Selected2);
+    controller.changeState(EditLabel);
 };
-_Selected3.prototype.onMouseUp.transitions = ['ContextMenu'];
+_Selected3.prototype.onMouseUp.transitions = ['EditLabel'];
 
 
 _Move.prototype.onMouseMove = function (controller) {
@@ -440,11 +420,33 @@ _Ready.prototype.onNewGroup = function (controller, msg_type, message) {
 _Ready.prototype.onNewGroup.transitions = ['Placing'];
 
 _EditLabel.prototype.start = function (controller) {
-    controller.scope.selected_groups[0].edit_label = true;
+    var group = controller.scope.selected_groups[0]
+    group.edit_label = true;
+    controller.scope.update_cursor_pos(group.object_id(),
+                                       group);
+    if (controller.scope.text_animation.has(group)) {
+      controller.scope.text_animation.get(group).fsm.handle_message('AnimationCancelled');
+    }
+    controller.scope.text_animation.set(group, new core_models.Animation(controller.scope.animation_id_seq(),
+                                                    500,
+                                                    -1,
+                                                    {component: controller.scope.text_components.get(group)},
+                                                    this,
+                                                    controller.scope,
+                                                    function (scope) {
+                                                      scope.data.component.setState({blink: !scope.data.component.state.blink});
+                                                    },
+                                                    util.noop,
+                                                    util.noop));
 };
 
 _EditLabel.prototype.end = function (controller) {
     controller.scope.selected_groups[0].edit_label = false;
+    var group = controller.scope.selected_groups[0];
+    group.edit_label = false;
+    if (controller.scope.text_animation.has(group)) {
+      controller.scope.text_animation.get(group).fsm.handle_message('AnimationCancelled');
+    }
 };
 
 
@@ -463,23 +465,36 @@ _EditLabel.prototype.onKeyDown = function (controller, msg_type, $event) {
     var previous_name = item.name;
 	if ($event.keyCode === 8 || $event.keyCode === 46) { //Delete
 		item.name = item.name.slice(0, -1);
+    controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode >= 48 && $event.keyCode <=90) { //Alphanumeric
-        item.name += $event.key;
+    item.name += $event.key;
+    controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode >= 186 && $event.keyCode <=222) { //Punctuation
-        item.name += $event.key;
+    item.name += $event.key;
+    controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode === 13) { //Enter
-        controller.changeState(Selected2);
+    controller.changeState(Selected2);
 	} else if ($event.keyCode === 32) { //Space
-        item.name += " ";
-    } else {
-        console.log($event.keyCode);
-    }
+    item.name += " ";
+    controller.scope.future_update_cursor_pos(item.object_id(), item);
+  } else {
+    console.log($event.keyCode);
+  }
     controller.scope.send_control_message(new messages.GroupLabelEdit(controller.scope.client_id,
                                                                       item.id,
                                                                       item.name,
                                                                       previous_name));
 };
 _EditLabel.prototype.onKeyDown.transitions = ['Selected2'];
+
+_Selected2.prototype.start = function (controller, msg_type, message) {
+
+  var group = null;
+  for (var i = 0; i < controller.scope.selected_groups.length; i++) {
+    group = controller.scope.selected_groups[i];
+    controller.scope.update_cursor_pos(group.object_id(), group);
+  }
+};
 
 _Selected2.prototype.onNewGroup = function (controller, msg_type, $event) {
 
@@ -510,6 +525,7 @@ _Selected2.prototype.onMouseDown = function (controller, msg_type, $event) {
         else if (groups[i].is_selected(controller.scope.scaledX, controller.scope.scaledY)) {
             if (controller.scope.selected_groups.indexOf(groups[i]) === -1) {
                 controller.scope.selected_groups.push(groups[i]);
+                controller.scope.update_cursor_pos(groups[i].object_id(), groups[i]);
             }
         }
     }
@@ -586,26 +602,8 @@ _Placing.prototype.onMouseDown = function (controller) {
 
     controller.scope.new_group_type = null;
 
+    controller.scope.update_cursor_pos(group.object_id(),
+                                       group);
     controller.changeState(Resize);
 };
 _Placing.prototype.onMouseDown.transitions = ['Resize'];
-
-
-_ContextMenu.prototype.end = function (controller) {
-
-    controller.scope.removeContextMenu();
-};
-
-_ContextMenu.prototype.onLabelEdit = function (controller) {
-
-    controller.changeState(EditLabel);
-
-};
-_ContextMenu.prototype.onLabelEdit.transitions = ['EditLabel'];
-
-_ContextMenu.prototype.onMouseDown = function (controller) {
-
-    controller.changeState(Ready);
-
-};
-_ContextMenu.prototype.onMouseDown.transitions = ['Ready'];

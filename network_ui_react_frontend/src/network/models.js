@@ -346,6 +346,7 @@ Link.prototype.plength = function (x, y) {
 
 
 function Group(id, name, type, x1, y1, x2, y2, selected) {
+    this.model_type = 'Group';
     this.id = id;
     this.name = name;
     this.type = type;
@@ -367,8 +368,14 @@ function Group(id, name, type, x1, y1, x2, y2, selected) {
     this.template = false;
     this.variables = {};
     this.sequences = {};
+    this.text_width = null;
+    this.cursor_pos = null;
 }
 exports.Group = Group;
+
+Group.prototype.object_id = function () {
+  return this.model_type + "_" + this.id;
+};
 
 Group.prototype.compile_variables = function () {
 

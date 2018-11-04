@@ -128,8 +128,10 @@ class SVGFrame extends Component {
     for (i=0; i< this.scope.groups.length; i++) {
       group = this.scope.groups[i];
       groups.push(<Group {...group}
-                          key={group.id.toString()}
-                          showDebug={this.scope.showDebug} />);
+                         scope={this.scope}
+                         group={group}
+                         key={group.id.toString()}
+                         showDebug={this.scope.showDebug} />);
     }
     return (
       <div className='SVGFrame'>

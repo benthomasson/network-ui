@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import util from '../util'
 
 import Colors from '../style/Colors'
+import TextInput from '../text/TextInput';
 
 class Group extends PureComponent {
 
@@ -184,14 +185,18 @@ class Group extends PureComponent {
         : null }
 
         <g transform={"translate(" + this.left_extent() + "," + this.top_extent() + ")"}>
-        {(this.props.selected && ! this.props.edit_label) ?
-          <text style={textSelected}
-                filter="url(#selected)"
-                textAnchor="left"
-                x="20"
-                y="32">{this.props.name}</text>
-        :  null}
-          <text style={textStyle} textAnchor="left" x="20" y="32">{this.props.name}{this.props.edit_label?'_':''}</text>
+        <TextInput scope={this.props.scope}
+                   object={this.props.group}
+                   x="20" y="32"
+                   value={this.props.name}
+                   selected={this.props.selected}
+                   width={this.props.text_width} height={20}
+                   show_cursor={this.props.edit_label}
+                   edit={this.props.edit_label}
+                   id={'Group_' + this.props.id}
+                   cursor_pos={this.props.cursor_pos}
+                   textAnchor="left"
+                   />
         </g>
       </g>
     );
