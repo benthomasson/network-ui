@@ -91,12 +91,12 @@ class SVGFrame extends Component {
     var link = null;
     for (i = 0; i < this.scope.links.length; i++) {
       link = this.scope.links[i];
-      if (link.to_device !== null) {
+      if (link.to_device === null) {
         links.push(<Link {...link}
                          from_device_x = {link.from_device.x}
                          from_device_y = {link.from_device.y}
-                         to_device_x = {link.to_device.x}
-                         to_device_y = {link.to_device.y}
+                         scaledX={this.scope.scaledX}
+                         scaledY={this.scope.scaledY}
                          link={link}
                          scope={this.scope}
                          key={link.id.toString()}
@@ -110,8 +110,16 @@ class SVGFrame extends Component {
                          link={link}
                          scope={this.scope}
                          key={link.id.toString()}
-                         scaledX={this.scope.scaledX}
-                         scaledY={this.scope.scaledY}
+                         from_interface_selected = {link.from_interface.selected}
+                         from_interface_edit_label = {link.from_interface.edit_label}
+                         from_interface_name = {link.from_interface.name}
+                         from_interface_cursor_pos = {link.from_interface.cursor_pos}
+                         from_interface_text_width = {link.from_interface.text_width}
+                         to_interface_selected = {link.to_interface.selected}
+                         to_interface_edit_label = {link.to_interface.edit_label}
+                         to_interface_name = {link.to_interface.name}
+                         to_interface_cursor_pos = {link.to_interface.cursor_pos}
+                         to_interface_text_width = {link.to_interface.text_width}
                          showDebug={this.scope.showDebug} />)
       }
     }

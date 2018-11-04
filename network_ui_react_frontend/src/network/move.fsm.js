@@ -149,7 +149,7 @@ _Ready.prototype.onNewDevice = function (controller, msg_type, message) {
         scope.create_inventory_host(device);
         scope.selected_devices.push(device);
         device.selected = true;
-        controller.scope.update_cursor_pos(models.object_id(device),
+        controller.scope.update_cursor_pos(device.object_id(),
                                            device);
         controller.changeState(Placing);
     }
@@ -258,7 +258,7 @@ _Selected2.prototype.start = function (controller, msg_type, message) {
   var item = null;
   for (var i = 0; i < controller.scope.selected_items.length; i++) {
     item = controller.scope.selected_items[i];
-    controller.scope.update_cursor_pos(models.object_id(item), item);
+    controller.scope.update_cursor_pos(item.object_id(), item);
   }
 };
 
@@ -470,7 +470,7 @@ _Selected3.prototype.onMouseMove.transitions = ['Move'];
 _EditLabel.prototype.start = function (controller) {
     var item = controller.scope.selected_items[0];
     item.edit_label = true;
-    controller.scope.update_cursor_pos(models.object_id(item),
+    controller.scope.update_cursor_pos(item.object_id(),
                                        item);
     if (controller.scope.text_animation.has(item)) {
       controller.scope.text_animation.get(item).fsm.handle_message('AnimationCancelled');
@@ -512,13 +512,13 @@ _EditLabel.prototype.onKeyDown = function (controller, msg_type, $event) {
     var previous_name = item.name;
 	if ($event.keyCode === 8 || $event.keyCode === 46) { //Delete
 		    item.name = item.name.slice(0, -1);
-        controller.scope.future_update_cursor_pos(models.object_id(item), item);
+        controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode >= 48 && $event.keyCode <=90) { //Alphanumeric
         item.name += $event.key;
-        controller.scope.future_update_cursor_pos(models.object_id(item), item);
+        controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode >= 186 && $event.keyCode <=222) { //Punctuation
         item.name += $event.key;
-        controller.scope.future_update_cursor_pos(models.object_id(item), item);
+        controller.scope.future_update_cursor_pos(item.object_id(), item);
 	} else if ($event.keyCode === 13) { //Enter
         controller.changeState(Selected2);
     }

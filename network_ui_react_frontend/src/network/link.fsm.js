@@ -123,11 +123,11 @@ _Connecting.prototype.onMouseUp = function (controller) {
                                     controller.scope.new_link.to_device.id,
                                     from_device_interface.id,
                                     to_device_interface.id)]));
-        controller.scope.update_cursor_pos(models.object_id(controller.scope.new_link),
+        controller.scope.update_cursor_pos(controller.scope.new_link.object_id(),
                                            controller.scope.new_link);
-        controller.scope.update_cursor_pos(models.object_id(to_device_interface),
+        controller.scope.update_cursor_pos(to_device_interface.object_id(),
                                            to_device_interface);
-        controller.scope.update_cursor_pos(models.object_id(from_device_interface),
+        controller.scope.update_cursor_pos(from_device_interface.object_id(),
                                            from_device_interface);
         controller.scope.new_link = null;
         controller.changeState(Connected);

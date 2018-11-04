@@ -1,11 +1,6 @@
 /* Copyright (c) 2017-2018 Red Hat, Inc. */
 var util = require('../util.js');
 
-function object_id(item) {
-  return item.model_type + "_" + item.id;
-};
-exports.object_id = object_id;
-
 function Device(id, name, x, y, type, host_id) {
     this.model_type = 'Device';
     this.id = id;
@@ -37,6 +32,10 @@ function Device(id, name, x, y, type, host_id) {
     this.cursor_pos = null;
 }
 exports.Device = Device;
+
+Device.prototype.object_id = function () {
+  return this.model_type + "_" + this.id;
+};
 
 Device.prototype.toJSON = function () {
     return {id: this.id,
@@ -100,6 +99,10 @@ function Interface(id, name) {
     this.cursor_pos = null;
 }
 exports.Interface = Interface;
+
+Interface.prototype.object_id = function () {
+  return this.device.model_type + "_" + this.device.id  + "_" + this.model_type + "_" + this.id;
+};
 
 Interface.prototype.toJSON = function () {
 
@@ -250,6 +253,10 @@ function Link(id, from_device, to_device, from_interface, to_interface) {
     this.cursor_pos = null;
 }
 exports.Link = Link;
+
+Link.prototype.object_id = function () {
+  return this.model_type + "_" + this.id;
+};
 
 Link.prototype.toJSON = function () {
 

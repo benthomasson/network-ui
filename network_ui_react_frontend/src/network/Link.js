@@ -180,7 +180,7 @@ class Link extends PureComponent {
                      width={this.props.from_interface.text_width} height={20}
                      show_cursor={this.props.from_interface.edit_label}
                      edit={this.props.from_interface.edit_label}
-                     id={'Interface_' + this.props.from_interface.id}
+                     id={'Device_' + this.props.from_device.id + '_Interface_' + this.props.from_interface.id}
                      cursor_pos={this.props.from_interface.cursor_pos}
                      />
         </g>
@@ -199,7 +199,7 @@ class Link extends PureComponent {
                      width={this.props.to_interface.text_width} height={20}
                      show_cursor={this.props.to_interface.edit_label}
                      edit={this.props.to_interface.edit_label}
-                     id={'Interface_' + this.props.to_interface.id}
+                     id={'Device_' + this.props.to_device.id + '_Interface_' + this.props.to_interface.id}
                      cursor_pos={this.props.to_interface.cursor_pos}
                      />
         </g>
