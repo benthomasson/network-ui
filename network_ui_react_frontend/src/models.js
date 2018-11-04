@@ -198,7 +198,7 @@ function ApplicationScope (svgFrame) {
   this.viewport_update_subscribers.push(this.play_status);
   this.play_status.update_size(window);
   this.play_status.width = 200;
-  this.play_status.height = 500;
+  this.play_status.height = 0;
 
   this.buttons.push(this.play_status);
 
