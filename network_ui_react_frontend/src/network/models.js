@@ -53,10 +53,16 @@ Device.prototype.toJSON = function () {
 
 Device.prototype.is_selected = function (x, y) {
 
-    return (x > this.x - this.width &&
-            x < this.x + this.width &&
-            y > this.y - this.height &&
-            y < this.y + this.height);
+    if (this.shape === "circular") {
+      var d = Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2));
+      return d < this.size;
+
+    } else {
+      return (x > this.x - this.width &&
+              x < this.x + this.width &&
+              y > this.y - this.height &&
+              y < this.y + this.height);
+    }
 
 };
 
