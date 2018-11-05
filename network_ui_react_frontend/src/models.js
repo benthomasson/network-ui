@@ -121,6 +121,7 @@ function ApplicationScope (svgFrame) {
 
   this.playbooks = [];
   this.playbooks_by_id = {};
+  this.playbooks_by_name = new Map();
 
   this.viewport_update_subscribers = [this];
 
@@ -303,6 +304,12 @@ ApplicationScope.prototype.downloadButtonHandler = function (message) {
 };
 
 ApplicationScope.prototype.launchButtonHandler = function (message) {
+  var new_playbook = new monitor_models.Playbook(this.play_id_seq(),
+                                                 "playbook.yml");
+  this.playbooks.push(new_playbook);
+  this.playbooks_by_name.set(new_playbook.name, new_playbook);
+  this.play_status.playbooks.push(new_playbook);
+  this.play_status.update_height();
   this.send_control_message(new net_messages.Deploy(this.client_id));
 };
 

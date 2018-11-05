@@ -45,8 +45,16 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     var task = null;
 
     if (message.event === "playbook_on_start") {
-        new_playbook = new monitor_models.Playbook(message.event_data.playbook_uuid,
-                                           message.event_data.playbook);
+        if (controller.scope.playbooks_by_name.has(message.event_data.playbook)) {
+          new_playbook = controller.scope.playbooks_by_name.get(message.event_data.playbook);
+          new_playbook.id = message.event_data.playbook_uuid;
+          controller.scope.playbooks_by_name.delete(message.event_data.playbook);
+        } else {
+          new_playbook = new monitor_models.Playbook(message.event_data.playbook_uuid,
+                                                     message.event_data.playbook);
+          controller.scope.playbooks.push(new_playbook);
+          controller.scope.play_status.playbooks.push(new_playbook);
+        }
         new_playbook.working = true;
         controller.scope.playbook_animation = new core_models.Animation(controller.scope.animation_id_seq(),
                                                                         17,
@@ -56,10 +64,8 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
                                                                         controller.scope.playbook_status,
                                                                         controller.scope,
                                                                         core_animations.set_frame_animation);
-        controller.scope.playbooks.push(new_playbook);
         controller.scope.playbooks_by_id[new_playbook.id] = new_playbook;
         controller.scope.log_pane.target = new_playbook;
-        controller.scope.play_status.playbooks.push(new_playbook);
         controller.scope.play_status.update_height();
     }
     if (message.event === "playbook_on_play_start") {
