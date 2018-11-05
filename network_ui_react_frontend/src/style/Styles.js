@@ -82,6 +82,11 @@ var toolTipTextStyle = {
   stroke: "none"
 };
 
+var taskTextStyle = {
+  fill: Colors['buttonText'],
+  fontSize: '10px'
+};
+
 export {textStyle,
         pathStyle,
         debugStyle,
@@ -98,5 +103,6 @@ export {textStyle,
         statusPathStyle,
         statusTextStyle,
         toolTipStyle,
-        toolTipTextStyle
+        toolTipTextStyle,
+        taskTextStyle
        };
