@@ -52,7 +52,9 @@ class PlaybookStatus extends PureComponent {
       <g>
         <g transform={"translate(" + this.props.x + "," + this.props.y + ")"}>
 
+        <g transform="translate(10,10)">
         {playbooks}
+        </g>
 
         {this.props.showDebug ?
         <rect x="0"

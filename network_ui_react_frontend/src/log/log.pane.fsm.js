@@ -55,7 +55,7 @@ var onMouseWheel = function (controller, msg_type, $event) {
 
     var delta = $event[1];
     if (delta < 0) {
-        controller.scope.log_offset = Math.max(controller.scope.log_offset - 10, controller.scope.target.log.length * -12);
+        controller.scope.log_offset = Math.max(controller.scope.log_offset - 10, controller.scope.target.log.size * -12);
     }
     if (delta > 0) {
         controller.scope.log_offset = Math.min(controller.scope.log_offset + 10, 0);

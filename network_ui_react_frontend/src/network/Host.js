@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 
 import StatusLight from '../monitor/StatusLight';
+import TaskStatus from '../monitor/TaskStatus';
 import TextInput from '../text/TextInput';
+
 
 import {debugLineStyle,
         debugRectStyle,
@@ -119,6 +121,7 @@ class Host extends PureComponent {
                        showDebug={this.props.showDebug}
                        />
             <StatusLight {...this.props} />
+            <TaskStatus {...this.props} />
         </g>
       </g>
     );

@@ -1,5 +1,6 @@
 /* Copyright (c) 2017-2018 Red Hat, Inc. */
 var util = require('../util.js');
+var immutable = require('immutable');
 
 function Device(id, name, x, y, type, host_id) {
     this.model_type = 'Device';
@@ -19,7 +20,7 @@ function Device(id, name, x, y, type, host_id) {
     this.working = false;
     this.moving = false;
     this.icon = false;
-    this.tasks = [];
+    this.tasks = immutable.List([]);
     this.shape = type === "router" ? "circular" : "rectangular";
     this.interface_seq = util.natural_numbers(0);
     this.interfaces = [];

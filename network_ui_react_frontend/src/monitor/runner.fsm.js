@@ -34,7 +34,6 @@ _Start.prototype.start = function (controller) {
 };
 _Start.prototype.start.transitions = ['Ready'];
 
-
 _Ready.prototype.onRunner = function(controller, msg_type, message) {
 
     console.log(message);
@@ -90,7 +89,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
         for(i=0; i < controller.scope.devices.length; i++) {
             if (controller.scope.devices[i].name === message.event_data.remote_addr) {
                 controller.scope.devices[i].status = true;
-                controller.scope.devices[i].tasks.push(task);
+                controller.scope.devices[i].tasks = controller.scope.devices[i].tasks.push(task);
             }
         }
     }

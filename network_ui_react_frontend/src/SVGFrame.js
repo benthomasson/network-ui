@@ -19,6 +19,7 @@ import Link from './network/Link';
 import Group from './network/Group';
 import PlaybookStatus from './monitor/PlaybookStatus';
 import LogPane from './log/LogPane';
+import PlaybookSelect from './launch/PlaybookSelect';
 
 
 class SVGFrame extends Component {
@@ -196,6 +197,7 @@ class SVGFrame extends Component {
           <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
           <ToolbarButton {...this.scope.buttons_by_name.toggle_toolbar} showDebug={this.scope.showDebug} />
           <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
+          <PlaybookSelect {...this.scope.buttons_by_name.playbook_select} showDebug={this.scope.showDebug} />
           </g>
           : null}
           <PlaybookStatus {...this.scope.play_status} scope={this.scope} showDebug={this.scope.showDebug}/>
