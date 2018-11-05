@@ -71,13 +71,16 @@ class AnsibleConsumer(SyncConsumer):
     def deploy(self, message):
         try:
             print("deploy: " + message['text'])
+            async_to_sync(self.channel_layer.group_send)('all',
+                                                         dict(type="playbook.message",
+                                                              data=(dict(name="playbook.yml", tasks=['debug', 'pause']))))
             self.build_project_directory()
             self.default_inventory = "[all]\nlocalhost ansible_connection=local\n"
             self.build_inventory(self.default_inventory)
             self.build_playbook([dict(hosts='localhost',
                                       name='default',
                                       gather_facts=False,
-                                      tasks=[dict(debug=None)])])
+                                      tasks=[dict(debug=None), dict(pause=dict(seconds=10))])])
             self.run_playbook()
         except BaseException as e:
             logger.error(str(e))

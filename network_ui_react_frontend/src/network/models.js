@@ -21,6 +21,7 @@ function Device(id, name, x, y, type, host_id) {
     this.moving = false;
     this.icon = false;
     this.tasks = immutable.List([]);
+    this.tasks_by_name = immutable.Map();
     this.shape = type === "router" ? "circular" : "rectangular";
     this.interface_seq = util.natural_numbers(0);
     this.interfaces = [];
@@ -31,6 +32,8 @@ function Device(id, name, x, y, type, host_id) {
     this.variables = {};
     this.text_width = null;
     this.cursor_pos = null;
+    this.modification = 0;
+    this.mod_seq = util.natural_numbers(0);
 }
 exports.Device = Device;
 

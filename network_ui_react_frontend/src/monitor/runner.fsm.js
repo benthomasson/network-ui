@@ -4,6 +4,7 @@ var monitor_models = require('./models.js');
 var core_models = require('../core/models.js');
 var util = require('../util.js');
 var core_animations = require('../core/animations.js');
+var immutable = require('immutable');
 
 function _State () {
 }
@@ -34,6 +35,24 @@ _Start.prototype.start = function (controller) {
 };
 _Start.prototype.start.transitions = ['Ready'];
 
+_Ready.prototype.onPlaybook = function(controller, msg_type, message) {
+
+  var i = 0;
+  var device = null;
+  var j = 0;
+  var task = null;
+  for(i=0; i < controller.scope.devices.length; i++) {
+    device = controller.scope.devices[i];
+    device.tasks = device.tasks.clear();
+    device.tasks_by_name = device.tasks_by_name.clear();
+    for(j=0; j < message.tasks.length ; j++) {
+      task = new monitor_models.Task(j, message.tasks[j]);
+      device.tasks_by_name = device.tasks_by_name.set(message.tasks[j], task);
+      device.tasks = device.tasks.push(task);
+    }
+  }
+};
+
 _Ready.prototype.onRunner = function(controller, msg_type, message) {
 
     console.log(message);
@@ -43,6 +62,7 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
     var play = null;
     var new_task = null;
     var task = null;
+    var device = null;
 
     if (message.event === "playbook_on_start") {
         if (controller.scope.playbooks_by_name.has(message.event_data.playbook)) {
@@ -80,22 +100,27 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         play = playbook.plays_by_id[message.event_data.play_uuid];
-        new_task = new monitor_models.Task(message.event_data.task_uuid,
-                                           message.event_data.task);
-        play.tasks.push(new_task);
-        play.tasks_by_id[new_task.id] = new_task;
     }
     if (message.event === "runner_on_ok") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
-        play = playbook.plays_by_id[message.event_data.play_uuid];
-        task = play.tasks_by_id[message.event_data.task_uuid];
-        task.status = true;
         var i = 0;
         for(i=0; i < controller.scope.devices.length; i++) {
-            if (controller.scope.devices[i].name === message.event_data.remote_addr) {
-                controller.scope.devices[i].status = true;
-                controller.scope.devices[i].tasks = controller.scope.devices[i].tasks.push(task);
+            device = controller.scope.devices[i];
+            if (device.name === message.event_data.remote_addr) {
+                if (device.tasks_by_name.has(message.event_data.task)) {
+                  task = device.tasks_by_name.get(message.event_data.task);
+                  task.status = true;
+                  task.id = message.event_data.task_uuid;
+                  device.status = true;
+                  device.modification = device.mod_seq();
+                } else {
+                  task = new monitor_models.Task(message.event_data.task_uuid,
+                                                     message.event_data.task);
+                  task.status = true;
+                  device.status = true;
+                  device.tasks = device.tasks.push(task);
+                }
             }
         }
     }

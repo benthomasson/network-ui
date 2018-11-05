@@ -26,7 +26,7 @@ class TaskStatus extends PureComponent {
           <circle cy={i * 12}
                   cx={this.props.width}
                   r="5"
-                  style={this.props.status === null ? statusCircleStyle : this.props.status ? statusCircleStylePass : statusCircleStyleFail} />
+                  style={item.status === null ? statusCircleStyle : item.status ? statusCircleStylePass : statusCircleStyleFail} />
           : null}
           <text x={this.props.width + 10} y={i*12 + 3} style={taskTextStyle}>{item.name}</text>
       </g>);

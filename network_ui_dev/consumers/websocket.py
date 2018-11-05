@@ -566,3 +566,7 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
     async def runner_message(self, message):
         pprint(message)
         await self.send_json(['Runner', message['data']])
+
+    async def playbook_message(self, message):
+        pprint(message)
+        await self.send_json(['Playbook', message['data']])
