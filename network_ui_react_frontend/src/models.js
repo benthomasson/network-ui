@@ -128,7 +128,10 @@ function ApplicationScope (svgFrame) {
   this.help_animation = null;
   this.help = null;
   this.text_components = new WeakMap();
+  this.spinner_components = new WeakMap();
   this.text_animation = new Map();
+  this.playbook_status = null;
+  this.playbook_animation = null;
 
   this.parseUrl();
 
@@ -313,9 +316,9 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
                                                     17,
                                                     35,
                                                     {scope: this,
-                                                     direction: 10,
-                                                     component:this.help},
+                                                     direction: 10},
                                                     this,
+                                                    this.help,
                                                     this,
                                                     core_animations.help_animation,
                                                     function () {self.help.setState({showHelp: false})},
@@ -326,9 +329,9 @@ ApplicationScope.prototype.keyButtonHandler = function (message) {
                                                     17,
                                                     35,
                                                     {scope: this,
-                                                     direction: -10,
-                                                     component:this.help},
+                                                     direction: -10},
                                                     this,
+                                                    this.help,
                                                     this,
                                                     core_animations.help_animation,
                                                     function () {self.help.setState({showHelp: true})},

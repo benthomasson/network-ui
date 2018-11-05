@@ -66,6 +66,11 @@ _Running.prototype.onAnimationCancelled = function (controller) {
 };
 _Running.prototype.onAnimationCancelled.transitions = ['Cancelled'];
 
+_Running.prototype.onAnimationWindDown = function (controller, msg_type, message) {
+
+  controller.scope.steps = controller.scope.frame_number + message.wind_down_steps;
+};
+
 _Running.prototype.onAnimationCompleted = function (controller) {
 
     controller.changeState(Completed);

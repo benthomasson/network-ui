@@ -1,7 +1,9 @@
 var inherits = require('inherits');
 var fsm = require('../fsm.js');
 var monitor_models = require('./models.js');
+var core_models = require('../core/models.js');
 var util = require('../util.js');
+var core_animations = require('../core/animations.js');
 
 function _State () {
 }
@@ -47,6 +49,14 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
         new_playbook = new monitor_models.Playbook(message.event_data.playbook_uuid,
                                            message.event_data.playbook);
         new_playbook.working = true;
+        controller.scope.playbook_animation = new core_models.Animation(controller.scope.animation_id_seq(),
+                                                                        17,
+                                                                        -1,
+                                                                        {},
+                                                                        controller.scope,
+                                                                        controller.scope.playbook_status,
+                                                                        controller.scope,
+                                                                        core_animations.set_frame_animation);
         controller.scope.playbooks.push(new_playbook);
         controller.scope.playbooks_by_id[new_playbook.id] = new_playbook;
         controller.scope.log_pane.target = new_playbook;
@@ -88,6 +98,9 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
         playbook.working = false;
+        if (controller.scope.playbook_animation !== null) {
+          controller.scope.playbook_animation.fsm.handle_message('AnimationWindDown', {wind_down_steps: 10});
+        }
         if (Object.keys(message.event_data.failures).length === 0) {
             playbook.status = true;
         } else {

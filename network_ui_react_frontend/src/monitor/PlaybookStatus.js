@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors';
+import Spinner from '../core/Spinner';
 
 import {debugLineStyle,
         debugRectStyle,
@@ -18,6 +19,12 @@ import util from '../util'
 
 class PlaybookStatus extends PureComponent {
 
+  constructor(props) {
+    super(props);
+    this.state = {frame_number: 0}
+    this.props.scope.playbook_status = this;
+  }
+
   render() {
 
     var playbooks = [];
@@ -29,7 +36,7 @@ class PlaybookStatus extends PureComponent {
       playbooks.push(
         <g key={item.id.toString()}>
         {item.working ?
-            <path transform={"translate(0," + (i * 24) + ") rotate(" + (this.props.frame  * 5) + ")"} style={statusPathStyle} d={util.describeArc(0, 0, 10, 0, 270)}/>
+            <Spinner x="0" y={i*24} frame_number={this.state.frame_number}/>
         : null}
         {!item.working ?
         <circle cx="0"

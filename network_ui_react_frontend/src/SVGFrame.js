@@ -198,7 +198,7 @@ class SVGFrame extends Component {
           <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
           </g>
           : null}
-          <PlaybookStatus {...this.scope.play_status} showDebug={this.scope.showDebug}/>
+          <PlaybookStatus {...this.scope.play_status} scope={this.scope} showDebug={this.scope.showDebug}/>
           {this.scope.devices.length === 0 && this.scope.groups.length === 0 ?
               <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
           : null}

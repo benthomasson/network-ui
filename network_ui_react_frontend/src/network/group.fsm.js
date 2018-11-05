@@ -430,14 +430,13 @@ _EditLabel.prototype.start = function (controller) {
     controller.scope.text_animation.set(group, new core_models.Animation(controller.scope.animation_id_seq(),
                                                     500,
                                                     -1,
-                                                    {component: controller.scope.text_components.get(group)},
+                                                    {},
                                                     this,
+                                                    controller.scope.text_components.get(group),
                                                     controller.scope,
                                                     function (scope) {
-                                                      scope.data.component.setState({blink: !scope.data.component.state.blink});
-                                                    },
-                                                    util.noop,
-                                                    util.noop));
+                                                      scope.component.setState({blink: !scope.component.state.blink});
+                                                    }));
 };
 
 _EditLabel.prototype.end = function (controller) {
