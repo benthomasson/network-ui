@@ -19,6 +19,9 @@ class Router extends PureComponent {
     return (
       <g>
         <g transform={"translate(" + this.props.x + "," + this.props.y + ")"}>
+            {this.props.showDebug ?
+                <rect x={-this.props.text_width/2} y="45" width={this.props.text_width} height="20" style={debugRectStyle} />
+             : null}
             <g transform="scale(0.75)">
                 {this.props.moving ?
                 <g>
@@ -60,16 +63,14 @@ class Router extends PureComponent {
                         y2="60"
                         style={debugLineStyle}>
                     </line>
-                    {/* end vertical line
+                    {/* end vertical line*/}
 
-                    {/* debug rectangle */}
-                    <rect x="-50"
-                        y="-50"
-                        width="100"
-                        height="100"
-                        style={debugRectStyle}>
-                    </rect>
-                    {/* end debug rectangle */}
+                    <circle
+                        cx="0"
+                        cy="0"
+                        r="52"
+                        style={debugLineStyle} />
+
                 </g>
                 : null}
                 <g transform="translate(-50,-50)">
@@ -94,20 +95,19 @@ class Router extends PureComponent {
                             c0.4-0.4,1.2-0.4,1.6,0c0.4,0.4,0.4,1.2,0,1.6l0,0l-2.1,2.1l8.8,0c0.6,0,1.1,0.5,1.1,1.1C42.1,25.6,41.6,26.2,41,26.2z"/>
                     </g>
                 </g>
-                <g>
-                    <TextInput scope={this.props.scope}
-                               object={this.props.device}
-                               x="0" y="75"
-                               value={this.props.name}
-                               selected={this.props.selected}
-                               width={this.props.text_width} height={20}
-                               show_cursor={this.props.edit_label}
-                               edit={this.props.edit_label}
-                               id={'Device_' + this.props.id}
-                               cursor_pos={this.props.cursor_pos}
-                               />
-                </g>
             </g>
+            <TextInput scope={this.props.scope}
+                       object={this.props.device}
+                       x="0" y="60"
+                       value={this.props.name}
+                       selected={this.props.selected}
+                       width={this.props.text_width} height={20}
+                       show_cursor={this.props.edit_label}
+                       edit={this.props.edit_label}
+                       id={'Device_' + this.props.id}
+                       cursor_pos={this.props.cursor_pos}
+                       showDebug={this.props.showDebug}
+                       />
             <StatusLight {...this.props} />
       </g>
       </g>

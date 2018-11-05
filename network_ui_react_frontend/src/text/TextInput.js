@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import Colors from '../style/Colors'
+import {debugRectStyle} from '../style/Styles';
 
 
 class TextInput extends PureComponent {
@@ -12,6 +13,7 @@ class TextInput extends PureComponent {
   }
 
   render() {
+    var showDebug = this.props.showDebug !== undefined ? this.props.showDebug : false;
     var textAnchor = this.props.textAnchor !== undefined ? this.props.textAnchor : 'middle';
     var textInputBoxStyle = {
       fill: 'none',
@@ -48,6 +50,12 @@ class TextInput extends PureComponent {
     var x_offset = textAnchor === 'left' ? 5 : this.props.width/2;
     return (
       <g transform={'translate(' + (this.props.x) + ',' + (this.props.y - 15) + ')'}>
+      {showDebug ?
+          <rect x={-x_offset} y='0'
+                width={this.props.width} height='20'
+                style={debugRectStyle}>
+          </rect>
+        : null}
       {(!this.props.text_selected && this.props.width !== null && this.props.value !== "") ?
           <rect x={-x_offset + 2} y='2'
                 width={this.props.cursor_pos} height='16'

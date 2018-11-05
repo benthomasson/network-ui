@@ -53,6 +53,23 @@ Device.prototype.toJSON = function () {
 
 Device.prototype.is_selected = function (x, y) {
 
+    var text_y = this.type === "host" ? this.y + 30 : this.y + 45;
+    var text_x = this.text_width !== null ? this.x - this.text_width / 2 : this.x - this.width / 2;
+    var text_width = this.text_width !== null ? this.text_width : this.width;
+    var text_height = 20;
+    console.log([x, y]);
+    console.log([text_x, text_y, text_width, text_height]);
+    console.log(x > text_x &&
+        x < (text_x + text_width) &&
+        y > text_y &&
+        y < (text_y + text_height));
+    if (x > text_x &&
+        x < (text_x + text_width) &&
+        y > text_y &&
+        y < (text_y + text_height)) {
+      return true;
+    }
+
     if (this.shape === "circular") {
       var d = Math.sqrt(Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2));
       return d < this.size;

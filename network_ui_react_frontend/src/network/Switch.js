@@ -18,6 +18,9 @@ class Switch extends PureComponent {
     return (
       <g>
         <g transform={"translate(" + this.props.x + "," + this.props.y + ")"}>
+            {this.props.showDebug ?
+                <rect x={-this.props.text_width/2} y="45" width={this.props.text_width} height="20" style={debugRectStyle} />
+             : null}
             <g transform="scale(0.75)">
                 {this.props.moving ?
                 <g>
@@ -95,20 +98,19 @@ class Switch extends PureComponent {
                             c0.2,0.2,0.3,0.5,0.3,0.8C40,29.1,39.9,29.4,39.7,29.6z"/>
                     </g>
                 </g>
-                <g>
-                    <TextInput scope={this.props.scope}
-                               object={this.props.device}
-                               x="0" y="75"
-                               value={this.props.name}
-                               selected={this.props.selected}
-                               width={this.props.text_width} height={20}
-                               show_cursor={this.props.edit_label}
-                               edit={this.props.edit_label}
-                               id={'Device_' + this.props.id}
-                               cursor_pos={this.props.cursor_pos}
-                               />
-                </g>
             </g>
+            <TextInput scope={this.props.scope}
+                       object={this.props.device}
+                       x="0" y="60"
+                       value={this.props.name}
+                       selected={this.props.selected}
+                       width={this.props.text_width} height={20}
+                       show_cursor={this.props.edit_label}
+                       edit={this.props.edit_label}
+                       id={'Device_' + this.props.id}
+                       cursor_pos={this.props.cursor_pos}
+                       showDebug={this.props.showDebug}
+                       />
             <StatusLight {...this.props} />
         </g>
       </g>

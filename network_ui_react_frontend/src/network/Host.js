@@ -19,6 +19,9 @@ class Host extends PureComponent {
     return (
       <g>
         <g transform={"translate(" + this.props.x + "," + this.props.y + ")"}>
+            {this.props.showDebug ?
+                <rect x={-this.props.text_width/2} y="35" width={this.props.text_width} height="20" style={debugRectStyle} />
+             : null}
             <g transform="scale(0.75)">
                 {this.props.moving ?
                 <g>
@@ -102,20 +105,19 @@ class Host extends PureComponent {
                         c-0.4,0-0.6-0.2-0.6-0.6c0-0.4,0.2-0.6,0.6-0.6h0.9c0.4,0,0.6,0.2,0.6,0.6C34.2,14.7,33.9,14.9,33.6,14.9z"/>
                     </g>
                 </g>
-                <g>
-                    <TextInput object={this.props.device}
-                               scope={this.props.scope}
-                               x="0" y="50"
-                               value={this.props.name}
-                               selected={this.props.selected}
-                               width={this.props.text_width} height={20}
-                               show_cursor={this.props.edit_label}
-                               edit={this.props.edit_label}
-                               id={'Device_' + this.props.id}
-                               cursor_pos={this.props.cursor_pos}
-                               />
-                </g>
             </g>
+            <TextInput object={this.props.device}
+                       scope={this.props.scope}
+                       x="0" y="50"
+                       value={this.props.name}
+                       selected={this.props.selected}
+                       width={this.props.text_width} height={20}
+                       show_cursor={this.props.edit_label}
+                       edit={this.props.edit_label}
+                       id={'Device_' + this.props.id}
+                       cursor_pos={this.props.cursor_pos}
+                       showDebug={this.props.showDebug}
+                       />
             <StatusLight {...this.props} />
         </g>
       </g>
