@@ -16,7 +16,8 @@ RUN apk update \
   && apk add postgresql-client \
   && apk add git \
   && apk add linux-headers \
-  && apk add alpine-sdk
+  && apk add alpine-sdk \
+  && apk add openssh-client
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
