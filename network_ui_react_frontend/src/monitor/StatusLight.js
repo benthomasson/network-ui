@@ -23,7 +23,7 @@ class StatusLight extends PureComponent {
             <path transform={"translate(" + (-this.props.width) + "," + (-this.props.height) + ") rotate(" + (this.props.frame/3) + ")"}
                   style={statusPathStyle} d={util.describeArc(0, 0, 10, 0, 270)}/>
         : null }
-        {!this.props.working ?
+        {this.props.status !== null && !this.props.working ?
         <circle cx={-this.props.width}
                 cy={-this.props.height}
                 r="10"

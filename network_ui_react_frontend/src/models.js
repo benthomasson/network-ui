@@ -174,17 +174,12 @@ function ApplicationScope (svgFrame) {
 
   //Create Buttons
   this.buttons_by_name = {
-    toggle_toolbar: new button_models.Button("Toolbar", 20, 7, 40, 40, this.toolbarButtonHandler, this),
-    download: new button_models.Button("Topology", 75, 7, 40, 40, this.downloadButtonHandler, this),
-    launch: new button_models.Button("Launch", 130, 7, 40, 40, this.launchButtonHandler, this),
+    download: new button_models.Button("Topology", 30, 7, 40, 40, this.downloadButtonHandler, this),
     toggle_key: new button_models.Button("Key", -50, 7, 40, 40, this.keyButtonHandler, this),
-    playbook_select: new button_models.Button("playbook.yml", 185, 10, 200, 30, this.keyButtonHandler, this)
   };
 
   this.buttons = [this.buttons_by_name.download,
-                  this.buttons_by_name.launch,
-                  this.buttons_by_name.toggle_key,
-                  this.buttons_by_name.toggle_toolbar];
+                  this.buttons_by_name.toggle_key];
 
   this.viewport_update_subscribers.push(this.buttons_by_name.toggle_key);
   this.buttons_by_name.toggle_key.update_size(window);

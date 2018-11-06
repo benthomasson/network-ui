@@ -3,7 +3,6 @@ import Debug from './core/Debug';
 import Cursor from './core/Cursor';
 import Key from './core/Key';
 import Download from './button/Download';
-import Launch from './button/Launch';
 import KeyButton from './button/Key';
 import ToolbarButton from './button/Toolbar';
 import Quadrants from './core/Quadrants';
@@ -194,18 +193,11 @@ class SVGFrame extends Component {
           <g>
           <Header width={this.scope.frameWidth} />
           <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
-          <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
-          <ToolbarButton {...this.scope.buttons_by_name.toggle_toolbar} showDebug={this.scope.showDebug} />
           <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
-          <PlaybookSelect {...this.scope.buttons_by_name.playbook_select} showDebug={this.scope.showDebug} />
           </g>
           : null}
-          <PlaybookStatus {...this.scope.play_status} scope={this.scope} showDebug={this.scope.showDebug}/>
           {this.scope.devices.length === 0 && this.scope.groups.length === 0 ?
               <GetStarted x={this.scope.frameWidth/2} y={this.scope.frameHeight/2} />
-          : null}
-          {this.scope.log_pane.target !== null ?
-          <LogPane log={this.scope.log_pane.target.log} {...this.scope.log_pane}/>
           : null}
           <Debug {...this.scope}
                  x={400}
