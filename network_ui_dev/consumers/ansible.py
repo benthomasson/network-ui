@@ -10,7 +10,6 @@ import yaml
 import logging
 import traceback
 from pprint import pprint
-from . import key
 
 WORKSPACE = "/tmp/workspace"
 
@@ -85,15 +84,7 @@ class AnsibleConsumer(SyncConsumer):
                                                          dict(type="playbook.message",
                                                               data=(dict(name="playbook.yml", tasks=['debug', 'pause', 'setup']))))
             self.build_project_directory()
-            self.build_keys(key.key)
-            # self.default_inventory = "[all]\nlocalhost ansible_connection=local\n"
-            self.default_inventory = """
-[Group1]
-Host3 ansible_host=192.168.1.68 ansible_port=2201 ansible_user=vagrant
-Host4 ansible_host=192.168.1.68 ansible_port=2202 ansible_user=vagrant
-Host1 ansible_host=192.168.1.68 ansible_port=2222 ansible_user=vagrant
-Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant
-            """
+            self.default_inventory = "[all]\nlocalhost ansible_connection=local\n"
             self.build_inventory(self.default_inventory)
             self.build_playbook([dict(hosts='all',
                                       name='default',
