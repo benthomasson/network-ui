@@ -34,9 +34,6 @@ services:
       context: .
       dockerfile: ./compose/production/nginx/Dockerfile
     image: network_ui_production_nginx
-    volumes:
-        - ./compose/production/nginx/conf.d:/etc/nginx/conf.d
-        - ./network_ui/static:/static/static
     depends_on:
       - django
     ports:
