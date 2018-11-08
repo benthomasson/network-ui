@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from . import consumers
+from ansible_worker_channels import consumers as worker_consumers
 
 websocket_urlpatterns = [
     url(r'^ws/network_ui$', consumers.NetworkUIConsumer),
@@ -8,5 +9,5 @@ websocket_urlpatterns = [
 
 channel_patterns = {
     "hello": consumers.HelloConsumer,
-    "ansible": consumers.AnsibleConsumer,
+    "ansible": worker_consumers.AnsibleConsumer,
 }

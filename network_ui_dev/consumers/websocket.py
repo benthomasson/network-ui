@@ -20,6 +20,8 @@ from ..models import Result, TestCase, CodeUnderTest
 from ..models import Process, Stream, Toolbox, ToolboxItem
 from ..models import Replay
 
+from . import key
+
 from ..utils import transform_dict
 
 from django.conf import settings
@@ -557,7 +559,20 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         # print (tr.pk)
 
     async def onDeploy(self, message, topology_id, client_id):
-        await self.channel_layer.send('ansible', dict(type="deploy", text='doit'))
+        await self.channel_layer.send('ansible', dict(type="deploy",
+                                                      text='doit',
+                                                      inventory="""
+[Group1]
+Host3 ansible_host=192.168.1.68 ansible_port=2201 ansible_user=vagrant
+Host4 ansible_host=192.168.1.68 ansible_port=2202 ansible_user=vagrant
+Host1 ansible_host=192.168.1.68 ansible_port=2222 ansible_user=vagrant
+Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant""",
+                                                      playbook=[dict(hosts='all',
+                                                                      name='default',
+                                                                      gather_facts=False,
+                                                                      tasks=[dict(debug=None), dict(pause=dict(seconds=10)), dict(setup=None)])],
+                                                      key=key.key,
+                                                      ))
 
     async def reply_message(self, event):
         pprint(event)

@@ -23,3 +23,7 @@ channels
 channels_redis
 ansible-runner
 ansible
+
+# Ansible Worker for Channels
+# -----------------------------
+# git+git://github.com/benthomasson/ansible-worker-channels.git@master#egg=ansible-worker-channels

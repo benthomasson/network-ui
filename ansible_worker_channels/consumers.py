@@ -9,12 +9,12 @@ import json
 import yaml
 import logging
 import traceback
+import itertools
 from pprint import pprint
-from . import key
 
 WORKSPACE = "/tmp/workspace"
 
-logger = logging.getLogger("network_ui_dev.consumers.ansible")
+logger = logging.getLogger("ansible_worker_channels.consumers")
 
 
 def ensure_directory(directory):
@@ -26,7 +26,7 @@ class AnsibleConsumer(SyncConsumer):
 
     def build_project_directory(self):
         ensure_directory(WORKSPACE)
-        self.temp_dir = tempfile.mkdtemp(prefix="network_ui_ansible", dir=WORKSPACE)
+        self.temp_dir = tempfile.mkdtemp(prefix="ansible_worker", dir=WORKSPACE)
         logger.info("temp_dir %s", self.temp_dir)
         ensure_directory(os.path.join(self.temp_dir, 'env'))
         ensure_directory(os.path.join(self.temp_dir, 'project'))
@@ -35,18 +35,18 @@ class AnsibleConsumer(SyncConsumer):
             f.write(json.dumps(dict(idle_timeout=0,
                                     job_timeout=0)))
 
-    def build_inventory(self, inventory):
-        print("build_inventory")
+    def add_inventory(self, inventory):
+        print("add_inventory")
         with open(os.path.join(self.temp_dir, 'inventory'), 'w') as f:
             f.write("\n".join(inventory.splitlines()[1:]))
 
-    def build_keys(self, key):
-        print("build_keys")
+    def add_keys(self, key):
+        print("add_keys")
         with open(os.path.join(self.temp_dir, 'env', 'ssh_key'), 'w') as f:
             f.write(key)
 
-    def build_playbook(self, playbook):
-        print("build_playbook")
+    def add_playbook(self, playbook):
+        print("add_playbook")
         self.playbook_file = (os.path.join(self.temp_dir, 'project', 'playbook.yml'))
         with open(self.playbook_file, 'w') as f:
             f.write(yaml.safe_dump(playbook, default_flow_style=False))
@@ -78,27 +78,26 @@ class AnsibleConsumer(SyncConsumer):
         logger.info('called')
         pprint(runner)
 
+    def top_level_tasks(self, playbook):
+        tasks = playbook[0].get('tasks', [])
+        task_keys = [t.keys() for t in tasks]
+        return list(itertools.chain(*task_keys))
+
     def deploy(self, message):
         try:
             print("deploy: " + message['text'])
+            inventory = message['inventory']
+            playbook = message['playbook']
+            key = message['key']
+            playbook_name = playbook[0].get('name')
+            top_level_tasks = self.top_level_tasks(playbook)
             async_to_sync(self.channel_layer.group_send)('all',
                                                          dict(type="playbook.message",
-                                                              data=(dict(name="playbook.yml", tasks=['debug', 'pause', 'setup']))))
+                                                              data=(dict(name=playbook_name, tasks=top_level_tasks))))
             self.build_project_directory()
-            self.build_keys(key.key)
-            # self.default_inventory = "[all]\nlocalhost ansible_connection=local\n"
-            self.default_inventory = """
-[Group1]
-Host3 ansible_host=192.168.1.68 ansible_port=2201 ansible_user=vagrant
-Host4 ansible_host=192.168.1.68 ansible_port=2202 ansible_user=vagrant
-Host1 ansible_host=192.168.1.68 ansible_port=2222 ansible_user=vagrant
-Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant
-            """
-            self.build_inventory(self.default_inventory)
-            self.build_playbook([dict(hosts='all',
-                                      name='default',
-                                      gather_facts=False,
-                                      tasks=[dict(debug=None), dict(pause=dict(seconds=10)), dict(setup=None)])])
+            self.add_keys(key)
+            self.add_inventory(inventory)
+            self.add_playbook(playbook)
             self.run_playbook()
         except BaseException as e:
             print(str(e))
