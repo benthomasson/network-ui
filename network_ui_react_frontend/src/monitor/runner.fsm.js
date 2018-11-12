@@ -124,6 +124,29 @@ _Ready.prototype.onRunner = function(controller, msg_type, message) {
             }
         }
     }
+    if (message.event === "runner_on_failed" || message.event === "runner_on_unreachable") {
+        playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
+        playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
+        var i = 0;
+        for(i=0; i < controller.scope.devices.length; i++) {
+            device = controller.scope.devices[i];
+            if (device.name === message.event_data.remote_addr) {
+                if (device.tasks_by_name.has(message.event_data.task)) {
+                  task = device.tasks_by_name.get(message.event_data.task);
+                  task.status = false;
+                  task.id = message.event_data.task_uuid;
+                  device.status = false;
+                  device.modification = device.mod_seq();
+                } else {
+                  task = new monitor_models.Task(message.event_data.task_uuid,
+                                                     message.event_data.task);
+                  task.status = false;
+                  device.status = false;
+                  device.tasks = device.tasks.push(task);
+                }
+            }
+        }
+    }
     if (message.event === "playbook_on_stats") {
         playbook = controller.scope.playbooks_by_id[message.event_data.playbook_uuid];
         playbook.log = playbook.log.concat(util.split_new_lines(message.stdout));
