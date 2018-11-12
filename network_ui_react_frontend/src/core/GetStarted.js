@@ -6,7 +6,7 @@ class GetStarted extends PureComponent {
 
   render() {
     var textStyle = {
-      fill: Colors.key
+      fill: Colors.disable_text
     };
     return (
       <g transform={'translate(' + this.props.x + ',' + this.props.y + ')'}>

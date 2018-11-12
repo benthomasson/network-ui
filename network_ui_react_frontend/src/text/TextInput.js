@@ -74,12 +74,12 @@ class TextInput extends PureComponent {
           <rect x={-x_offset} y='0'
                 width={this.props.width} height='20'
                 style={selected2Style}
-                rx='4'>
+                rx='2'>
           </rect>
           <rect x={-x_offset} y='0'
                 width={this.props.width} height='20'
                 style={selected1Style}
-                rx='4'>
+                rx='2'>
           </rect>
         </g>
         : null}

@@ -29,13 +29,16 @@ class Help extends PureComponent {
       stroke: Colors.key
     };
     var textStyle = {
-      fill: Colors.helpText
+      fill: Colors.helpText,
+      fontSize: '0.8em'
     };
     var keyTextStyle = {
-      fill: Colors.keyText
+      fill: Colors.keyText,
+      fontSize: '0.9em'
     };
     var keyTitleStyle = {
-      fill: Colors.keyTitle
+      fill: Colors.keyTitle,
+      fontWeight: 'bold'
     };
     var keys = [];
 
@@ -49,13 +52,13 @@ class Help extends PureComponent {
       keys.push(<g key={key}>
                 <circle cx='5' cy={y-5} r='11' style={keyStyle}/>
                 <text x='5' y={y} textAnchor="middle" style={keyTextStyle}>{key}</text>
-                <text x='20' y={y} style={textStyle}>{shortcut}</text>
+                <text x='25' y={y} style={textStyle}>{shortcut}</text>
                 </g>);
     }
     return (
         this.state.showHelp ?
           <g transform={'translate(' + this.props.x + ',' + (this.props.y - this.state.y_offset) + ')'}>
-              <rect x='-20' y='-5' width='200' height={y+30} style={backgroundRectStyle} rx='5'/>
+              <rect x='-20' y='-5' width='200' height={y+30} style={backgroundRectStyle} rx='2'/>
               <text x='-5' y='20' style={keyTitleStyle} >Key</text>
               {keys}
           </g>

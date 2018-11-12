@@ -19,7 +19,7 @@ class ToolTip extends PureComponent {
             <polygon points="0,0 -10,10, 10,10" style={toolTipStyle} />
           </g>
           <g transform={"translate(" + x_offset + ",0)"}>
-          <rect x={45 - this.props.text_width/2 - 25} y="50" width={this.props.text_width} height={20 * lines.length + 20} style={toolTipStyle} rx="5"/>
+          <rect x={45 - this.props.text_width/2 - 25} y="50" width={this.props.text_width} height={20 * lines.length + 20} style={toolTipStyle} rx="2"/>
           {lines}
           </g>
           </g>

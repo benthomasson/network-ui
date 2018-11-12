@@ -8,8 +8,8 @@ var debugStyle = {
 };
 
 var pathStyle = {
-  fill: Colors['darkWidgetDetail'],
-  stroke: Colors['darkWidgetDetail'],
+  fill: Colors.icons,
+  stroke: Colors.icons,
 };
 
 var buttonStyle = {
@@ -55,7 +55,7 @@ var devicePathStyle = {
 var statusCircleStyle = {
   fill: Colors.widgetBody,
   stroke: Colors.darkWidgetDetail,
-  strokeWidth: 2
+  strokeWidth: 1
 };
 
 var statusCircleStylePass = Object.assign({}, statusCircleStyle);
@@ -66,7 +66,7 @@ statusCircleStyleFail.fill = Colors.fail;
 var statusPathStyle = {
   fill: 'none',
   stroke: Colors.darkWidgetDetail,
-  strokeWidth: 2
+  strokeWidth: 1
 };
 
 var statusTextStyle = {
@@ -79,7 +79,8 @@ var toolTipStyle = {
 
 var toolTipTextStyle = {
   fill: Colors.lightBackground,
-  stroke: "none"
+  stroke: "none",
+  fontSize: "0.8em"
 };
 
 var taskTextStyle = {
