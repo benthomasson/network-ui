@@ -4,6 +4,7 @@ import Cursor from './core/Cursor';
 import Key from './core/Key';
 import Download from './button/Download';
 import Launch from './button/Launch';
+import Cancel from './button/Cancel';
 import KeyButton from './button/Key';
 import ToolbarButton from './button/Toolbar';
 import Quadrants from './core/Quadrants';
@@ -195,6 +196,7 @@ class SVGFrame extends Component {
           <Header width={this.scope.frameWidth} />
           <Download {...this.scope.buttons_by_name.download} showDebug={this.scope.showDebug} />
           <Launch {...this.scope.buttons_by_name.launch} showDebug={this.scope.showDebug} />
+          <Cancel {...this.scope.buttons_by_name.cancel} showDebug={this.scope.showDebug} />
           <ToolbarButton {...this.scope.buttons_by_name.toggle_toolbar} showDebug={this.scope.showDebug} />
           <KeyButton {...this.scope.buttons_by_name.toggle_key} showDebug={this.scope.showDebug} />
           <PlaybookSelect {...this.scope.buttons_by_name.playbook_select} showDebug={this.scope.showDebug} />

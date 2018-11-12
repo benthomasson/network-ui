@@ -51,6 +51,7 @@ function ApplicationScope (svgFrame) {
   this.uploadButtonHandler = this.uploadButtonHandler.bind(this);
   this.downloadButtonHandler = this.downloadButtonHandler.bind(this);
   this.launchButtonHandler = this.launchButtonHandler.bind(this);
+  this.cancelButtonHandler = this.cancelButtonHandler.bind(this);
   this.keyButtonHandler = this.keyButtonHandler.bind(this);
   this.toolbarButtonHandler = this.toolbarButtonHandler.bind(this);
   this.create_inventory_host = this.create_inventory_host.bind(this);
@@ -177,12 +178,14 @@ function ApplicationScope (svgFrame) {
     toggle_toolbar: new button_models.Button("Toolbar", 20, 7, 40, 40, this.toolbarButtonHandler, this),
     download: new button_models.Button("Topology", 75, 7, 40, 40, this.downloadButtonHandler, this),
     launch: new button_models.Button("Launch", 130, 7, 40, 40, this.launchButtonHandler, this),
+    cancel: new button_models.Button("Cancel", 185, 7, 40, 40, this.cancelButtonHandler, this),
     toggle_key: new button_models.Button("Key", -50, 7, 40, 40, this.keyButtonHandler, this),
-    playbook_select: new button_models.Button("playbook.yml", 185, 10, 200, 30, this.keyButtonHandler, this)
+    playbook_select: new button_models.Button("playbook.yml", 400, 10, 200, 30, this.keyButtonHandler, this)
   };
 
   this.buttons = [this.buttons_by_name.download,
                   this.buttons_by_name.launch,
+                  this.buttons_by_name.cancel,
                   this.buttons_by_name.toggle_key,
                   this.buttons_by_name.toggle_toolbar];
 
@@ -311,6 +314,10 @@ ApplicationScope.prototype.launchButtonHandler = function (message) {
   this.play_status.playbooks.push(new_playbook);
   this.play_status.update_height();
   this.send_control_message(new net_messages.Deploy(this.client_id));
+};
+
+ApplicationScope.prototype.cancelButtonHandler = function (message) {
+  this.send_control_message(new net_messages.Cancel(this.client_id));
 };
 
 ApplicationScope.prototype.keyButtonHandler = function (message) {

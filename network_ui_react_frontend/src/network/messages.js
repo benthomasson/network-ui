@@ -146,6 +146,12 @@ function Deploy(sender) {
 }
 exports.Deploy = Deploy;
 
+function Cancel(sender) {
+    this.msg_type = "Cancel";
+    this.sender = sender;
+}
+exports.Cancel = Cancel;
+
 function Destroy(sender) {
     this.msg_type = "Destroy";
     this.sender = sender;

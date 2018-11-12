@@ -559,7 +559,7 @@ class NetworkUIConsumer(AsyncWebsocketConsumer):
         # print (tr.pk)
 
     async def onDeploy(self, message, topology_id, client_id):
-        await self.channel_layer.send('ansible', dict(type="deploy",
+        await self.channel_layer.group_send('worker', dict(type="deploy",
                                                       text='doit',
                                                       inventory="""
 [Group1]
@@ -573,6 +573,9 @@ Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant""",
                                                                       tasks=[dict(debug=None), dict(pause=dict(seconds=10)), dict(setup=None)])],
                                                       key=key.key,
                                                       ))
+
+    async def onCancel(self, message, topology_id, client_id):
+        await self.channel_layer.group_send('worker', dict(type="cancel"))
 
     async def reply_message(self, event):
         pprint(event)
