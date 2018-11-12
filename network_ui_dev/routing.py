@@ -5,6 +5,7 @@ from ansible_worker_channels import consumers as worker_consumers
 
 websocket_urlpatterns = [
     url(r'^ws/network_ui$', consumers.NetworkUIConsumer),
+    url(r'^ws/worker$', consumers.AnsibleWorkerConsumer),
 ]
 
 channel_patterns = {
