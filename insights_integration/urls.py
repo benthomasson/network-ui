@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from insights_integration import views
+from django.views.generic import TemplateView
 
 router = routers.DefaultRouter()
 
@@ -18,6 +19,7 @@ router.register(r'workerqueue', views.WorkerQueueViewSet)
 
 app_name = 'insights_integration'
 urlpatterns = [
-    path(r'', include(router.urls)),
+    path("", TemplateView.as_view(template_name="insights_integration/index.html"), name="insights_integration_index"),
+    path(r'api/', include(router.urls)),
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

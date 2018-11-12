@@ -275,3 +275,4 @@ network_ui/media/
 !.envs/.local/
 
 /network_ui/templates/network_ui/index.html
+/insights_integration/templates/insights_integration/index.html
