@@ -575,6 +575,7 @@ Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant""",
                                                       ))
 
     async def onCancel(self, message, topology_id, client_id):
+        print ('onCancel')
         await self.channel_layer.group_send('worker', dict(type="cancel"))
 
     async def reply_message(self, event):
@@ -584,6 +585,10 @@ Host2 ansible_host=192.168.1.68 ansible_port=2200 ansible_user=vagrant""",
     async def runner_message(self, message):
         pprint(message)
         await self.send_json(['Runner', message['data']])
+
+    async def runner_cancelled(self, message):
+        pprint(message)
+        await self.send_json(['RunnerCancelled', dict()])
 
     async def playbook_message(self, message):
         pprint(message)

@@ -18,6 +18,9 @@ class AnsibleWorkerConsumer(AsyncWebsocketConsumer):
     async def deploy(self, message):
         await self.send_json(['deploy', message])
 
+    async def cancel(self, message):
+        await self.send_json(['cancel', message])
+
     async def receive(self, text_data):
         data = json.loads(text_data)
         pprint(data)
@@ -31,6 +34,10 @@ class AnsibleWorkerConsumer(AsyncWebsocketConsumer):
                                                     dict(type="runner.message",
                                                          data=data[1]['data']))
                 print ('sent')
+            elif data[0] == "RunnerCancelled":
+                await self.channel_layer.group_send('all',
+                                                    dict(type="runner.cancelled"))
+                print ('sent cancel')
             else:
                 print(data[0])
         else:

@@ -53,6 +53,15 @@ _Ready.prototype.onPlaybook = function(controller, msg_type, message) {
   }
 };
 
+_Ready.prototype.onRunnerCancelled = function(controller, msg_type, message) {
+
+    console.log('onRunnerCancelled');
+
+    var playbook = controller.scope.playbooks[controller.scope.playbooks.length-1];
+    playbook.working = false;
+    playbook.status = false;
+};
+
 _Ready.prototype.onRunner = function(controller, msg_type, message) {
 
     console.log(message);
