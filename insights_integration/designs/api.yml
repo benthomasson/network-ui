@@ -1,0 +1,4 @@
+models:
+- name: Worker
+  api: true
+  v2_end_point: /api/v2/worker

@@ -1,0 +1,160 @@
+app: database
+external_models: []
+models:
+- fields:
+  - name: host_id
+    pk: true
+    type: AutoField
+  - name: inventory
+    ref: Inventory
+    ref_field: inventory_id
+    type: ForeignKey
+  - len: 2000
+    name: name
+    type: CharField
+  name: Host
+  x: 185
+  y: 227
+- fields:
+  - name: inventory_id
+    pk: true
+    type: AutoField
+  - len: 2000
+    name: name
+    type: CharField
+  name: Inventory
+  x: 550
+  y: 119
+- fields:
+  - name: key_id
+    pk: true
+    type: AutoField
+  - len: 2000
+    name: name
+    type: CharField
+  - name: value
+    type: TextField
+  name: Key
+  x: 544
+  y: 444
+- fields:
+  - name: plan_id
+    pk: true
+    type: AutoField
+  - len: 2000
+    name: name
+    type: CharField
+  name: Plan
+  x: 302
+  y: 684
+- fields:
+  - name: playbook_id
+    pk: true
+    type: AutoField
+  - name: plan
+    ref: Plan
+    ref_field: plan_id
+    type: ForeignKey
+  - len: 2000
+    name: name
+    type: CharField
+  - name: contents
+    type: TextField
+  name: Playbook
+  x: 585
+  y: 725
+- fields:
+  - name: playbook_run_id
+    pk: true
+    type: AutoField
+  - name: start_time
+    type: DateTimeField
+  - name: end_time
+    type: DateTimeField
+  - name: create_time
+    ref: PlaybookRun
+    ref_field: create_time
+    type: DateTimeField
+  - name: inventory
+    ref: Inventory
+    ref_field: inventory_id
+    type: ForeignKey
+  - name: key
+    ref: Key
+    ref_field: key_id
+    type: ForeignKey
+  - name: playbook
+    ref: Playbook
+    ref_field: playbook_id
+    type: ForeignKey
+  - len: 2000
+    name: host_pattern
+    type: CharField
+  - len: 200
+    name: status
+    type: CharField
+  name: PlaybookRun
+  x: 1165
+  y: 277
+- fields:
+  - name: task_result_id
+    pk: true
+    type: AutoField
+  - len: 2000
+    name: name
+    type: CharField
+  - name: host
+    ref: Host
+    ref_field: host_id
+    type: ForeignKey
+  - len: 200
+    name: status
+    type: CharField
+  name: TaskResult
+  x: 462
+  y: -278
+- fields:
+  - name: task_result_playbook_run_id
+    pk: true
+    type: AutoField
+  - name: task_result
+    ref: TaskResult
+    ref_field: task_result_id
+    type: ForeignKey
+  - name: playbook_run
+    ref: PlaybookRun
+    ref_field: playbook_run_id
+    type: ForeignKey
+  name: TaskResultPlaybookRun
+  x: 753
+  y: -122
+- api: true
+  fields:
+  - name: worker_id
+    pk: true
+    type: AutoField
+  name: Worker
+  v2_end_point: /api/v2/worker
+  x: 627
+  y: -497
+- fields:
+  - name: worker_queue_id
+    pk: true
+    type: AutoField
+  - name: worker
+    ref: Worker
+    ref_field: worker_id
+    type: ForeignKey
+  - name: playbook_run
+    ref: PlaybookRun
+    ref_field: playbook_run_id
+    type: ForeignKey
+  name: WorkerQueue
+  x: 839
+  y: -488
+modules: []
+view:
+  panX: 0.0
+  panY: 0.0
+  scaleXY: 1.0
+

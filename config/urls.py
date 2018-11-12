@@ -13,6 +13,10 @@ urlpatterns = [
     path(
         "network_ui/",
         include("network_ui_dev.urls", namespace="network_ui"),
+    ),
+    path(
+        "insights_integration/",
+        include("insights_integration.urls", namespace="insights_integration"),
     )
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
