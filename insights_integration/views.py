@@ -29,7 +29,7 @@ class HostViewSet(viewsets.ModelViewSet):
     queryset = Host.objects.all()
     serializer_class = HostSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('host_id','inventory','name',)
+    filter_fields = ('host_id','inventory','name','host_vars',)
 
 
 class InventoryViewSet(viewsets.ModelViewSet):

@@ -12,6 +12,8 @@ models:
   - len: 2000
     name: name
     type: CharField
+  - name: host_vars
+    type: TextField
   name: Host
   x: 185
   y: 227

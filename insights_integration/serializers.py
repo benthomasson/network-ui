@@ -15,7 +15,7 @@ from insights_integration.models import WorkerQueue
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
-        fields = ('host_id','inventory','name',)
+        fields = ('host_id','inventory','name','host_vars',)
 
 
 class InventorySerializer(serializers.ModelSerializer):

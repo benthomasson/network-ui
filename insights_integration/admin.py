@@ -13,7 +13,7 @@ from insights_integration.models import WorkerQueue
 
 
 class HostAdmin(admin.ModelAdmin):
-    fields = ('inventory', 'name',)
+    fields = ('inventory', 'name', 'host_vars',)
     raw_id_fields = ('inventory',)
 
 

@@ -6,6 +6,7 @@ class Host(models.Model):
     host_id = models.AutoField(primary_key=True,)
     inventory = models.ForeignKey('Inventory', on_delete=models.CASCADE,)
     name = models.CharField(max_length=2000, blank=True)
+    host_vars = models.TextField()
 
 
 class Inventory(models.Model):

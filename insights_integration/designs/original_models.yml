@@ -1,4 +1,4 @@
-app: database
+app: insights_integration
 external_models: []
 models:
 - fields:
@@ -12,6 +12,8 @@ models:
   - len: 2000
     name: name
     type: CharField
+  - name: host_vars
+    type: TextField
   name: Host
   x: 185
   y: 227
@@ -67,14 +69,6 @@ models:
   - name: playbook_run_id
     pk: true
     type: AutoField
-  - name: start_time
-    type: DateTimeField
-  - name: end_time
-    type: DateTimeField
-  - name: create_time
-    ref: PlaybookRun
-    ref_field: create_time
-    type: DateTimeField
   - name: inventory
     ref: Inventory
     ref_field: inventory_id
