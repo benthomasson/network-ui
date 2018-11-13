@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <div className="App">
       <LaunchButton action={this.controller.launch}/>
-      <CancelButton controller={this.controller}/>
+      <CancelButton action={this.controller.cancel}/>
       </div>
     );
   }
