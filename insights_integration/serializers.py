@@ -45,7 +45,7 @@ class PlaybookSerializer(serializers.ModelSerializer):
 class PlaybookRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaybookRun
-        fields = ('start_time','end_time','create_time','inventory','key','playbook','host_pattern','status',)
+        fields = ('inventory','key','playbook','host_pattern','status',)
 
 
 class TaskResultSerializer(serializers.ModelSerializer):

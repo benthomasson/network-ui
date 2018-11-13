@@ -64,7 +64,7 @@ class PlaybookRunViewSet(viewsets.ModelViewSet):
     queryset = PlaybookRun.objects.all()
     serializer_class = PlaybookRunSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('playbook_run_id','start_time','end_time','create_time','inventory','key','playbook','host_pattern','status',)
+    filter_fields = ('playbook_run_id','inventory','key','playbook','host_pattern','status',)
 
 
 class TaskResultViewSet(viewsets.ModelViewSet):

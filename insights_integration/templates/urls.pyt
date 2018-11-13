@@ -8,6 +8,7 @@ router.register(r'{{model.name.lower()}}', views.{{model.name}}ViewSet)
 {%-endfor%}
 
 
+app_name = "insights_integration"
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))

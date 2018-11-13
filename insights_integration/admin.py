@@ -53,7 +53,7 @@ admin.site.register(Playbook, PlaybookAdmin)
 
 
 class PlaybookRunAdmin(admin.ModelAdmin):
-    fields = ('start_time', 'end_time', 'create_time', 'inventory', 'key', 'playbook', 'host_pattern', 'status',)
+    fields = ('inventory', 'key', 'playbook', 'host_pattern', 'status',)
     raw_id_fields = ('inventory', 'key', 'playbook',)
 
 

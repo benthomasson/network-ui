@@ -67,12 +67,6 @@ models:
   - name: playbook_run_id
     pk: true
     type: AutoField
-  - name: start_time
-    type: DateTimeField
-  - name: end_time
-    type: DateTimeField
-  - name: create_time
-    type: DateTimeField
   - name: inventory
     ref: Inventory
     ref_field: inventory_id

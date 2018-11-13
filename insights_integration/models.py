@@ -38,9 +38,6 @@ class Playbook(models.Model):
 class PlaybookRun(models.Model):
 
     playbook_run_id = models.AutoField(primary_key=True,)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    create_time = models.DateTimeField()
     inventory = models.ForeignKey('Inventory', on_delete=models.CASCADE,)
     key = models.ForeignKey('Key', on_delete=models.CASCADE,)
     playbook = models.ForeignKey('Playbook', on_delete=models.CASCADE,)
