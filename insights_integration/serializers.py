@@ -15,61 +15,61 @@ from insights_integration.models import WorkerQueue
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
-        fields = ('inventory','name',)
+        fields = ('host_id','inventory','name',)
 
 
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
-        fields = ('name',)
+        fields = ('inventory_id','name',)
 
 
 class KeySerializer(serializers.ModelSerializer):
     class Meta:
         model = Key
-        fields = ('name','value',)
+        fields = ('key_id','name','value',)
 
 
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
-        fields = ('name',)
+        fields = ('plan_id','name',)
 
 
 class PlaybookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playbook
-        fields = ('plan','name','contents',)
+        fields = ('playbook_id','plan','name','contents',)
 
 
 class PlaybookRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaybookRun
-        fields = ('inventory','key','playbook','host_pattern','status',)
+        fields = ('playbook_run_id','inventory','key','playbook','host_pattern','status',)
 
 
 class TaskResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskResult
-        fields = ('name','host','status',)
+        fields = ('task_result_id','name','host','status',)
 
 
 class TaskResultPlaybookRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskResultPlaybookRun
-        fields = ('task_result','playbook_run',)
+        fields = ('task_result_playbook_run_id','task_result','playbook_run',)
 
 
 class WorkerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Worker
-        fields = ()
+        fields = ('worker_id',)
 
 
 class WorkerQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkerQueue
-        fields = ('worker','playbook_run',)
+        fields = ('worker_queue_id','worker','playbook_run',)
 
 
 
