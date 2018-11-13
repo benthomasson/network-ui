@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'rest_framework',
     'ansible_worker_channels',
+    'django_filters',
 ]
 LOCAL_APPS = [
     'network_ui.users.apps.UsersAppConfig',
@@ -257,3 +258,7 @@ CHANNEL_LAYERS = {
     }
 }
 REPLAY_ENABLED = False
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}

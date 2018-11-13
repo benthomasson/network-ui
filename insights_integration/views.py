@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from insights_integration.models import Host
 from insights_integration.models import Inventory
@@ -26,51 +28,71 @@ from insights_integration.serializers import WorkerQueueSerializer
 class HostViewSet(viewsets.ModelViewSet):
     queryset = Host.objects.all()
     serializer_class = HostSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('host_id','inventory','name',)
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('inventory_id','name',)
 
 
 class KeyViewSet(viewsets.ModelViewSet):
     queryset = Key.objects.all()
     serializer_class = KeySerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('key_id','name','value',)
 
 
 class PlanViewSet(viewsets.ModelViewSet):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('plan_id','name',)
 
 
 class PlaybookViewSet(viewsets.ModelViewSet):
     queryset = Playbook.objects.all()
     serializer_class = PlaybookSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('playbook_id','plan','name','contents',)
 
 
 class PlaybookRunViewSet(viewsets.ModelViewSet):
     queryset = PlaybookRun.objects.all()
     serializer_class = PlaybookRunSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('playbook_run_id','start_time','end_time','create_time','inventory','key','playbook','host_pattern','status',)
 
 
 class TaskResultViewSet(viewsets.ModelViewSet):
     queryset = TaskResult.objects.all()
     serializer_class = TaskResultSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('task_result_id','name','host','status',)
 
 
 class TaskResultPlaybookRunViewSet(viewsets.ModelViewSet):
     queryset = TaskResultPlaybookRun.objects.all()
     serializer_class = TaskResultPlaybookRunSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('task_result_playbook_run_id','task_result','playbook_run',)
 
 
 class WorkerViewSet(viewsets.ModelViewSet):
     queryset = Worker.objects.all()
     serializer_class = WorkerSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('worker_id',)
 
 
 class WorkerQueueViewSet(viewsets.ModelViewSet):
     queryset = WorkerQueue.objects.all()
     serializer_class = WorkerQueueSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('worker_queue_id','worker','playbook_run',)
 
 
 

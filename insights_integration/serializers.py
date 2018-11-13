@@ -12,61 +12,61 @@ from insights_integration.models import Worker
 from insights_integration.models import WorkerQueue
 
 
-class HostSerializer(serializers.HyperlinkedModelSerializer):
+class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
         fields = ('inventory','name',)
 
 
-class InventorySerializer(serializers.HyperlinkedModelSerializer):
+class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = ('name',)
 
 
-class KeySerializer(serializers.HyperlinkedModelSerializer):
+class KeySerializer(serializers.ModelSerializer):
     class Meta:
         model = Key
         fields = ('name','value',)
 
 
-class PlanSerializer(serializers.HyperlinkedModelSerializer):
+class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
         fields = ('name',)
 
 
-class PlaybookSerializer(serializers.HyperlinkedModelSerializer):
+class PlaybookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playbook
         fields = ('plan','name','contents',)
 
 
-class PlaybookRunSerializer(serializers.HyperlinkedModelSerializer):
+class PlaybookRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaybookRun
         fields = ('start_time','end_time','create_time','inventory','key','playbook','host_pattern','status',)
 
 
-class TaskResultSerializer(serializers.HyperlinkedModelSerializer):
+class TaskResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskResult
         fields = ('name','host','status',)
 
 
-class TaskResultPlaybookRunSerializer(serializers.HyperlinkedModelSerializer):
+class TaskResultPlaybookRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskResultPlaybookRun
         fields = ('task_result','playbook_run',)
 
 
-class WorkerSerializer(serializers.HyperlinkedModelSerializer):
+class WorkerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Worker
         fields = ()
 
 
-class WorkerQueueSerializer(serializers.HyperlinkedModelSerializer):
+class WorkerQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkerQueue
         fields = ('worker','playbook_run',)
