@@ -13,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <LaunchButton controller={this.controller}/>
+      <LaunchButton action={this.controller.launch}/>
       <CancelButton controller={this.controller}/>
       </div>
     );
