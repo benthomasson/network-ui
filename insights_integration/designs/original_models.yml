@@ -88,8 +88,8 @@ models:
     name: status
     type: CharField
   name: PlaybookRun
-  x: 1165
-  y: 277
+  x: 1451
+  y: 291
 - fields:
   - name: task_result_id
     pk: true
@@ -144,6 +144,22 @@ models:
   name: WorkerQueue
   x: 839
   y: -488
+- fields:
+  - name: playbook_run_log_id
+    pk: true
+    type: AutoField
+  - name: playbook_run
+    ref: PlaybookRun
+    ref_field: playbook_run_id
+    type: ForeignKey
+  - default: 0
+    name: order
+    type: IntegerField
+  - name: value
+    type: TextField
+  name: PlaybookRunLog
+  x: 1041
+  y: 709
 modules: []
 view:
   panX: 0.0

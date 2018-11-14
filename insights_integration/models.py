@@ -71,3 +71,11 @@ class WorkerQueue(models.Model):
     worker_queue_id = models.AutoField(primary_key=True,)
     worker = models.ForeignKey('Worker', on_delete=models.CASCADE,)
     playbook_run = models.ForeignKey('PlaybookRun', on_delete=models.CASCADE,)
+
+
+class PlaybookRunLog(models.Model):
+
+    playbook_run_log_id = models.AutoField(primary_key=True,)
+    playbook_run = models.ForeignKey('PlaybookRun', on_delete=models.CASCADE,)
+    order = models.IntegerField(default=0,)
+    value = models.TextField()

@@ -14,6 +14,7 @@ router.register(r'taskresult', views.TaskResultViewSet)
 router.register(r'taskresultplaybookrun', views.TaskResultPlaybookRunViewSet)
 router.register(r'worker', views.WorkerViewSet)
 router.register(r'workerqueue', views.WorkerQueueViewSet)
+router.register(r'playbookrunlog', views.PlaybookRunLogViewSet)
 
 
 app_name = "insights_integration"

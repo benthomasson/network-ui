@@ -10,6 +10,7 @@ from insights_integration.models import TaskResult
 from insights_integration.models import TaskResultPlaybookRun
 from insights_integration.models import Worker
 from insights_integration.models import WorkerQueue
+from insights_integration.models import PlaybookRunLog
 
 
 class HostAdmin(admin.ModelAdmin):
@@ -90,3 +91,11 @@ class WorkerQueueAdmin(admin.ModelAdmin):
 
 
 admin.site.register(WorkerQueue, WorkerQueueAdmin)
+
+
+class PlaybookRunLogAdmin(admin.ModelAdmin):
+    fields = ('playbook_run', 'order', 'value',)
+    raw_id_fields = ('playbook_run',)
+
+
+admin.site.register(PlaybookRunLog, PlaybookRunLogAdmin)

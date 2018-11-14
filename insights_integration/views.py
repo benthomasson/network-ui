@@ -12,6 +12,7 @@ from insights_integration.models import TaskResult
 from insights_integration.models import TaskResultPlaybookRun
 from insights_integration.models import Worker
 from insights_integration.models import WorkerQueue
+from insights_integration.models import PlaybookRunLog
 
 from insights_integration.serializers import HostSerializer
 from insights_integration.serializers import InventorySerializer
@@ -23,6 +24,7 @@ from insights_integration.serializers import TaskResultSerializer
 from insights_integration.serializers import TaskResultPlaybookRunSerializer
 from insights_integration.serializers import WorkerSerializer
 from insights_integration.serializers import WorkerQueueSerializer
+from insights_integration.serializers import PlaybookRunLogSerializer
 
 
 class HostViewSet(viewsets.ModelViewSet):
@@ -93,6 +95,13 @@ class WorkerQueueViewSet(viewsets.ModelViewSet):
     serializer_class = WorkerQueueSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('worker_queue_id','worker','playbook_run',)
+
+
+class PlaybookRunLogViewSet(viewsets.ModelViewSet):
+    queryset = PlaybookRunLog.objects.all()
+    serializer_class = PlaybookRunLogSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('playbook_run_log_id','playbook_run','order','value',)
 
 
 

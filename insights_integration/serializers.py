@@ -10,6 +10,7 @@ from insights_integration.models import TaskResult
 from insights_integration.models import TaskResultPlaybookRun
 from insights_integration.models import Worker
 from insights_integration.models import WorkerQueue
+from insights_integration.models import PlaybookRunLog
 
 
 class HostSerializer(serializers.ModelSerializer):
@@ -70,6 +71,12 @@ class WorkerQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkerQueue
         fields = ('worker_queue_id','worker','playbook_run',)
+
+
+class PlaybookRunLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlaybookRunLog
+        fields = ('playbook_run_log_id','playbook_run','order','value',)
 
 
 
