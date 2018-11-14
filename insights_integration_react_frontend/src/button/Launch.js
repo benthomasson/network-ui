@@ -5,7 +5,7 @@ class LaunchButton extends PureComponent {
 
   render() {
     return (
-      <button onClick={this.props.action}>Launch</button>
+      <button onClick={this.props.action} disabled={!this.props.enabled}>Launch</button>
     );
   }
 }

@@ -1,3 +1,5 @@
+import {fsm, util} from 'message-fsm';
+import launch_fsm from './launch.fsm.js';
 
 async function postData(url = ``, data = {}) {
   // Default options are marked with *
@@ -19,25 +21,54 @@ async function postData(url = ``, data = {}) {
 
 class Controller {
 
-  constructor() {
+  constructor(app) {
+    window.controller = this;
+    this.app = app;
     this.protocol = "http://"
     this.server = process.env.REACT_APP_SERVER ? process.env.REACT_APP_SERVER : window.location.host;
     this.launch = this.launch.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.get_playbook = this.get_playbook.bind(this);
+    this.get_api_object = this.get_api_object.bind(this);
+    this.get_api_list = this.get_api_list.bind(this);
     this.get_api_url = this.get_api_url.bind(this);
+    this.poll_log = this.poll_log.bind(this);
 		this.plan_id = 1;
 		this.inventory_id = 1;
 		this.key_id = 1;
 		this.worker_id = 1;
+    this.trace_order_seq = util.natural_numbers(0);
+    this.controller = new fsm.FSMController(this, 'launch_fsm', launch_fsm.Start, this);
+    this.channel = new fsm.Channel(null, this.controller, this);
+    this.launch_enabled = true;
+    this.cancel_enabled = false;
+    this.hosts = [];
+    this.playbook = null;
+    this.playbook_run_id = null;
+    this.log = [];
+  }
+
+  async init() {
+    this.hosts = await this.get_api_list('host', 'inventory=' + this.inventory_id);
+    this.playbook = await this.get_api_object('playbook', 'plan_id=' + this.plan_id);
+    this.app.setState({});
+  }
+
+  send_trace_message(message) {
+    console.log(message)
   }
 
 	get_api_url(name) {
     return this.protocol + this.server + '/insights_integration/api/' + name + '/';
 	}
 
-  async get_playbook (plan_id) {
-    var response = await fetch(this.get_api_url('playbook') + '?plan=' + plan_id);
+  async get_api_object_by_pk (object_type, pk) {
+    var response = await fetch(this.get_api_url(object_type) + pk);
+    var data = await response.json();
+    return data;
+  }
+
+  async get_api_object (object_type, querystring) {
+    var response = await fetch(this.get_api_url(object_type) + '?' + querystring);
     var data = await response.json();
     if (data.length !== 1) {
       console.log(data);
@@ -46,10 +77,17 @@ class Controller {
     return data[0];
   }
 
+  async get_api_list (object_type, querystring) {
+    var response = await fetch(this.get_api_url(object_type) + '?' + querystring);
+    var data = await response.json();
+    console.log(data);
+    return data;
+  }
+
   async launch (e) {
     console.log('launch');
     console.log(e);
-    var playbook = await this.get_playbook(this.plan_id);
+    var playbook = await this.get_api_object('playbook', 'plan=' + this.plan_id);
     console.log(playbook);
     var playbook_run = await postData(this.get_api_url('playbookrun'),
 			{
@@ -60,12 +98,15 @@ class Controller {
 			"status": "created"
 			});
 	 	console.log(playbook_run);
+    this.playbook_run_id = playbook_run.playbook_run_id;
 	  var worker_queue_entry = await postData(this.get_api_url('workerqueue'),
       {
           "worker": this.worker_id,
-          "playbook_run": playbook_run.playbook_run_id 
+          "playbook_run": playbook_run.playbook_run_id
       });
     console.log(worker_queue_entry);
+    this.channel.send('Launch', {});
+    this.app.setState({});
   }
 
   cancel (e) {
@@ -73,5 +114,26 @@ class Controller {
     console.log(e);
   }
 
+  async poll_log () {
+    if (this.playbook_run_id === null) {
+      return
+    }
+    this.log = await this.get_api_list('playbookrunlog', 'playbook_run=' + this.playbook_run_id);
+    this.log.sort(function (a, b) {return a.order - b.order});
+    this.app.setState({});
+  }
+
+  async poll_status () {
+    if (this.playbook_run_id === null) {
+      return
+    }
+    var trprs = await this.get_api_list('taskresultplaybookrun', 'playbook_run=' + this.playbook_run_id);
+    for (var i = 0; i < trprs.length; i++) {
+      var trpr = trprs[i];
+      var task = await this.get_api_object_by_pk('taskresult', trpr.task_result)
+      console.log(task);
+    }
+    this.app.setState({});
+  }
 };
 export default Controller;

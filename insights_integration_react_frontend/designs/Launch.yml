@@ -1,0 +1,40 @@
+diagram_uuid: 5aa2dee4-3fdb-4efd-82b8-0314264a1042
+finite_state_machine_id: 1
+name: Launch
+states:
+- id: 4
+  label: Completed
+  x: 538
+  y: 612
+- id: 2
+  label: Ready
+  x: 526
+  y: 346
+- id: 3
+  label: Running
+  x: 200
+  y: 622
+- id: 1
+  label: Start
+  x: 521
+  y: 117
+- id: 5
+  label: Starting
+  x: 193
+  y: 356
+transitions:
+- from_state: Completed
+  label: start
+  to_state: Ready
+- from_state: Ready
+  label: onLaunch
+  to_state: Starting
+- from_state: Running
+  label: onComplete
+  to_state: Completed
+- from_state: Start
+  label: start
+  to_state: Ready
+- from_state: Starting
+  label: onStarted
+  to_state: Running

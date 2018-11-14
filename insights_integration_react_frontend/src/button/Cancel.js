@@ -4,7 +4,7 @@ class CancelButton extends PureComponent {
 
   render() {
     return (
-      <button onClick={this.props.action}>Cancel</button>
+      <button onClick={this.props.action} disabled={!this.props.enabled}>Cancel</button>
     );
   }
 }
