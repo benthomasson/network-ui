@@ -14,8 +14,8 @@ class Host extends Component {
       tasks.push(<Task {...task} key={task.task_result_id} />);
     }
     return (
-      <div> {this.props.name} {tasks}
-      </div>
+      <li> {this.props.name} <ul>{tasks}</ul>
+      </li>
     );
   }
 }
