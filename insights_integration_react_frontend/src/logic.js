@@ -32,6 +32,7 @@ class Controller {
     this.get_api_list = this.get_api_list.bind(this);
     this.get_api_url = this.get_api_url.bind(this);
     this.poll_log = this.poll_log.bind(this);
+    this.poll_status = this.poll_status.bind(this);
 		this.plan_id = 1;
 		this.inventory_id = 1;
 		this.key_id = 1;
@@ -45,12 +46,16 @@ class Controller {
     this.playbook = null;
     this.playbook_run_id = null;
     this.log = [];
+    this.tasks_by_host = {};
   }
 
   async init() {
     this.hosts = await this.get_api_list('host', 'inventory=' + this.inventory_id);
     this.playbook = await this.get_api_object('playbook', 'plan_id=' + this.plan_id);
     this.app.setState({});
+    for(var i = 0; i < this.hosts.length; i++) {
+      this.tasks_by_host[this.hosts[i].host_id] = [];
+    }
   }
 
   send_trace_message(message) {
@@ -85,6 +90,7 @@ class Controller {
   }
 
   async launch (e) {
+    this.log = [];
     console.log('launch');
     console.log(e);
     var playbook = await this.get_api_object('playbook', 'plan=' + this.plan_id);
@@ -127,11 +133,26 @@ class Controller {
     if (this.playbook_run_id === null) {
       return
     }
+    var playbookrun = await this.get_api_object_by_pk('playbookrun', this.playbook_run_id)
+    console.log(playbookrun);
+    for(var i = 0; i < this.hosts.length; i++) {
+      this.tasks_by_host[this.hosts[i].host_id] = [];
+    }
     var trprs = await this.get_api_list('taskresultplaybookrun', 'playbook_run=' + this.playbook_run_id);
-    for (var i = 0; i < trprs.length; i++) {
+    for (i = 0; i < trprs.length; i++) {
       var trpr = trprs[i];
       var task = await this.get_api_object_by_pk('taskresult', trpr.task_result)
+      this.tasks_by_host[task.host].push(task);
       console.log(task);
+    }
+    for(i = 0; i < this.hosts.length; i++) {
+      this.tasks_by_host[this.hosts[i].host_id].sort(function (a, b) {return a.task_result_id - b.task_result_id});
+    }
+    if (playbookrun.status === "started") {
+      this.channel.send('Started', {});
+    }
+    if (playbookrun.status === "completed") {
+      this.channel.send('Complete', {});
     }
     this.app.setState({});
   }

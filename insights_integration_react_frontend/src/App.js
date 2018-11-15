@@ -25,7 +25,11 @@ class App extends Component {
     var hosts = [];
     for (var i = 0; i < this.controller.hosts.length; i++) {
       var host = this.controller.hosts[i];
-      hosts.push(<Host {...host} key={host.name} />);
+      var tasks = this.controller.tasks_by_host[host.host_id];
+      if (tasks === undefined) {
+        tasks = [];
+      }
+      hosts.push(<Host {...host} tasks={tasks} key={host.name} />);
     }
     return (
       <div className="App">

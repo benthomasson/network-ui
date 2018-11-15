@@ -43,6 +43,12 @@ exports.Start = Start;
 
 
 
+_Ready.prototype.start = function (controller) {
+
+  controller.scope.launch_enabled = true;
+  controller.scope.cancel_enabled = false;
+
+};
 
 _Ready.prototype.onLaunch = function (controller) {
 
@@ -73,6 +79,8 @@ _Starting.prototype.start = function (controller) {
 
   controller.scope.launch_enabled = false;
   controller.scope.cancel_enabled = true;
+  controller.scope.status_poller = setInterval(controller.scope.poll_status, 500);
+  controller.scope.log_poller = setInterval(controller.scope.poll_log, 500);
 };
 
 
@@ -88,7 +96,8 @@ _Starting.prototype.onStarted.transitions = ['Running'];
 _Completed.prototype.start = function (controller) {
 
     controller.changeState(Ready);
-
+    clearInterval(controller.scope.status_poller);
+    clearInterval(controller.scope.log_poller);
 };
 _Completed.prototype.start.transitions = ['Ready'];
 
