@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="network_ui/index.html"), name="index"),
+    path("", TemplateView.as_view(template_name="insights_integration/index.html"), name="index"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # Your stuff: custom urls includes go here
