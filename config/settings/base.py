@@ -262,3 +262,5 @@ REPLAY_ENABLED = False
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
+
+INSIGHTS_URL = 'https://access.redhat.com'
