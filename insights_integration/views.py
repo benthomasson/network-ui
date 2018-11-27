@@ -52,7 +52,7 @@ class PlanViewSet(viewsets.ModelViewSet):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('plan_id','name',)
+    filter_fields = ('plan_id','name','maintenance_id',)
 
 
 class PlaybookViewSet(viewsets.ModelViewSet):

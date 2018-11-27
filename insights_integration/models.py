@@ -26,6 +26,7 @@ class Plan(models.Model):
 
     plan_id = models.AutoField(primary_key=True,)
     name = models.CharField(max_length=2000, blank=True)
+    maintenance_id = models.IntegerField()
 
 
 class Playbook(models.Model):

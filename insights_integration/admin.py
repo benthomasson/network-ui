@@ -38,7 +38,7 @@ admin.site.register(Key, KeyAdmin)
 
 
 class PlanAdmin(admin.ModelAdmin):
-    fields = ('name',)
+    fields = ('name', 'maintenance_id',)
     raw_id_fields = ()
 
 

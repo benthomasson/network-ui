@@ -135,19 +135,21 @@ class Controller {
     }
     var playbookrun = await this.get_api_object_by_pk('playbookrun', this.playbook_run_id)
     console.log(playbookrun);
+    var new_tasks_by_host = {};
     for(var i = 0; i < this.hosts.length; i++) {
-      this.tasks_by_host[this.hosts[i].host_id] = [];
+      new_tasks_by_host[this.hosts[i].host_id] = [];
     }
     var trprs = await this.get_api_list('taskresultplaybookrun', 'playbook_run=' + this.playbook_run_id);
     for (i = 0; i < trprs.length; i++) {
       var trpr = trprs[i];
       var task = await this.get_api_object_by_pk('taskresult', trpr.task_result)
-      this.tasks_by_host[task.host].push(task);
+      new_tasks_by_host[task.host].push(task);
       console.log(task);
     }
     for(i = 0; i < this.hosts.length; i++) {
-      this.tasks_by_host[this.hosts[i].host_id].sort(function (a, b) {return a.task_result_id - b.task_result_id});
+      new_tasks_by_host[this.hosts[i].host_id].sort(function (a, b) {return a.task_result_id - b.task_result_id});
     }
+    this.tasks_by_host = new_tasks_by_host;
     if (playbookrun.status === "started") {
       this.channel.send('Started', {});
     }

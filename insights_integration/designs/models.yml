@@ -46,6 +46,8 @@ models:
   - len: 2000
     name: name
     type: CharField
+  - name: maintenance_id
+    type: IntegerField
   name: Plan
   x: 302
   y: 684

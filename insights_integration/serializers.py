@@ -34,7 +34,7 @@ class KeySerializer(serializers.ModelSerializer):
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
-        fields = ('plan_id','name',)
+        fields = ('plan_id','name','maintenance_id',)
 
 
 class PlaybookSerializer(serializers.ModelSerializer):
