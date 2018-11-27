@@ -42,11 +42,11 @@ class App extends Component {
     }
     return (
       <div className="App">
+      <Playbook {...this.controller.playbook} />
 			<div style={blockStyle}>
 			<div style={headerStyle}>Actions</div>
       <LaunchButton action={this.controller.launch} enabled={this.controller.launch_enabled}/>
 			</div>
-      <Playbook {...this.controller.playbook} />
 			<div style={blockStyle}>
 			<div style={headerStyle}>Tasks</div>
       <ul>
