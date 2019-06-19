@@ -4,6 +4,8 @@
 
 all: main deploy
 
+install:
+	npm install
 
 main:
 	npm run build
