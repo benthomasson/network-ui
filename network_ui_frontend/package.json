@@ -9,7 +9,7 @@
   "author": "Ben Thomasson",
   "license": "ISC",
   "dependencies": {
-    "angular": "~1.6.2",
+    "angular": "~1.8.3",
     "angular-mousewheel": "~1.0.5",
     "angular-ui-router": "",
     "angular-xeditable": "~0.8.0",
